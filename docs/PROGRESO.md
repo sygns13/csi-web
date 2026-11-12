@@ -4,12 +4,12 @@ Bitácora entre sesiones (§0, regla 8). La spec (`docs/sitio-web-csi.spec.md`) 
 
 ## Estado
 
-| Tramo                                           | Estado                 | Fecha      |
-| ----------------------------------------------- | ---------------------- | ---------- |
-| 1. Fundaciones y sistema de diseño              | **Hecho** (commit)     | 12/11/2026 |
-| 2. Servicios, productos e Inicio                | **Hecho** (commit)     | 12/11/2026 |
-| 3. Proyectos, institucional, contacto y legales | **Hecho** (sin commit) | 12/11/2026 |
-| 4. QA final y despliegue                        | Pendiente              | —          |
+| Tramo                                           | Estado                        | Fecha      |
+| ----------------------------------------------- | ----------------------------- | ---------- |
+| 1. Fundaciones y sistema de diseño              | **Hecho** (commit)            | 12/11/2026 |
+| 2. Servicios, productos e Inicio                | **Hecho** (commit)            | 12/11/2026 |
+| 3. Proyectos, institucional, contacto y legales | **Hecho** (commit)            | 12/11/2026 |
+| 4. QA final y despliegue                        | QA hecho; despliegue en curso | 12/11/2026 |
 
 ---
 
@@ -436,3 +436,157 @@ Aún no publicados (se construyen en el Tramo 3), se listan para seguimiento:
 
 - Ninguno: todo el texto visible de las páginas del Tramo 3 está en la spec. La foto del Gerente (monograma
   temporal) queda en Pendientes.
+
+---
+
+## Sesión 4 — Tramo 4 (12/11/2026)
+
+### Hecho
+
+1. **Auditoría** (todo con Node 24.22.3, sobre `astro preview` y luego sobre la imagen Docker):
+   - **axe**: las 31 rutas (30 + 404) en ambos temas y en `mobile` y `desktop`, sin infracciones. Las suites
+     completas (axe incluido) se corrieron también en Firefox, Safari de escritorio (WebKit), Safari iOS (iPhone 15,
+     WebKit) y Edge con configuraciones temporales (borradas).
+   - **Lighthouse 12.8.2** local (móvil, limitación simulada) en las 30 rutas y `/404.html`. Antes de corregir:
+     Rendimiento 99–100; Accesibilidad, Buenas prácticas y SEO 100; CLS máx. 0.028 (Inicio 0.024 y
+     `/servicios/redes-y-soporte/` 0.028, ambos por el cambio a Sora; el 0.033 de `/libro-de-reclamaciones/` no se
+     reprodujo). Después: **CLS 0.000 en las 31**. LCP 1.65–1.81 s, TBT 0 ms, 107–116 KB. La 404 tiene SEO 66 por
+     `noindex` (esperado).
+   - **Presupuestos de §11** (gzip, `dist/`): CSS 9.0 KB (≤ 35); JS máx. 3.4 KB en `/contacto/` (formulario 1.9 KB,
+     encabezado 1.0 KB, tema 0.5 KB; filtro 0.6 KB en `/proyectos/`) (≤ 20); 2 woff2; Inicio 116 KB (≤ 450).
+   - **Teclado** (recorrido Tab automatizado en las 31 rutas): Chromium, Firefox y Edge a 1280×800 y Chromium a
+     640×400 (zoom 200 %) y 320×200 (zoom 400 %). En todas: el primer Tab es "Saltar al contenido principal" y Enter
+     lleva el foco a `#contenido`; anillo de foco visible en cada parada; foco nunca tapado por el encabezado ni por
+     el botón flotante (2.4.11); sin trampas; las mismas paradas en los tres navegadores (p. ej. 66 en Inicio);
+     objetivos ≥ 24 px salvo enlaces dentro de oraciones (excepción de 2.5.8). Los radios del formulario miden 20 px,
+     pero su objetivo es la etiqueta completa (44 px de alto).
+   - **Zoom**: al 200 % y al 400 % ninguna ruta tiene desplazamiento horizontal; el menú móvil se desplaza y su último
+     elemento es alcanzable. **Texto al 200 %** (Firefox con fuente por defecto de 32 px, que escala `rem` y media
+     queries como el ajuste real del usuario): sin recortes ni desplazamiento en las 31 rutas a 1280 y 1024 px.
+   - **Espaciado de texto (1.4.12)**: con los valores máximos de la norma había recortes y desbordes (D54);
+     corregidos y cubiertos por una prueba.
+   - **Safari iOS y Chrome Android**: suites completas en iPhone 15 (WebKit) además de Pixel 7 (Chromium). Los
+     únicos fallos son del arnés de pruebas, no del sitio (ver "Limitaciones del arnés").
+   - **Confidencialidad (§1.4)**, página por página: se extrajo y leyó todo el texto visible y oculto (sr-only),
+     atributos (`alt`, `aria-label`, `title`), metas y JSON-LD de las 31 páginas. Enlaces externos: solo wa.me,
+     `tel:`, `mailto:`, Facebook, YouTube y LinkedIn/GitHub del Gerente. Imágenes: solo el isotipo. Sin stack por
+     cliente, URLs de clientes, montos ni datos personales no autorizados. `dist/` y el repositorio: sin IP ni rutas
+     del servidor (prueba `build-output` + búsqueda).
+   - **Ortografía**: cspell (diccionario es-ES) + lectura completa del corpus: sin erratas. Correcciones de
+     puntuación, concordancia y estilo aprobadas por el propietario (D51).
+   - **JSON-LD**: API de validator.schema.org con el HTML de las 31 páginas: **0 errores y 0 advertencias**
+     (`Organization`, `WebSite`, `Service`, `OfferCatalog`, `CreativeWork`, `BreadcrumbList`). Más tarde la API
+     empezó a responder 405 al POST: tras el despliegue se valida por URL (D58).
+2. **Correcciones** (detalle en Desviaciones): `lang="en"` en frases en inglés (D52); respaldos de fuente con
+   métricas ajustadas (CLS, D53); espaciado de texto sin pérdida de contenido (D54); tipo MIME de
+   `site.webmanifest` en nginx (D55); textos aprobados (D51).
+3. **Imagen Docker**: `docker build --no-cache` sin advertencias (`npm ci`: 0 vulnerabilidades; `astro check`
+   0/0/0; 31 páginas), `nginx -t` correcto, imagen de 64.6 MB, contenedor `healthy` con 23 MiB de RAM. Con curl y
+   con la nueva suite `headers.spec.ts`: CSP con el hash del tema, HSTS `max-age=31536000` sin `includeSubDomains`,
+   resto de cabeceras de §16.2 en HTML, recursos y 404; `no-cache` en HTML, `immutable` de un año en `/_astro/`,
+   una semana en imágenes, íconos y manifest; `application/manifest+json`; gzip; `/servicios` → 301 a
+   `/servicios/`; 404 propia; `Server: nginx` sin versión; **sin infracciones de CSP** en la consola en las 31
+   rutas (móvil y escritorio).
+4. **Pruebas nuevas**: `e2e/headers.spec.ts` (solo contra Docker), idioma de las partes en `content.spec.ts`,
+   espaciado de texto 1.4.12 y pilas de fuentes en `smoke.spec.ts`.
+5. **Documentación**: `docs/DESPLIEGUE.md` (§16.3, solo marcadores), README (prueba local de la imagen, enlace a la
+   guía) y `CLAUDE.md` (convenciones nuevas).
+
+### Verificación (antes del despliegue)
+
+- `npm run build`: `astro check` 0 errores, 0 advertencias, 0 sugerencias; 31 páginas, sin advertencias.
+- `npm run test:e2e`: **303 pasan, 89 omitidas** (74 de `headers.spec.ts`, que solo corre contra Docker; el resto,
+  por diseño).
+- `npm run test:e2e:docker`: **371 pasan, 21 omitidas** (por diseño).
+- `npm run format:check`: OK.
+- Lighthouse final (Inicio, Nosotros, Contacto, Productos, Proyectos, Libro de Reclamaciones y dos servicios):
+  Rendimiento 99–100; Accesibilidad, Buenas prácticas y SEO 100; CLS 0.
+- Capturas a 320, 768, 1024 y 1440 px en ambos temas de las 31 rutas (248, fuera del repositorio); revisadas en
+  hojas de contacto, sin desbordes. Además: zoom 200/400 %, texto 200 % y espaciado 1.4.12.
+
+### Desviaciones (con motivo)
+
+- **D51. Correcciones de texto** (**aprobadas** por el propietario; spec v1.4, decisión D22, en las dos copias):
+  "Ley N.º" con indicador ordinal en vez del signo de grado (Libro de Reclamaciones y Privacidad); bajada de
+  Contacto "…completar el formulario y enviarlo por el canal que prefiera." (el sitio no envía nada); bajada de
+  Nosotros "Nacimos a fines de 2020 en la ciudad de Huaraz, Áncash, con la misión…" (concordancia); "más de ocho
+  años"; fechas con "de" ("Octubre de 2026", 13 proyectos); "IA generativa que elabora calificaciones" (resumen y
+  descripción SEO de APUBOT 2.0); "Diseño adaptable para móviles…" (Portales web). El aviso sin JavaScript se
+  mantiene como está (no aprobado).
+- **D52. `lang="en"`** (§10, 3.1.2): `src/lib/foreign-terms.ts` + componente `LangText`. Criterio: solo frases en
+  inglés ("machine learning", "Prompt engineering", "patch panels", "Building Computer Solutions" y los nombres de
+  las certificaciones del Gerente); las palabras sueltas de uso común en el español técnico (software, backend,
+  hosting, chatbots, back-office, DevOps…) no se marcan. Los textos de las colecciones no cambian. Una prueba
+  recorre las 31 rutas.
+- **D53. Fuentes de respaldo con métricas ajustadas** ("Inter Fallback" y "Sora Fallback": Arial local con
+  `size-adjust` y `ascent/descent/line-gap-override`, calculados con fontkit). Anchos medios dentro del 1 % de las
+  fuentes web; a 412 px los títulos ocupan las mismas líneas con o sin las woff2. Sin descargas extra (fuentes
+  locales). Caso límite conocido: a 1280 px el h1 de Inicio tiene 6 líneas con Sora y 5 con el respaldo
+  ("transformación digital" mide 650 px en una columna de 649 px), así que en escritorio, sin Sora en caché, puede
+  haber un desplazamiento pequeño.
+- **D54. Espaciado de texto (1.4.12)**: con los valores de la norma, palabras largas quedaban recortadas por
+  contenedores `overflow-hidden` (hero, antetítulo de proyecto, tarjetas de valores) y el encabezado desbordaba
+  5–19 px en 320, 360, 400, 414 y 1024 px. Cambios: `overflow-wrap: break-word` en `body`; `grid-cols-1` en el hero
+  y la sección de IA de Inicio; `min-w-0` en el texto de `PageHeader` y de las tarjetas de valores; el logo puede
+  ajustar su texto en varias líneas solo si falta espacio (sin `whitespace-nowrap` ni `shrink-0`) y el encabezado
+  usa `min-h-16`/`lg:min-h-[72px]`. Con el espaciado normal, encabezado y pie quedan idénticos píxel a píxel
+  (comparados en 12 anchos). Con espaciado, el logo ocupa 3 líneas y la barra crece; el panel del menú móvil sigue
+  empezando a 64 px (se superpone unos px a la barra más alta, solo en ese caso).
+- **D55. `nginx/default.conf`**: location exacta para `/site.webmanifest` (`types {}` +
+  `default_type application/manifest+json`): el `mime.types` de nginx 1.28 no incluye `.webmanifest` y salía como
+  `application/octet-stream`.
+- **D56. Suite `e2e/headers.spec.ts`** (no listada en §17.2): cabeceras, caché, MIME, 301, 404 y CSP en el
+  navegador; se omite si el `baseURL` no es el puerto 8080. La prueba de espaciado inyecta estilos y usa
+  `bypassCSP` (la CSP real bloquea `addStyleTag`, lo que también confirma que funciona).
+- **D57. Sitemap**: 30 URLs (las 30 rutas de §5.1) + la 404 = 31 páginas. La sesión 3 decía "31 URLs".
+- **D58. Validador de Schema.org**: la API (`POST /validate` con el HTML) validó las 31 páginas sin errores ni
+  advertencias; luego empezó a responder 405, así que la revalidación final se hace por URL después del
+  despliegue. Desde aquella validación, el único cambio en JSON-LD es el texto `about` de APUBOT 2.0 (D51).
+
+### Limitaciones del arnés (no son defectos del sitio)
+
+- **WebKit** (Safari): Tab no recorre enlaces por defecto (Safari requiere "Resaltar cada ítem con Tab" u
+  Option+Tab). Por eso fallan en WebKit las pruebas que tabulan hacia enlaces (salto al contenido, desplegable,
+  foco circular del menú). En el menú, tras el último botón el foco sale al navegador, nunca al fondo inerte.
+  Además, WebKit sin interfaz trata `location.href = "mailto:…"` como navegación (Safari real abre Mail).
+- **iPhone 15** (393 px): el botón de tema está en el menú (D13, < 400 px); las pruebas de tema asumen el ancho del
+  Pixel 7 (412 px).
+- **Firefox**: la intercepción del `mailto:` con la Navigation API no funciona igual; el flujo se verificó aparte
+  (enlace de respaldo con la URL exacta y la página se queda en `/contacto/`).
+- Al 400 % el botón flotante (56 px) cubre parte del texto, que se lee al desplazarse; nunca tapa el foco. Con
+  "solo texto" al 200 %, el texto del logo y el botón flotante (en px) no crecen; con zoom de página sí.
+
+### Lista de verificación manual (propietario; NVDA y dispositivos reales)
+
+1. NVDA + Firefox o Chrome, en Inicio: tecla H recorre h1 → h2 → h3 sin saltos; D recorre las regiones (banner,
+   navegación principal, main, pie).
+2. "Servicios" en el menú: se anuncia "botón, contraído/expandido"; Enter abre, Escape cierra y vuelve al botón.
+3. `/servicios/inteligencia-artificial/`: "machine learning" y "Prompt engineering" se leen con voz en inglés
+   (opción de NVDA "Cambio automático de idioma" activada).
+4. Tarjetas: "Conocer más: {título del servicio}"; botón de tema: "Modo oscuro, conmutador, presionado/no
+   presionado".
+5. `/proyectos/`: al filtrar por "Justicia" se anuncia "Mostrando N proyectos" sin mover el foco.
+6. `/contacto/`: enviar vacío → foco en "Revise los siguientes campos" y se leen los errores; cada campo anuncia su
+   error; al acercarse a 1000 caracteres se anuncia el contador.
+7. iPhone (Safari + VoiceOver) y Android (Chrome + TalkBack): menú, botón de WhatsApp (abre la app), `tel:` (abre
+   el marcador), formulario por WhatsApp y por correo, cambio de tema.
+8. Safari en macOS con "Resaltar cada ítem con Tab": salto al contenido, desplegable de Servicios, menú.
+
+Registrar aquí los hallazgos que surjan.
+
+### Pendientes
+
+- Despliegue (§16.3) con autorización del propietario en cada paso; después: Lighthouse en producción, validación
+  de Schema.org por URL y alta en Search Console y Bing (P10).
+- **Acción del propietario (en espera)**: foto del Gerente cuadrada ≥ 800×800 (sigue el monograma "CC").
+- Revisión manual con NVDA y dispositivos reales (lista de arriba).
+
+### Textos [VALIDAR] publicados (pendientes de validación del propietario)
+
+- `/contacto/`: "Atendemos a instituciones públicas y empresas privadas." (§6.8, punto 5).
+- `/libro-de-reclamaciones/`: texto completo (§6.9), pendiente de asesoría legal (P6).
+- `/privacidad/`: texto completo (§6.10), pendiente de asesoría legal (P6).
+
+### TODO(CONTENIDO)
+
+- Ninguno nuevo.

@@ -4,7 +4,7 @@ shortTitle: Plataforma web institucional
 client: UNASAM – Universidad Nacional Santiago Antúnez de Mayolo
 sector: educacion-superior
 date: "2021-12"
-dateLabel: Diciembre 2021
+dateLabel: Diciembre de 2021
 services:
   - portales-web
   - consultoria-ti

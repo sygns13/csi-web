@@ -1,0 +1,15 @@
+---
+// Texto en español que puede contener frases en inglés (§10, WCAG 3.1.2): las marca con
+// `<span lang="en">` según `src/lib/foreign-terms.ts`. Sin frases, emite el texto tal cual.
+import { splitForeignPhrases } from "../../lib/foreign-terms";
+
+interface Props {
+  text: string;
+}
+
+const segments = splitForeignPhrases(Astro.props.text);
+---
+
+{segments.map((segment) =>
+  segment.lang ? <span lang={segment.lang}>{segment.text}</span> : segment.text,
+)}

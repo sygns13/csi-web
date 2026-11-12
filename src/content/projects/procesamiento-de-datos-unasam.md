@@ -4,7 +4,7 @@ shortTitle: Sistema de Recojo de Información
 client: UNASAM – Universidad Nacional Santiago Antúnez de Mayolo
 sector: educacion-superior
 date: "2021-07"
-dateLabel: Julio 2021
+dateLabel: Julio de 2021
 services:
   - consultoria-ti
   - desarrollo-de-software

@@ -4,7 +4,7 @@ shortTitle: Registro de compra de clientes
 client: Yamaha Perú
 sector: empresa-privada
 date: "2025-05"
-dateLabel: Mayo 2025
+dateLabel: Mayo de 2025
 services:
   - desarrollo-de-software
   - sistemas-de-gestion

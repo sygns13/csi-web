@@ -25,7 +25,7 @@ La fuente de verdad es [`docs/sitio-web-csi.spec.md`](docs/sitio-web-csi.spec.md
 | `npm run preview`                         | Sirve `dist/` localmente                                                                 |
 | `npm run format` / `npm run format:check` | Prettier (con plugins de Astro y Tailwind)                                               |
 | `npm run test:e2e`                        | Pruebas Playwright + axe contra `astro preview` (construye antes)                        |
-| `npm run test:e2e:docker`                 | Las mismas pruebas contra el contenedor en `http://localhost:8080`                       |
+| `npm run test:e2e:docker`                 | Las mismas pruebas + cabeceras, caché, MIME y CSP contra el contenedor en `:8080`        |
 | `npm run brand:assets`                    | Regenera favicons, íconos, logo PNG e imagen OG (manual; se versionan)                   |
 | `node scripts/csp-hash.mjs --write`       | Recalcula el hash CSP del script de tema en `nginx/security-headers.conf` (tras `build`) |
 
@@ -43,7 +43,7 @@ src/styles/global.css   Tokens de color, tipografía y estilos base
 scripts/                Generación de recursos de marca y hash CSP
 e2e/                    Pruebas Playwright
 nginx/, Dockerfile, docker-compose.yml   Imagen y despliegue
-docs/                   Spec, progreso, créditos y (Tramo 4) guía de despliegue
+docs/                   Spec, progreso, créditos y guía de despliegue (DESPLIEGUE.md)
 ```
 
 ## Despliegue (resumen)
@@ -56,5 +56,16 @@ docker compose up -d --build
 ```
 
 La imagen construye el sitio con Node 24 y lo sirve con nginx (puerto 80 interno). Traefik enruta `bcscode.com`
-y redirige `www.bcscode.com` a la raíz. La guía completa estará en `docs/DESPLIEGUE.md` (Tramo 4). Este
-repositorio no contiene IPs, rutas del servidor ni credenciales.
+y redirige `www.bcscode.com` a la raíz. La guía completa (primer despliegue, verificaciones, actualizaciones y
+diagnóstico) está en [`docs/DESPLIEGUE.md`](docs/DESPLIEGUE.md). Este repositorio no contiene IPs, rutas del
+servidor ni credenciales.
+
+Prueba local de la imagen:
+
+```bash
+docker build -t csi-web:latest .
+docker run --rm csi-web:latest nginx -t
+docker run -d --rm --name csi-web-local -p 8080:80 csi-web:latest
+npm run test:e2e:docker
+docker stop csi-web-local
+```

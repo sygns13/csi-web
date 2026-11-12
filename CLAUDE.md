@@ -18,6 +18,7 @@ spec del workspace). Al empezar: lee la spec completa y `docs/PROGRESO.md`; ejec
 ```bash
 npm run build            # astro check + astro build (debe quedar sin errores ni advertencias)
 npm run test:e2e         # construye, levanta preview en :4322 y corre Playwright (mobile + desktop)
+npm run test:e2e:docker  # mismas pruebas + headers.spec.ts contra la imagen en :8080 (docs/DESPLIEGUE.md §5)
 npm run format           # Prettier
 npm run brand:assets     # favicons / OG (manual)
 node scripts/csp-hash.mjs --write   # tras cambiar el script de tema
@@ -59,10 +60,24 @@ Astro 7 no admite dos `astro preview` a la vez: `npx astro preview stop` antes d
   < 4 KB; los destinos llegan por `data-wa-me`/`data-email`). Pruebas en `e2e/contact.spec.ts`.
 - Mostrar el correo con `<EmailText />` (corta en la "@") y `wrap-anywhere`, no `break-all`.
 - Fechas de las páginas legales en `src/config/legal.ts` (actualizar solo al cambiar los textos).
+- Frases en inglés dentro del texto (WCAG 3.1.2): lista en `src/lib/foreign-terms.ts`; `<LangText text={…} />` las
+  envuelve en `<span lang="en">`. Ya lo usan `PageHeader`, `Breadcrumbs`, `ServiceCard`, `LinkArrow`, `HexList` y las
+  capacidades. Solo frases (las palabras sueltas como software o backend no se marcan). Una prueba exige que cada
+  frase de la lista aparezca marcada en alguna ruta.
+- Fuentes: `"Inter Fallback"` y `"Sora Fallback"` (Arial con `size-adjust` y `*-override`, en `global.css`) evitan el
+  CLS al cargar las woff2. Si cambian las fuentes, recalcular las métricas (fontkit: ancho medio y métricas
+  verticales).
+- `overflow-wrap: break-word` en `body`; un ítem flex o de cuadrícula con texto necesita `min-w-0` (o
+  `grid-cols-1`) para que una palabra larga pueda partirse con texto grande o espaciado (WCAG 1.4.4/1.4.12). El
+  logo puede ajustar su texto en varias líneas solo si falta espacio (el encabezado usa `min-h`, no `h`).
 - El fondo del encabezado va al 97 %: con menos opacidad el texto `--brand` del logo baja de 4.5:1 sobre
   contenido oscuro (lo verifica `a11y.spec.ts`).
 - Playwright con `javaScriptEnabled: false` en Chromium no renderiza `<noscript>`: verificar su contenido, no su
   visibilidad. `location.href = "mailto:…"` se intercepta con el evento `navigate` de la Navigation API.
+- `e2e/headers.spec.ts` solo corre contra Docker (`baseURL` en :8080). Con la CSP real, `addStyleTag` falla: las
+  pruebas que inyectan estilos usan `test.use({ bypassCSP: true })`.
+- nginx: `.webmanifest` tiene una location propia (`types {}` + `default_type application/manifest+json`), porque
+  el `mime.types` de nginx 1.28 no lo incluye.
 
 ## Estructura
 

@@ -1,5 +1,6 @@
 ---
 import Container from "../ui/Container.astro";
+import LangText from "../ui/LangText.astro";
 import { t } from "../../i18n";
 import type { BreadcrumbItem } from "../../lib/jsonld";
 
@@ -20,7 +21,7 @@ const { items } = Astro.props;
           <li class="inline-flex items-center gap-2">
             {last ? (
               <span aria-current="page" class="font-medium text-text">
-                {item.name}
+                <LangText text={item.name} />
               </span>
             ) : (
               <>
@@ -28,7 +29,7 @@ const { items } = Astro.props;
                   href={item.href}
                   class="inline-flex min-h-6 items-center text-link underline underline-offset-2 hover:decoration-2"
                 >
-                  {item.name}
+                  <LangText text={item.name} />
                 </a>
                 <span aria-hidden="true">›</span>
               </>

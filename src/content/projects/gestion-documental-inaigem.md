@@ -4,7 +4,7 @@ shortTitle: Sistema de Gestión Documental
 client: INAIGEM – Instituto Nacional de Investigación en Glaciares y Ecosistemas de Montaña
 sector: investigacion-y-ambiente
 date: "2025-11"
-dateLabel: Noviembre 2025
+dateLabel: Noviembre de 2025
 services:
   - sistemas-de-gestion
   - desarrollo-de-software

@@ -9,6 +9,7 @@ import Card from "../../components/ui/Card.astro";
 import HexIcon from "../../components/ui/HexIcon.astro";
 import HexList from "../../components/ui/HexList.astro";
 import Icon from "../../components/ui/Icon.astro";
+import LangText from "../../components/ui/LangText.astro";
 import SectionHeading from "../../components/ui/SectionHeading.astro";
 import PageHeader from "../../components/sections/PageHeader.astro";
 import ProjectCard from "../../components/sections/ProjectCard.astro";
@@ -103,7 +104,9 @@ const benefitCols = benefits.length === 4 ? "md:grid-cols-2 xl:grid-cols-4" : "m
         <ul class="mt-8 flex flex-wrap gap-2.5">
           {capabilities.map((capability) => (
             <li>
-              <Badge>{capability}</Badge>
+              <Badge>
+                <LangText text={capability} />
+              </Badge>
             </li>
           ))}
         </ul>

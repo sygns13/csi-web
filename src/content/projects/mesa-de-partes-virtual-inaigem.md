@@ -4,7 +4,7 @@ shortTitle: Mesa de Partes Virtual
 client: INAIGEM – Instituto Nacional de Investigación en Glaciares y Ecosistemas de Montaña
 sector: investigacion-y-ambiente
 date: "2026-05"
-dateLabel: Mayo 2026
+dateLabel: Mayo de 2026
 services:
   - sistemas-de-gestion
   - consultoria-ti

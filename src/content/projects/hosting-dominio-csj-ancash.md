@@ -4,7 +4,7 @@ shortTitle: Hosting y dominio
 client: Corte Superior de Justicia de Áncash
 sector: justicia
 date: "2023-10"
-dateLabel: Octubre 2023
+dateLabel: Octubre de 2023
 services:
   - cloud-e-infraestructura
 visual: server

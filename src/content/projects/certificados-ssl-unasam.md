@@ -4,7 +4,7 @@ shortTitle: Certificados SSL
 client: UNASAM – Universidad Nacional Santiago Antúnez de Mayolo
 sector: educacion-superior
 date: "2022-05"
-dateLabel: Mayo 2022
+dateLabel: Mayo de 2022
 services:
   - cloud-e-infraestructura
 visual: certificate

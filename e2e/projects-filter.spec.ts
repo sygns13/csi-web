@@ -127,7 +127,7 @@ test.describe("detalle de proyecto", () => {
     );
     const facts = page.locator("main dl").first();
     await expect(facts.locator("dt")).toHaveText(["Cliente", "Sector", "Fecha", "Servicios"]);
-    await expect(facts.locator("dd").nth(2)).toHaveText("Diciembre 2024");
+    await expect(facts.locator("dd").nth(2)).toHaveText("Diciembre de 2024");
     await expect(facts.getByRole("link", { name: "Sistemas de gestión" })).toHaveAttribute(
       "href",
       "/servicios/sistemas-de-gestion/",

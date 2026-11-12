@@ -1,5 +1,6 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
-import { productCategorySlugs, routes, serviceSlugs } from "./routes";
+import { englishPhrases } from "../src/lib/foreign-terms";
+import { notFoundPath, productCategorySlugs, routes, serviceSlugs } from "./routes";
 
 // Contenido (§6): secciones, tarjetas clicables, enlaces de cotización, JSON-LD, páginas
 // institucionales y legales, robots.txt y sitemap.
@@ -273,7 +274,7 @@ test.describe("Páginas legales", () => {
   test("Libro de Reclamaciones: requisitos y correo con plantilla", async ({ page }) => {
     await page.goto("/libro-de-reclamaciones/");
     await expect(page.locator("h1")).toHaveText("Libro de Reclamaciones");
-    await expect(page.locator("main")).toContainText("Ley N.° 29571");
+    await expect(page.locator("main")).toContainText("Ley N.º 29571");
     const button = page.getByRole("link", { name: "Enviar reclamo o queja por correo" });
     const href = (await button.getAttribute("href")) ?? "";
     expect(href.startsWith("mailto:construyendosolucionesbcs@gmail.com?subject=")).toBe(true);
@@ -338,5 +339,37 @@ test.describe("robots.txt y sitemap", () => {
       );
     }
     expect(locs.sort()).toEqual([...routes].sort());
+  });
+});
+
+test.describe("idioma de las partes (WCAG 3.1.2)", () => {
+  test("las frases en inglés van con lang=en en todas las rutas", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "desktop", "Mismo HTML en ambos proyectos");
+    const found = new Set<string>();
+    for (const route of [...routes, notFoundPath]) {
+      await page.goto(route);
+      const result = await page.evaluate(
+        (phrases) => {
+          const bad: string[] = [];
+          const ok: string[] = [];
+          const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+          while (walker.nextNode()) {
+            const node = walker.currentNode;
+            const text = node.textContent ?? "";
+            for (const phrase of phrases) {
+              if (!text.includes(phrase)) continue;
+              const lang = node.parentElement?.closest("[lang]")?.getAttribute("lang");
+              (lang === "en" && text.trim() === phrase ? ok : bad).push(phrase);
+            }
+          }
+          return { bad, ok };
+        },
+        englishPhrases as readonly string[],
+      );
+      expect(result.bad, route).toEqual([]);
+      result.ok.forEach((phrase) => found.add(phrase));
+    }
+    // Cada frase de la lista aparece al menos una vez (la lista no tiene entradas muertas).
+    expect([...found].sort()).toEqual([...englishPhrases].sort());
   });
 });

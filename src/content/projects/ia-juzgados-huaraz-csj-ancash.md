@@ -4,7 +4,7 @@ shortTitle: IA para juzgados de Huaraz
 client: Corte Superior de Justicia de Áncash
 sector: justicia
 date: "2025-08"
-dateLabel: Agosto 2025
+dateLabel: Agosto de 2025
 services:
   - inteligencia-artificial
   - desarrollo-de-software

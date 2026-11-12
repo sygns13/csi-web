@@ -11,7 +11,7 @@ includes:
   - Sitios administrables (noticias, eventos, comunicados, documentos)
   - Accesibilidad web conforme a WCAG 2.1 y 2.2, nivel AA
   - Optimización para buscadores (SEO) y rendimiento
-  - Diseño responsive para móviles, tabletas y computadoras
+  - Diseño adaptable para móviles, tabletas y computadoras
   - Intranets y portales de servicios
   - Migración de contenidos y capacitación
 benefits:

@@ -12,7 +12,7 @@ const { variant = "header", class: className } = Astro.props;
 const onDark = variant === "footer";
 ---
 
-<a href="/" class:list={["inline-flex shrink-0 items-center gap-2.5 rounded-control", className]}>
+<a href="/" class:list={["inline-flex min-w-0 items-center gap-2.5 rounded-control", className]}>
   <img
     src={mark.src}
     alt=""
@@ -21,7 +21,7 @@ const onDark = variant === "footer";
     class="h-9 w-auto shrink-0 sm:h-10"
     decoding="async"
   />
-  <span class="flex flex-col font-display text-[13px] whitespace-nowrap leading-[1.1] font-bold min-[360px]:text-[15px] xl:text-base">
+  <span class="flex min-w-0 flex-col font-display text-[13px] leading-[1.1] font-bold min-[360px]:text-[15px] xl:text-base">
     <span class={onDark ? "text-footer-text" : "text-text-muted"}>{t("brand.line1")}</span>
     <span class={onDark ? "text-footer-accent" : "text-brand"}>{t("brand.line2")}</span>
   </span>

@@ -4,7 +4,7 @@ shortTitle: Gestión de consentimientos
 client: Yamaha Perú
 sector: empresa-privada
 date: "2026-10"
-dateLabel: Octubre 2026
+dateLabel: Octubre de 2026
 services:
   - desarrollo-de-software
   - cloud-e-infraestructura

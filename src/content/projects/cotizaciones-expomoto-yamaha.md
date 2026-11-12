@@ -4,7 +4,7 @@ shortTitle: Cotizaciones Expomoto
 client: Yamaha Perú
 sector: empresa-privada
 date: "2024-07"
-dateLabel: Julio 2024
+dateLabel: Julio de 2024
 services:
   - desarrollo-de-software
   - sistemas-de-gestion

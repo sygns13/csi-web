@@ -4,7 +4,7 @@ shortTitle: Módulo de planillas
 client: INAIGEM – Instituto Nacional de Investigación en Glaciares y Ecosistemas de Montaña
 sector: investigacion-y-ambiente
 date: "2024-12"
-dateLabel: Diciembre 2024
+dateLabel: Diciembre de 2024
 services:
   - sistemas-de-gestion
   - desarrollo-de-software

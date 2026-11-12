@@ -3,6 +3,7 @@
 import Card from "../ui/Card.astro";
 import HexIcon from "../ui/HexIcon.astro";
 import HexList from "../ui/HexList.astro";
+import LangText from "../ui/LangText.astro";
 import LinkArrow from "../ui/LinkArrow.astro";
 import { t } from "../../i18n";
 import { serviceHref, type Service } from "../../lib/content";
@@ -28,7 +29,7 @@ const titleLink =
     <HexIcon icon={icon} />
     <h3 class="mt-5 text-h3 font-semibold">
       <a href={href} id={titleId} class={titleLink}>
-        {title}
+        <LangText text={title} />
       </a>
     </h3>
     <p class="mt-3 text-text-muted">{summary}</p>
@@ -47,7 +48,7 @@ const titleLink =
       <HexIcon icon={icon} />
       <h2 class="mt-5 text-h2 font-bold">
         <a href={href} id={titleId} class={titleLink}>
-          {title}
+          <LangText text={title} />
         </a>
       </h2>
       <p class="mt-4 text-lead text-text-muted">{summary}</p>

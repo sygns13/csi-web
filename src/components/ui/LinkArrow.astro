@@ -1,6 +1,7 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 import Icon from "./Icon.astro";
+import LangText from "./LangText.astro";
 
 interface Props extends Omit<HTMLAttributes<"a">, "class"> {
   href: string;
@@ -25,7 +26,11 @@ const { href, srContext, stretched = false, class: className, ...rest } = Astro.
 >
   <span>
     <slot />
-    {srContext && <span class="sr-only">: {srContext}</span>}
+    {srContext && (
+      <span class="sr-only">
+        : <LangText text={srContext} />
+      </span>
+    )}
   </span>
   <Icon
     name="arrow-right"

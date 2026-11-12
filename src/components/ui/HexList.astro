@@ -1,5 +1,6 @@
 ---
 // Lista con viñetas hexagonales (§4.4).
+import LangText from "./LangText.astro";
 interface Props {
   items: readonly string[];
   /** Columnas: "md2" = 2 en ≥ md (§6.3); "auto" = 2 en ≥ sm y 3 en ≥ md, 2 en ≥ lg (tarjetas). */
@@ -20,7 +21,9 @@ const grid: Record<NonNullable<Props["columns"]>, string> = {
   {items.map((item) => (
     <li class="flex gap-3">
       <span class="clip-hex mt-[0.4375rem] size-3 shrink-0 bg-brand" aria-hidden="true"></span>
-      <span>{item}</span>
+      <span>
+        <LangText text={item} />
+      </span>
     </li>
   ))}
 </ul>

@@ -3,7 +3,7 @@
 | Campo | Valor |
 |---|---|
 | Documento | `sitio-web-csi.spec.md` |
-| Versión | 1.3 (1.1: respuestas a los pendientes P1–P8; 1.2: títulos SEO acortados, D21; 1.3: visión y valores aprobados, D19/P4; descripción de Inicio acortada, D21) |
+| Versión | 1.4 (1.1: respuestas a los pendientes P1–P8; 1.2: títulos SEO acortados, D21; 1.3: visión y valores aprobados, D19/P4; descripción de Inicio acortada, D21; 1.4: correcciones de ortografía y estilo del Tramo 4, D22) |
 | Fecha | 12/11/2026 |
 | Repositorio | `E:\NewProyectos\2026\csi\workspace\csi-web` (git ya iniciado, rama `master`, remoto `https://github.com/sygns13/csi-web.git`) |
 | Propietario | Gerente General de Construyendo Soluciones Informáticas E.I.R.L. |
@@ -155,6 +155,7 @@ archivo:
 | D19 | Visión y valores | **Aprobados** sin cambios (12/11/2026, Tramo 3; P4 resuelto) |
 | D20 | Horario, textos legales, tratamiento y cifras | Sin horario. Los textos legales se mantienen como borradores [VALIDAR]. Se confirma el tratamiento de "usted". Se confirman las cifras de Inicio |
 | D21 | Títulos SEO de más de 60 caracteres y descripciones de más de 155 | Se acortan quitando palabras del original: servicio `inteligencia-artificial` (§7.1), proyectos P11 y P14 (§7.3) (Tramo 2) y descripción de Inicio (§9.2, sin "venta de"; Tramo 3) |
+| D22 | Ortografía y estilo (Tramo 4) | Se aprueban las correcciones de la revisión ortográfica: "Ley N.º" con indicador ordinal, no signo de grado (§6.9, §6.10); bajada de Contacto "…y enviarlo por el canal que prefiera" (§6.8); bajada de Nosotros "Nacimos a fines de 2020…" (§6.7); "más de ocho años" (§6.7); fechas de proyectos con "de", p. ej. "Octubre de 2026" (§7.3); "IA generativa que elabora" en P1 (§7.3); "Diseño adaptable" en `portales-web` (§7.1) |
 
 ---
 
@@ -1012,7 +1013,7 @@ Plantilla común. El contenido está en §7.1:
 2. `PageHeader`:
    - Antetítulo "Nosotros".
    - h1 "Construyendo Soluciones Informáticas".
-   - Bajada: "Fundada a fines de 2020 en la ciudad de Huaraz, Áncash, nacimos con la misión de impulsar la
+   - Bajada: "Nacimos a fines de 2020 en la ciudad de Huaraz, Áncash, con la misión de impulsar la
      transformación digital en los sectores público y privado."
 3. h2 "Quiénes somos": "Somos una empresa especializada en consultoría informática, desarrollo de software a medida
    y gestión de instalaciones tecnológicas. Nuestro nombre comercial es <span lang="en">Building Computer
@@ -1062,7 +1063,7 @@ Plantilla común. El contenido está en §7.1:
      - "LinkedIn" → `site.manager.linkedin`.
      - "GitHub" → `site.manager.github`.
    - Párrafo: "Ingeniero de Sistemas e Informática por la Universidad Nacional Santiago Antúnez de Mayolo (UNASAM),
-     con más de 8 años de experiencia en análisis, arquitectura, desarrollo e implementación de software backend y
+     con más de ocho años de experiencia en análisis, arquitectura, desarrollo e implementación de software backend y
      full-stack, en arquitecturas monolíticas, de microservicios y orientadas a eventos. Cursa la Maestría en
      Inteligencia Artificial en la Universidad Nacional de Ingeniería (UNI) y se especializa en sistemas
      inteligentes: generación aumentada por recuperación (RAG), modelos de lenguaje, procesamiento de lenguaje
@@ -1112,8 +1113,8 @@ Plantilla común. El contenido está en §7.1:
 2. `PageHeader`:
    - Antetítulo "Contacto".
    - h1 "Conversemos sobre su proyecto".
-   - Bajada: "Escríbanos por WhatsApp, llámenos o envíenos un correo. También puede completar el formulario y lo
-     enviaremos por el canal que prefiera."
+   - Bajada: "Escríbanos por WhatsApp, llámenos o envíenos un correo. También puede completar el formulario y
+     enviarlo por el canal que prefiera."
 3. **Canales** (4 tarjetas, visibles sin JS):
 
    | Canal | Contenido | Botón |
@@ -1132,7 +1133,7 @@ Plantilla común. El contenido está en §7.1:
 
 1. Migas: Inicio › Libro de Reclamaciones.
 2. h1 "Libro de Reclamaciones".
-3. Texto: "Conforme al Código de Protección y Defensa del Consumidor (Ley N.° 29571), Construyendo Soluciones
+3. Texto: "Conforme al Código de Protección y Defensa del Consumidor (Ley N.º 29571), Construyendo Soluciones
    Informáticas E.I.R.L. (RUC 20606674415) pone a su disposición un Libro de Reclamaciones. Para registrar un
    reclamo o una queja, envíenos un correo a {email} con el asunto «Libro de Reclamaciones – Reclamo» o «Libro de
    Reclamaciones – Queja», incluyendo la siguiente información:"
@@ -1168,7 +1169,7 @@ Plantilla común. El contenido está en §7.1:
 | 4. Cookies y almacenamiento local | No usamos cookies, herramientas de analítica ni rastreadores de terceros. Solo guardamos en su navegador su preferencia de modo claro u oscuro (`localStorage`), que no permite identificarlo. |
 | 5. Servicios de terceros | Al usar WhatsApp o su cliente de correo, se aplican también las políticas de privacidad de esos servicios. Los enlaces a nuestras redes sociales (Facebook y YouTube) llevan a sitios de terceros con sus propias políticas. |
 | 6. Conservación | Conservamos las comunicaciones durante el tiempo necesario para atender su solicitud y cumplir nuestras obligaciones legales. |
-| 7. Sus derechos | Conforme a la Ley N.° 29733, Ley de Protección de Datos Personales, y su reglamento, puede ejercer sus derechos de acceso, rectificación, cancelación y oposición escribiendo a {email}. También puede acudir a la Autoridad Nacional de Protección de Datos Personales. |
+| 7. Sus derechos | Conforme a la Ley N.º 29733, Ley de Protección de Datos Personales, y su reglamento, puede ejercer sus derechos de acceso, rectificación, cancelación y oposición escribiendo a {email}. También puede acudir a la Autoridad Nacional de Protección de Datos Personales. |
 | 8. Cambios | Podemos actualizar esta política. La versión vigente estará siempre publicada en esta página. |
 
 ### 6.11. Declaración de accesibilidad (`/accesibilidad/`)
@@ -1309,7 +1310,7 @@ Esquema:
 - Sitios administrables (noticias, eventos, comunicados, documentos)
 - Accesibilidad web conforme a WCAG 2.1 y 2.2, nivel AA
 - Optimización para buscadores (SEO) y rendimiento
-- Diseño responsive para móviles, tabletas y computadoras
+- Diseño adaptable para móviles, tabletas y computadoras
 - Intranets y portales de servicios
 - Migración de contenidos y capacitación
 
@@ -1484,7 +1485,7 @@ Esquema:
   client: string;           // nombre a mostrar (solo texto)
   sector: "justicia" | "investigacion-y-ambiente" | "educacion-superior" | "empresa-privada";
   date: string;             // "YYYY-MM" (para ordenar)
-  dateLabel: string;        // "Octubre 2026"
+  dateLabel: string;        // "Octubre de 2026"
   services: string[];       // slugs de §7.1 (referencias validadas)
   visual: "chat" | "form" | "dashboard" | "documents" | "table" | "portal" | "certificate" | "server";
   featured: boolean;
@@ -1522,8 +1523,8 @@ Nombres de cliente:
 
 - **title**: APUBOT 2.0: asistente de inteligencia artificial para la labor jurisdiccional
 - **shortTitle**: APUBOT 2.0
-- **Datos**: Corte Superior de Justicia de Áncash · justicia · 2026-10 · "Octubre 2026" · services: inteligencia-artificial, desarrollo-de-software · visual: chat · featured: true
-- **summary**: Solución de IA generativa que genera calificaciones de demanda y proyectos de sentencia, y optimiza los servicios de inteligencia artificial de la Corte.
+- **Datos**: Corte Superior de Justicia de Áncash · justicia · 2026-10 · "Octubre de 2026" · services: inteligencia-artificial, desarrollo-de-software · visual: chat · featured: true
+- **summary**: Solución de IA generativa que elabora calificaciones de demanda y proyectos de sentencia, y optimiza los servicios de inteligencia artificial de la Corte.
 - **context**: Los Juzgados de Paz Letrado y de Familia de Huaraz necesitaban acelerar la elaboración de documentos jurisdiccionales y ampliar los canales de atención a la ciudadanía, manteniendo el rigor jurídico y la supervisión del personal.
 
 **solution**:
@@ -1539,13 +1540,13 @@ Nombres de cliente:
 
 **seo**:
 - Título: APUBOT 2.0: IA para la labor jurisdiccional | CSI
-- Descripción: Caso APUBOT 2.0: asistente de IA generativa que genera calificaciones de demanda y proyectos de sentencia para la Corte Superior de Justicia de Áncash.
+- Descripción: Caso APUBOT 2.0: asistente de IA generativa que elabora calificaciones de demanda y proyectos de sentencia para la Corte Superior de Justicia de Áncash.
 
 #### P2. `mesa-de-partes-virtual-inaigem`
 
 - **title**: Mesa de Partes Virtual accesible conforme a WCAG 2.1 AA
 - **shortTitle**: Mesa de Partes Virtual
-- **Datos**: INAIGEM · investigacion-y-ambiente · 2026-05 · "Mayo 2026" · services: sistemas-de-gestion, consultoria-ti, portales-web · visual: form · featured: true
+- **Datos**: INAIGEM · investigacion-y-ambiente · 2026-05 · "Mayo de 2026" · services: sistemas-de-gestion, consultoria-ti, portales-web · visual: form · featured: true
 - **summary**: Diseño y desarrollo web para el mejoramiento de la Mesa de Partes Virtual, con criterios de accesibilidad digital WCAG 2.1 nivel AA.
 - **context**: La institución necesitaba que su Mesa de Partes Virtual Externa garantizara un acceso equitativo e inclusivo a la ciudadanía y optimizara la gestión de los expedientes presentados.
 
@@ -1568,7 +1569,7 @@ Nombres de cliente:
 
 - **title**: Optimización del Sistema de Gestión Documental
 - **shortTitle**: Sistema de Gestión Documental
-- **Datos**: INAIGEM · investigacion-y-ambiente · 2025-11 · "Noviembre 2025" · services: sistemas-de-gestion, desarrollo-de-software · visual: documents · featured: true
+- **Datos**: INAIGEM · investigacion-y-ambiente · 2025-11 · "Noviembre de 2025" · services: sistemas-de-gestion, desarrollo-de-software · visual: documents · featured: true
 - **summary**: Análisis, desarrollo y mantenimiento de aplicaciones web para optimizar el Sistema de Gestión Documental institucional.
 - **context**: El sistema de trámite documentario debía adaptarse a la evolución de los procesos administrativos y avanzar hacia la política de cero papel.
 
@@ -1592,7 +1593,7 @@ Nombres de cliente:
 
 - **title**: Inteligencia artificial para los Juzgados de Paz Letrado y de Familia de Huaraz
 - **shortTitle**: IA para juzgados de Huaraz
-- **Datos**: Corte Superior de Justicia de Áncash · justicia · 2025-08 · "Agosto 2025" · services: inteligencia-artificial, desarrollo-de-software · visual: chat · featured: false
+- **Datos**: Corte Superior de Justicia de Áncash · justicia · 2025-08 · "Agosto de 2025" · services: inteligencia-artificial, desarrollo-de-software · visual: chat · featured: false
 - **summary**: Desarrollo e implementación de soluciones tecnológicas con inteligencia artificial para el personal jurisdiccional y para la atención a los justiciables.
 - **context**: Los juzgados buscaban agilizar la elaboración de documentos legales y facilitar el acceso de la ciudadanía a la información de sus procesos.
 
@@ -1613,7 +1614,7 @@ Nombres de cliente:
 
 - **title**: Piloto de registro de compra de clientes
 - **shortTitle**: Registro de compra de clientes
-- **Datos**: Yamaha Perú · empresa-privada · 2025-05 · "Mayo 2025" · services: desarrollo-de-software, sistemas-de-gestion · visual: form · featured: true
+- **Datos**: Yamaha Perú · empresa-privada · 2025-05 · "Mayo de 2025" · services: desarrollo-de-software, sistemas-de-gestion · visual: form · featured: true
 - **summary**: Aplicación web piloto para que la marca capture directamente los datos de sus clientes finales y los vincule con el vehículo adquirido.
 - **context**: La empresa necesitaba obtener información directa de sus clientes finales, sin depender del reporte de terceros.
 
@@ -1634,7 +1635,7 @@ Nombres de cliente:
 
 - **title**: Módulo de control de pago de planillas (segunda etapa)
 - **shortTitle**: Módulo de planillas
-- **Datos**: INAIGEM · investigacion-y-ambiente · 2024-12 · "Diciembre 2024" · services: sistemas-de-gestion, desarrollo-de-software · visual: table · featured: false
+- **Datos**: INAIGEM · investigacion-y-ambiente · 2024-12 · "Diciembre de 2024" · services: sistemas-de-gestion, desarrollo-de-software · visual: table · featured: false
 - **summary**: Análisis, diseño y desarrollo de la segunda etapa del módulo de control de pago de planillas del sistema de recursos humanos.
 - **context**: El sistema de recursos humanos de la institución requería ampliar sus funcionalidades para automatizar reportes y procesos de planillas.
 
@@ -1655,7 +1656,7 @@ Nombres de cliente:
 
 - **title**: Aplicativo de cotizaciones para el evento Expomoto
 - **shortTitle**: Cotizaciones Expomoto
-- **Datos**: Yamaha Perú · empresa-privada · 2024-07 · "Julio 2024" · services: desarrollo-de-software, sistemas-de-gestion · visual: dashboard · featured: false
+- **Datos**: Yamaha Perú · empresa-privada · 2024-07 · "Julio de 2024" · services: desarrollo-de-software, sistemas-de-gestion · visual: dashboard · featured: false
 - **summary**: Aplicativo web de cotizaciones y registro de ventas para la fuerza de ventas durante la feria Expomoto.
 - **context**: El equipo comercial necesitaba cotizar y registrar ventas de forma ágil y simultánea durante una feria de alta concurrencia.
 
@@ -1676,7 +1677,7 @@ Nombres de cliente:
 
 - **title**: Servicio de hosting y dominio institucional
 - **shortTitle**: Hosting y dominio
-- **Datos**: Corte Superior de Justicia de Áncash · justicia · 2023-10 · "Octubre 2023" · services: cloud-e-infraestructura · visual: server · featured: false
+- **Datos**: Corte Superior de Justicia de Áncash · justicia · 2023-10 · "Octubre de 2023" · services: cloud-e-infraestructura · visual: server · featured: false
 - **summary**: Contratación y administración del servicio de hosting y dominio para una oficina de la Corte.
 - **context**: Una oficina de la Corte requería un alojamiento web propio y confiable para publicar y administrar su información.
 
@@ -1718,7 +1719,7 @@ Nombres de cliente:
 
 - **title**: Instalación y configuración de certificados digitales SSL
 - **shortTitle**: Certificados SSL
-- **Datos**: UNASAM · educacion-superior · 2022-05 · "Mayo 2022" · services: cloud-e-infraestructura · visual: certificate · featured: false
+- **Datos**: UNASAM · educacion-superior · 2022-05 · "Mayo de 2022" · services: cloud-e-infraestructura · visual: certificate · featured: false
 - **summary**: Adquisición, instalación y configuración de certificados digitales SSL para el dominio institucional y sus subdominios.
 - **context**: La universidad necesitaba cifrar las comunicaciones de su portal y de sus servicios web.
 
@@ -1737,7 +1738,7 @@ Nombres de cliente:
 
 - **title**: Portal institucional de la Facultad de Economía y Contabilidad
 - **shortTitle**: Portal de la FEC
-- **Datos**: UNASAM – Facultad de Economía y Contabilidad · educacion-superior · 2021-12 · "Diciembre 2021" · services: portales-web · visual: portal · featured: false
+- **Datos**: UNASAM – Facultad de Economía y Contabilidad · educacion-superior · 2021-12 · "Diciembre de 2021" · services: portales-web · visual: portal · featured: false
 - **summary**: Servicio de implementación del portal institucional de la Facultad de Economía y Contabilidad.
 - **context**: La facultad requería un portal propio para comunicar su información institucional y académica.
 
@@ -1758,7 +1759,7 @@ Nombres de cliente:
 
 - **title**: Consultoría para la implementación de la plataforma web institucional
 - **shortTitle**: Plataforma web institucional
-- **Datos**: UNASAM · educacion-superior · 2021-12 · "Diciembre 2021" · services: portales-web, consultoria-ti · visual: portal · featured: false
+- **Datos**: UNASAM · educacion-superior · 2021-12 · "Diciembre de 2021" · services: portales-web, consultoria-ti · visual: portal · featured: false
 - **summary**: Servicio de consultoría para la implementación de la plataforma web institucional de la universidad.
 - **context**: La universidad necesitaba renovar su plataforma web e integrar la información de sus facultades y programas de estudio.
 
@@ -1778,7 +1779,7 @@ Nombres de cliente:
 
 - **title**: Procesamiento de datos y ampliación de la base de datos del Sistema de Recojo de Información
 - **shortTitle**: Sistema de Recojo de Información
-- **Datos**: UNASAM · educacion-superior · 2021-07 · "Julio 2021" · services: consultoria-ti, desarrollo-de-software · visual: table · featured: false
+- **Datos**: UNASAM · educacion-superior · 2021-07 · "Julio de 2021" · services: consultoria-ti, desarrollo-de-software · visual: table · featured: false
 - **summary**: Servicio de procesamiento de datos para la ampliación de la base de datos del Sistema de Recojo de Información.
 - **context**: La universidad requería ampliar la base de datos de su sistema de recojo de información para atender nuevos requerimientos.
 
@@ -1798,7 +1799,7 @@ Nombres de cliente:
 
 - **title**: Plataforma de gestión de consentimientos de datos personales
 - **shortTitle**: Gestión de consentimientos
-- **Datos**: Yamaha Perú · empresa-privada · 2026-10 · "Octubre 2026" · services: desarrollo-de-software, cloud-e-infraestructura · visual: form · featured: false · draft: false
+- **Datos**: Yamaha Perú · empresa-privada · 2026-10 · "Octubre de 2026" · services: desarrollo-de-software, cloud-e-infraestructura · visual: form · featured: false · draft: false
 - **summary**: Plataforma para gestionar de forma digital y trazable las conformidades de tratamiento de datos personales de los clientes finales.
 - **context**: La empresa necesitaba obtener y registrar el consentimiento de sus clientes para el tratamiento de sus datos personales y para fines de marketing, de manera digital, ágil y con evidencia verificable.
 
