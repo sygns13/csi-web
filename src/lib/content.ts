@@ -1,6 +1,6 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 import type { Sector } from "../config/taxonomy";
-import { defaultLang, localizedPath, t, type Lang } from "../i18n";
+import { defaultLang, localizedPath, t, type Lang, type UiKey } from "../i18n";
 
 // Acceso a las colecciones (§7): filtra por idioma y borradores, ordena y valida referencias.
 
@@ -93,4 +93,33 @@ export function clientShortName(client: string): string {
 export function projectDatetime(project: Project): string {
   const { date, dateLabel } = project.data;
   return /^\d{4}$/.test(dateLabel) ? date.slice(0, 4) : date;
+}
+
+/** Año del proyecto (insignia de la tarjeta, §6.5). */
+export const projectYear = (project: Project): string => project.data.date.slice(0, 4);
+
+/**
+ * Proyectos vecinos por fecha (§6.6, punto 7): "anterior" es el más antiguo y "siguiente" el más
+ * reciente. `projects` viene de `getProjects()` (orden descendente).
+ */
+export function adjacentProjects(
+  projects: readonly Project[],
+  id: string,
+): { prev?: Project; next?: Project } {
+  const index = projects.findIndex((project) => project.id === id);
+  if (index === -1) throw new Error(`Proyecto inexistente: "${id}".`);
+  return { prev: projects[index + 1], next: projects[index - 1] };
+}
+
+/** Valores del campo "Tipo de requerimiento" (§8.1): slugs de servicio + `bienes` + `otro`. */
+export async function getContactTypes(
+  lang: Lang = defaultLang,
+): Promise<{ value: string; label: string }[]> {
+  const services = await getServices(lang);
+  const values = [...services.map((service) => service.id), "bienes", "otro"];
+  return values.map((value) => {
+    const label = t(`form.type.${value}` as UiKey, undefined, lang) as string | undefined;
+    if (!label) throw new Error(`Falta la etiqueta "form.type.${value}" en src/i18n.`);
+    return { value, label };
+  });
 }

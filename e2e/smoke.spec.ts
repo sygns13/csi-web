@@ -28,8 +28,13 @@ test.describe("smoke", () => {
     const descriptions = new Set<string>();
     for (const route of routes) {
       await page.goto(route);
-      titles.add(await page.title());
-      descriptions.add((await meta(page, 'meta[name="description"]')) ?? "");
+      const title = await page.title();
+      const description = (await meta(page, 'meta[name="description"]')) ?? "";
+      // Longitudes de §7.1 y D21: título ≤ 60 y descripción ≤ 155 caracteres.
+      expect(title.length, `título de ${route}`).toBeLessThanOrEqual(60);
+      expect(description.length, `descripción de ${route}`).toBeLessThanOrEqual(155);
+      titles.add(title);
+      descriptions.add(description);
     }
     expect(titles.size).toBe(routes.length);
     expect(descriptions.size).toBe(routes.length);

@@ -1,0 +1,102 @@
+---
+// Política de privacidad (§6.10). [VALIDAR con asesoría legal] (P6): el texto va tal como está en
+// la spec.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/ui/Container.astro";
+import EmailText from "../../components/ui/EmailText.astro";
+import PageHeader from "../../components/sections/PageHeader.astro";
+import CtaBand from "../../components/sections/CtaBand.astro";
+import { legalDates } from "../../config/legal";
+import { site } from "../../config/site";
+import { t } from "../../i18n";
+import { formatLongDate } from "../../lib/format";
+import { mailtoUrl } from "../../lib/links";
+
+const h2 = "mt-12 text-h2 font-bold text-text first:mt-0";
+const p = "mt-4 text-text-muted";
+---
+
+<BaseLayout
+  title="Política de privacidad | CSI"
+  description="Cómo tratamos la información que usted nos comparte. Este sitio no usa cookies ni analítica."
+  canonicalPath="/privacidad/"
+  breadcrumbs={[{ name: t("footer.privacy"), href: "/privacidad/" }]}
+>
+  <PageHeader title="Política de privacidad">
+    <p class="text-text-muted">
+      Última actualización:{" "}
+      <time datetime={legalDates.privacyUpdated}>{formatLongDate(legalDates.privacyUpdated)}</time>
+    </p>
+  </PageHeader>
+
+  <div class="bg-bg">
+    <Container class="py-12 lg:py-16">
+      <div class="max-w-[70ch]">
+        <h2 class={h2}>1. Responsable</h2>
+        <p class={p}>
+          {`${site.legalName}, RUC ${site.ruc}, con domicilio fiscal en ${site.city}, ${site.region}, Perú. Contacto: `}
+          <a href={mailtoUrl()} class="link wrap-anywhere">
+            <EmailText />
+          </a>
+          .
+        </p>
+
+        <h2 class={h2}>2. Qué datos tratamos</h2>
+        <p class={p}>
+          Este sitio web no tiene formularios que almacenen información en nuestros servidores.
+          Cuando usted nos escribe por WhatsApp o por correo, sea directamente o mediante el
+          formulario de contacto, que solo prepara el mensaje en su dispositivo, tratamos los datos
+          que usted decida compartir (nombre, entidad o empresa, datos de contacto y el contenido de
+          su consulta).
+        </p>
+
+        <h2 class={h2}>3. Finalidad</h2>
+        <p class={p}>
+          Atender su consulta, elaborar cotizaciones y mantener la comunicación comercial que usted
+          solicite.
+        </p>
+
+        <h2 class={h2}>4. Cookies y almacenamiento local</h2>
+        <p class={p}>
+          No usamos cookies, herramientas de analítica ni rastreadores de terceros. Solo guardamos
+          en su navegador su preferencia de modo claro u oscuro (
+          <code class="rounded bg-surface-2 px-1 py-0.5 text-[0.9375em] text-text">
+            localStorage
+          </code>
+          ), que no permite identificarlo.
+        </p>
+
+        <h2 class={h2}>5. Servicios de terceros</h2>
+        <p class={p}>
+          Al usar WhatsApp o su cliente de correo, se aplican también las políticas de privacidad de
+          esos servicios. Los enlaces a nuestras redes sociales (Facebook y YouTube) llevan a sitios
+          de terceros con sus propias políticas.
+        </p>
+
+        <h2 class={h2}>6. Conservación</h2>
+        <p class={p}>
+          Conservamos las comunicaciones durante el tiempo necesario para atender su solicitud y
+          cumplir nuestras obligaciones legales.
+        </p>
+
+        <h2 class={h2}>7. Sus derechos</h2>
+        <p class={p}>
+          Conforme a la Ley N.° 29733, Ley de Protección de Datos Personales, y su reglamento, puede
+          ejercer sus derechos de acceso, rectificación, cancelación y oposición escribiendo a{" "}
+          <a href={mailtoUrl()} class="link wrap-anywhere">
+            <EmailText />
+          </a>
+          . También puede acudir a la Autoridad Nacional de Protección de Datos Personales.
+        </p>
+
+        <h2 class={h2}>8. Cambios</h2>
+        <p class={p}>
+          Podemos actualizar esta política. La versión vigente estará siempre publicada en esta
+          página.
+        </p>
+      </div>
+    </Container>
+  </div>
+
+  <CtaBand />
+</BaseLayout>

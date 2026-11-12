@@ -6,9 +6,9 @@ Bitácora entre sesiones (§0, regla 8). La spec (`docs/sitio-web-csi.spec.md`) 
 
 | Tramo                                           | Estado                 | Fecha      |
 | ----------------------------------------------- | ---------------------- | ---------- |
-| 1. Fundaciones y sistema de diseño              | **Hecho** (sin commit) | 12/11/2026 |
-| 2. Servicios, productos e Inicio                | **Hecho** (sin commit) | 12/11/2026 |
-| 3. Proyectos, institucional, contacto y legales | Pendiente              | —          |
+| 1. Fundaciones y sistema de diseño              | **Hecho** (commit)     | 12/11/2026 |
+| 2. Servicios, productos e Inicio                | **Hecho** (commit)     | 12/11/2026 |
+| 3. Proyectos, institucional, contacto y legales | **Hecho** (sin commit) | 12/11/2026 |
 | 4. QA final y despliegue                        | Pendiente              | —          |
 
 ---
@@ -284,3 +284,155 @@ Aún no publicados (se construyen en el Tramo 3), se listan para seguimiento:
 ### TODO(CONTENIDO)
 
 - Ninguno: todo el texto de las páginas del Tramo 2 está en la spec.
+
+---
+
+## Sesión 3 — Tramo 3 (12/11/2026)
+
+### Hecho
+
+1. **`/proyectos/`** (§6.5): los 14 proyectos publicados (sin borradores) del más reciente al más antiguo, en
+   cuadrícula de 1/2/3 columnas. Filtro por sector (`ProjectFilter`, mejora progresiva): grupo `role="group"`
+   con botones `aria-pressed` (Todos + los 4 sectores de `sectors`/`sectorLabel`), tarjetas ocultas con `hidden`,
+   región `role="status"` "Mostrando N proyectos", `?sector=` con `history.replaceState` y lectura al cargar (los
+   valores desconocidos se ignoran). `ProjectCard` ampliada con la variante `detailed`: insignias de sector y año,
+   título h2 y hasta 2 insignias de servicios.
+2. **`/proyectos/[slug]/`** (§6.6, 14 páginas): migas con `shortTitle`, `PageHeader` (antetítulo = cliente, h1,
+   bajada y ficha `<dl>` Cliente · Sector · Fecha · Servicios enlazados), `ProjectVisual` grande, Contexto,
+   Solución, Aporte, navegación anterior/siguiente por fecha y `CtaBand`. `og:type` `article` y JSON-LD
+   `CreativeWork` (`creativeWork()` en `src/lib/jsonld.ts`).
+3. **`/nosotros/`** (§6.7): quiénes somos, misión y visión, 6 valores, datos de la empresa (`<dl>`), gerencia
+   (retrato hexagonal, LinkedIn y GitHub externos, perfil, trayectoria y certificaciones en h4), organización (7
+   áreas) y línea de tiempo 2020–2026 con el año en un hexágono.
+   - **Foto del Gerente → monograma "CC"**: la imagen de `imagenes/gerente/` sigue midiendo 340×402 (no es cuadrada
+     y es menor a 800×800), así que no se copió al repositorio.
+   - `src/lib/team.ts` detecta `src/assets/team/gerente.{jpg,png}`. Con foto: `<Picture>` AVIF/WebP de 240 y 480 px
+     (`loading="lazy"`, `alt` de la spec) y `Organization.founder.image` en el JSON-LD de **todas** las páginas
+     (`founderImage`, URL absoluta del WebP de 480 px). Sin foto: monograma y JSON-LD sin `image` (§9.3, "si
+     existe"). Si la foto no cumple los requisitos, el build falla con un mensaje claro.
+4. **`/contacto/`** (§6.8, §8): 4 tarjetas de canales (funcionan sin JS), formulario `ContactForm` y
+   `src/lib/contact-message.ts` (funciones puras: normalización, validación, mensaje, URLs y prellenado). Sin
+   `CtaBand` ni botón flotante (`hideCtaFab`). El prellenado `?tipo=`/`?categoria=` usa lista blanca y funciona
+   con los enlaces de `/servicios/{slug}/` y `/productos/` (probado navegando desde esas páginas).
+5. **`/libro-de-reclamaciones/`**, **`/privacidad/`** y **`/accesibilidad/`** (§6.9–6.11), con `CtaBand`.
+6. **`public/robots.txt`** (§9.5). Sitemap: 31 URLs (todas las de §5.1, sin la 404). Títulos y descripciones de
+   §9.2 revisados con un script: idénticos a la spec en las 10 rutas fijas.
+7. Pruebas:
+   - Suite nueva **`contact.spec.ts`**: funciones puras, errores y resumen, URL de WhatsApp y `mailto:` exactas,
+     prellenado, lista blanca, contador, axe con errores visibles y sin JS.
+   - Suite nueva **`projects-filter.spec.ts`**: filtro, anuncio, URL, sin JS, insignias, ficha, JSON-LD y
+     anterior/siguiente.
+   - `content.spec.ts` suma Nosotros, legales, robots.txt y sitemap; `a11y.spec.ts`, el contraste del encabezado
+     sobre contenido desplazado.
+   - **Todas las rutas están en `routes`; `plannedRoutes` quedó vacía.** `build-output` ya exige `/proyectos/`
+     (índice + 14) para el control de tecnologías por cliente.
+8. Íconos Lucide nuevos (registrados en `icon-names.ts`/`icons.ts`), `Badge` con `tone`, `HexIcon` con `brand`,
+   componente `EmailText`, `formatLongDate()` y `src/config/legal.ts`.
+
+### Verificación
+
+- `npm run build`: `astro check` 0 errores, 0 advertencias, 0 sugerencias; build sin advertencias (**31 páginas**).
+- `npm run test:e2e`: **300 pasan, 12 omitidas** (por diseño: verificaciones estáticas y funciones puras solo en
+  `desktop`; pruebas de escritorio/móvil en el otro proyecto). axe sin infracciones en las 31 rutas + 404, en ambos
+  temas, en `mobile` y `desktop`; reflujo a 320 px sin desplazamiento horizontal en todas.
+- `npm run format:check`: OK.
+- **Lighthouse 12.8.2 local** (`astro preview`, móvil con limitación simulada) en 8 páginas (`/`, `/proyectos/`,
+  `/proyectos/apubot-2-csj-ancash/`, `/nosotros/`, `/contacto/` y las 3 legales): Rendimiento **99–100**,
+  Accesibilidad **100**, Buenas prácticas **100**, SEO **100**. LCP 1.65–1.81 s, CLS 0–0.033, TBT 0 ms.
+- **Presupuestos de §11** (gzip, medidos sobre `dist/`): JS máx. **3.64 KB** (`/contacto/`; 1.86 KB en
+  `/proyectos/` y 1.35 KB en el resto), CSS **8.83 KB**, peso total de Inicio ≈ 116 KB (Lighthouse), 2 woff2.
+  Scripts minificados (§14): formulario 3.88 KB (< 4), filtro 0.98 KB (< 2), encabezado 2.13 KB, tema 0.90 KB.
+- **Capturas** a 320, 768, 1024 y 1440 px en ambos temas de `/proyectos/`, dos detalles de proyecto,
+  `/nosotros/`, `/contacto/` (también con errores) y las 3 legales, más el filtro aplicado (83 capturas, fuera del
+  repositorio): sin desbordes; revisadas.
+- Ruta "con foto" verificada con una imagen sintética temporal de 800×800 (generada y borrada): `<picture>` con
+  AVIF/WebP 240w/480w, sin `style=`, JSON-LD con `founder.image`, pruebas de Nosotros y axe en verde. También se
+  comprobó que el build falla con una imagen de 340×402.
+
+### Desviaciones (con motivo)
+
+- **D38. Fondo del encabezado al 97 %** (no 92 %, §5.2): con contenido oscuro debajo (botones primarios, pie), el
+  8 % que se transparentaba bajaba "Informáticas E.I.R.L." (`--brand`, 16 px) a 4.4:1 (axe en `/contacto/`). Peor
+  caso calculado: 96 % → 4.55:1 y 97 % → 4.64:1. Se mantiene el desenfoque. Nueva prueba en `a11y.spec.ts`.
+- **D39. Filtro sin JS**: lleva `hidden` (no se muestra ni se anuncia), pero una regla de `global.css` le conserva
+  el espacio (`visibility: hidden`) para que, al mostrarlo, no haya desplazamiento de diseño (CLS). Sin JS queda
+  un hueco sobre la cuadrícula. "Mostrando N proyectos" es visible y se escribe también al cargar.
+- **D40. Textos de interfaz que la spec no escribe** (en `src/i18n/es.ts`): "Mostrando 1 proyecto" (singular, hoy
+  sin uso), la etiqueta de la navegación anterior/siguiente ("Proyecto anterior y siguiente") y la opción vacía del
+  tipo ("Seleccione una opción", necesaria para el error "Seleccione el tipo de requerimiento.").
+- **D41. Anterior/siguiente por fecha**: "anterior" es el más antiguo y "siguiente" el más reciente. Los empates de
+  mes se ordenan por slug (como en `getProjects()`).
+- **D42. Tarjeta del índice**: las insignias de servicios usan el `navLabel` y una variante `outline` de `Badge`
+  (jerarquía frente a sector y año). La fecha inferior se omite porque el año ya va en una insignia.
+- **D43. Detalle de proyecto**: la ficha `<dl>` va dentro del `PageHeader`; Contexto junto a la maqueta (≥ lg);
+  Solución y Aporte en dos tarjetas (Aporte con viñetas de check). `CreativeWork.about` = `summary` (texto), más
+  `url` e `inLanguage`.
+- **D44. Nosotros**:
+  - Íconos no fijados por la spec (Lucide). Valores: `target`, `award`, `sparkles`, `accessibility`, `eye`,
+    `heart-handshake`. Áreas: `briefcase`, `layers`, `code-xml`, `list-checks`, `wrench`, `calculator`, `headset`.
+  - Misión y Visión (h2) van como tarjetas dentro de la sección "Quiénes somos". Los años de la línea de tiempo
+    son h3 dentro del hexágono.
+  - El retrato es un hexágono con borde del degradado. El monograma usa `--brand` sobre `--surface-2` (texto
+    grande ≥ 3:1) y es decorativo (`aria-hidden`).
+- **D45. Formulario** (detalles que §8 no fija):
+  - Normalización: los campos de una línea colapsan todos los espacios; el mensaje conserva los saltos de línea
+    (como máximo una línea en blanco seguida). Las longitudes se validan sobre el valor normalizado.
+  - `maxlength` en nombre (80) y entidad (100), que no tienen mensaje para el máximo. El mensaje no lo lleva: su
+    error cubre "entre 10 y 1000".
+  - Contador "N/1000" siempre visible (en `aria-describedby`). La región `aria-live="polite"` solo se escribe desde
+    900 caracteres y tras 600 ms sin teclear.
+  - Tras un envío con errores, cada campo corregido pierde su error y sale del resumen al momento. Los enlaces del
+    resumen llevan el foco al campo y desplazan hasta su etiqueta.
+  - `fieldset` con `role="presentation"` (solo agrupa para `disabled`).
+  - Los destinos (`waMe` y correo) llegan al script por `data-*` desde `site.ts`. Sin eso, el bundle incluía todo
+    `site` y pesaba 4.82 KB (objetivo de §14: < 4 KB).
+  - Diseño: canales en 2×2 (a 4 columnas el correo se partía en 3 líneas), formulario dentro de una tarjeta y el
+    texto "Atendemos a instituciones…" debajo.
+- **D46. Pruebas del formulario**: `location` no se puede interceptar (no es configurable), así que la navegación a
+  `mailto:` se intercepta con el evento `navigate` de la Navigation API (`preventDefault`) y además se compara el
+  enlace de respaldo. Chromium con `javaScriptEnabled: false` no renderiza `<noscript>`: la prueba verifica su
+  contenido, no su visibilidad.
+- **D47. Páginas legales**:
+  - Encabezado solo con h1 (la spec no da antetítulo ni bajada) y `CtaBand` (§6.1 S10: "todas las páginas excepto
+    Contacto").
+  - "{fecha de publicación}" = 12/11/2026, en `src/config/legal.ts` (el propietario decidió mantenerla).
+  - Libro de Reclamaciones: asunto "Libro de Reclamaciones" y, como cuerpo, la lista como plantilla ("Dato: " por
+    línea).
+  - El número de WhatsApp de `/accesibilidad/` enlaza a wa.me (externo, §5.6).
+- **D48. Correo con corte en la "@"** (`EmailText` + `wrap-anywhere`) en contacto, legales y **pie** (cambio menor
+  en `Footer`, del Tramo 1): `break-all` lo partía en medio del dominio.
+- **D49. Spec v1.3**: tras aprobarse Visión y Valores (P4), se actualizaron D19, §6.7 y P4 en la spec del
+  workspace y en la copia de `docs/` (solo esas líneas).
+- **D50. Descripción de Inicio acortada** (**aprobado** por el propietario): medía 157 caracteres (> 155). Se quitó
+  solo "venta de", como en D21: "…inteligencia artificial y bienes tecnológicos." (148). Se actualizaron §9.2 y la
+  fila D21 de las dos copias de la spec. `smoke.spec.ts` verifica ahora en todas las rutas título ≤ 60 y
+  descripción ≤ 155.
+
+### Pendientes
+
+- **Acción del propietario (en espera)**: foto del Gerente cuadrada ≥ 800×800 (rostro centrado, fondo neutro); el
+  propietario aún no la tiene, así que sigue el monograma "CC". Al copiarla a `src/assets/team/gerente.{jpg,png}`
+  (renombrada), la página y el JSON-LD la usan sin tocar código.
+- Tramo 4:
+  - CLS de 0.033 en `/libro-de-reclamaciones/` (bajo el objetivo de 0.05): el h1 cambia de líneas al cargar Sora
+    (solo se precarga Inter). Opcional: fuente de respaldo con métricas ajustadas (`size-adjust`).
+  - Pendientes de sesiones anteriores: imagen Docker y `test:e2e:docker`, `lang="en"` en tecnicismos, validador
+    de Schema.org, revisiones manuales (§17.3) y Lighthouse en producción.
+
+### Decisiones del propietario (12/11/2026, cierre de la sesión 3)
+
+- **P4 resuelto: Visión y Valores aprobados tal cual** (D19). Ya no son [VALIDAR].
+- Descripción de Inicio: se acorta (D50).
+- Fecha de privacidad y de la evaluación de accesibilidad: se mantiene el 12/11/2026.
+- Foto del Gerente: queda pendiente; se mantiene el monograma "CC".
+
+### Textos [VALIDAR] publicados (pendientes de validación del propietario)
+
+- `/contacto/`: "Atendemos a instituciones públicas y empresas privadas." (§6.8, punto 5).
+- `/libro-de-reclamaciones/`: texto completo (§6.9), pendiente de asesoría legal (P6).
+- `/privacidad/`: texto completo (§6.10), pendiente de asesoría legal (P6).
+
+### TODO(CONTENIDO)
+
+- Ninguno: todo el texto visible de las páginas del Tramo 3 está en la spec. La foto del Gerente (monograma
+  temporal) queda en Pendientes.

@@ -1,18 +1,18 @@
 ---
 import Icon from "./Icon.astro";
+import BrandIcon, { type BrandName } from "./BrandIcon.astro";
 import type { IconName } from "./icons";
 
 type Size = "sm" | "md" | "lg";
 
-interface Props {
-  icon: IconName;
+type Props = {
   size?: Size;
   /** Fondo del hexágono: --surface-2 (por defecto) o --surface (sobre fondos --surface-2). */
   tone?: "surface-2" | "surface";
   class?: string;
-}
+} & ({ icon: IconName; brand?: never } | { brand: BrandName; icon?: never });
 
-const { icon, size = "md", tone = "surface-2", class: className } = Astro.props;
+const { icon, brand, size = "md", tone = "surface-2", class: className } = Astro.props;
 
 // Hexágono con clip-path (§4.4): 56 px por defecto, fondo --surface-2 e ícono en --brand.
 const box: Record<Size, string> = { sm: "size-10", md: "size-14", lg: "size-24" };
@@ -28,5 +28,9 @@ const iconSize: Record<Size, number> = { sm: 20, md: 28, lg: 40 };
   ]}
   aria-hidden="true"
 >
-  <Icon name={icon} size={iconSize[size]} />
+  {icon ? (
+    <Icon name={icon} size={iconSize[size]} />
+  ) : (
+    <BrandIcon name={brand!} size={iconSize[size]} />
+  )}
 </span>

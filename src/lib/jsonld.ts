@@ -106,6 +106,30 @@ export function offerCatalog(name: string, categories: string[]): JsonLd {
   };
 }
 
+export interface CreativeWorkInput {
+  name: string;
+  /** Resumen funcional del proyecto (sin stack, §1.4). */
+  about: string;
+  /** "YYYY-MM" (ISO 8601 parcial). */
+  dateCreated: string;
+  /** Ruta de la página del proyecto. */
+  path: string;
+}
+
+/** Página de proyecto (§9.3): `CreativeWork` creado por la organización. */
+export function creativeWork(input: CreativeWorkInput): JsonLd {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: input.name,
+    about: input.about,
+    dateCreated: input.dateCreated,
+    url: absoluteUrl(input.path),
+    inLanguage: "es-PE",
+    creator: { "@id": ORGANIZATION_ID },
+  };
+}
+
 export interface BreadcrumbItem {
   name: string;
   href: string;

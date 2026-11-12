@@ -1,0 +1,350 @@
+---
+// Nosotros (§6.7): empresa, misión y visión, valores, datos, gerencia, organización y trayectoria.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/ui/Container.astro";
+import Button from "../../components/ui/Button.astro";
+import Card from "../../components/ui/Card.astro";
+import HexIcon from "../../components/ui/HexIcon.astro";
+import HexList from "../../components/ui/HexList.astro";
+import SectionHeading from "../../components/ui/SectionHeading.astro";
+import type { IconName } from "../../components/ui/icons";
+import PageHeader from "../../components/sections/PageHeader.astro";
+import ManagerPortrait from "../../components/sections/ManagerPortrait.astro";
+import CtaBand from "../../components/sections/CtaBand.astro";
+import { site } from "../../config/site";
+import { t } from "../../i18n";
+
+// Visión y valores: aprobados por el propietario sin cambios (D19, P4 resuelto, 12/11/2026).
+const vision =
+  "Ser una empresa referente en soluciones informáticas e inteligencia artificial aplicada en el Perú, reconocida por la calidad, la accesibilidad y el impacto de sus soluciones.";
+
+const values: { icon: IconName; title: string; text: string }[] = [
+  { icon: "target", title: "Compromiso", text: "Cumplimos lo que ofrecemos, en plazo y alcance." },
+  {
+    icon: "award",
+    title: "Calidad técnica",
+    text: "Aplicamos buenas prácticas de ingeniería en cada entrega.",
+  },
+  {
+    icon: "sparkles",
+    title: "Innovación responsable",
+    text: "Incorporamos inteligencia artificial con criterio y ética.",
+  },
+  {
+    icon: "accessibility",
+    title: "Accesibilidad e inclusión",
+    text: "Diseñamos soluciones que todas las personas puedan usar.",
+  },
+  {
+    icon: "eye",
+    title: "Transparencia",
+    text: "Comunicación clara y documentación de lo que construimos.",
+  },
+  {
+    icon: "heart-handshake",
+    title: "Cercanía",
+    text: "Acompañamos a nuestros clientes antes, durante y después del proyecto.",
+  },
+];
+
+// Nombre comercial en inglés (§10, 3.1.2): se marca con lang="en" al renderizar.
+const companyData: { term: string; value: string; lang?: string }[] = [
+  { term: "Razón social", value: site.legalName },
+  { term: "Nombre comercial", value: site.tradeName, lang: "en" },
+  { term: "RUC", value: site.ruc },
+  { term: "Tipo de empresa", value: "Empresa Individual de Responsabilidad Limitada" },
+  { term: "Inicio de actividades", value: "noviembre de 2020" },
+  {
+    term: "Actividad principal",
+    value: "Consultoría de informática y gestión de instalaciones informáticas",
+  },
+  {
+    term: "Actividades secundarias",
+    value:
+      "Venta al por menor y al por mayor de equipos de cómputo, periféricos, programas informáticos y equipos de telecomunicaciones",
+  },
+  { term: "Registro Nacional de Proveedores", value: "Proveedor de bienes y de servicios" },
+  { term: "Comprobantes", value: "Emisor electrónico de boletas y facturas" },
+  { term: "Ciudad", value: `${site.city}, ${site.region}, Perú` },
+];
+
+const managerCareer = [
+  "Ingeniero de software backend en el Banco de Crédito del Perú (BCP), desde 2022.",
+  "Analista de sistemas en la Superintendencia Nacional de Aduanas y de Administración Tributaria (SUNAT), 2019–2022.",
+  "Jefe de la Unidad de Gestión de Sistemas y Desarrollo de Software de la UNASAM, 2017–2019.",
+];
+
+const managerTraining = [
+  "Certificación Microsoft Azure Fundamentals (AZ-900).",
+  "Certificación GitHub Foundations.",
+  "Certificación Apollo GraphQL Developer – Associate.",
+  "Formación en Azure AI Fundamentals (AI-900), RAG y modelos de lenguaje, arquitectura limpia y hexagonal, microservicios orientados a eventos y seguridad en microservicios.",
+  "Ponente en encuentros regionales sobre modernización de la gestión pública (Huaraz, 2017).",
+];
+
+const areas: { icon: IconName; title: string; text: string }[] = [
+  {
+    icon: "briefcase",
+    title: "Gerencia General",
+    text: "Dirección estratégica y relación con clientes.",
+  },
+  {
+    icon: "layers",
+    title: "Arquitectura de Software",
+    text: "Diseño de soluciones escalables, seguras y mantenibles.",
+  },
+  {
+    icon: "code-xml",
+    title: "Desarrollo de Software",
+    text: "Construcción de aplicaciones web, servicios e integraciones.",
+  },
+  {
+    icon: "list-checks",
+    title: "Calidad de Software",
+    text: "Pruebas funcionales y aseguramiento de la calidad.",
+  },
+  {
+    icon: "wrench",
+    title: "Soporte de Sistemas",
+    text: "Implementación, soporte técnico y mantenimiento.",
+  },
+  {
+    icon: "calculator",
+    title: "Economía y Contabilidad",
+    text: "Gestión administrativa, tributaria y financiera.",
+  },
+  {
+    icon: "headset",
+    title: "Atención al Cliente",
+    text: "Comunicación, cotizaciones y seguimiento.",
+  },
+];
+
+const milestones: { year: string; text: string }[] = [
+  { year: "2020", text: "Constitución de la empresa en Huaraz, Áncash." },
+  {
+    year: "2021",
+    text: "Inscripción en el RNP como proveedor de bienes y servicios. Inicio como emisor electrónico. Primeros servicios para la UNASAM: procesamiento de datos, consultoría para la plataforma web institucional y portal de la Facultad de Economía y Contabilidad.",
+  },
+  {
+    year: "2022",
+    text: "Certificados digitales SSL para la UNASAM. Aplicativos institucionales para la Corte Superior de Justicia de Áncash.",
+  },
+  {
+    year: "2023",
+    text: "Servicio de hosting y dominio para la Corte Superior de Justicia de Áncash.",
+  },
+  {
+    year: "2024",
+    text: "Aplicativo de cotizaciones para el evento Expomoto (Yamaha). Módulo de control de pago de planillas (INAIGEM).",
+  },
+  {
+    year: "2025",
+    text: "Piloto de registro de compra de clientes (Yamaha). Soluciones de inteligencia artificial para los Juzgados de Paz Letrado y de Familia de Huaraz (CSJ Áncash). Optimización del Sistema de Gestión Documental (INAIGEM).",
+  },
+  {
+    year: "2026",
+    text: "Mesa de Partes Virtual accesible conforme a WCAG 2.1 AA (INAIGEM). APUBOT 2.0, asistente de IA para la labor jurisdiccional (CSJ Áncash). Plataforma de gestión de consentimientos de datos personales (Yamaha).",
+  },
+];
+---
+
+<BaseLayout
+  title="Nosotros: empresa de soluciones informáticas | CSI"
+  description="Conozca a Construyendo Soluciones Informáticas E.I.R.L., empresa de Huaraz fundada en 2020, inscrita en el RNP como proveedor de bienes y servicios."
+  canonicalPath="/nosotros/"
+  breadcrumbs={[{ name: t("nav.about"), href: "/nosotros/" }]}
+>
+  <PageHeader
+    eyebrow="Nosotros"
+    title="Construyendo Soluciones Informáticas"
+    lead="Fundada a fines de 2020 en la ciudad de Huaraz, Áncash, nacimos con la misión de impulsar la transformación digital en los sectores público y privado."
+  />
+
+  <!-- Quiénes somos + Misión y Visión -->
+  <section aria-labelledby="quienes-somos-title" class="bg-bg">
+    <Container class="py-16 lg:py-24">
+      <div class="max-w-[65ch]">
+        <h2 id="quienes-somos-title" class="text-h2 font-bold text-text">
+          Quiénes somos
+        </h2>
+        <p class="mt-4 text-lead text-text-muted">
+          Somos una empresa especializada en consultoría informática, desarrollo de software a
+          medida y gestión de instalaciones tecnológicas. Nuestro nombre comercial es{" "}
+          <span lang="en">{site.tradeName}</span>. Contamos con inscripción en el Registro Nacional
+          de Proveedores (RNP) para bienes y servicios, lo que respalda el cumplimiento, la
+          formalidad y la calidad de cada uno de nuestros compromisos institucionales.
+        </p>
+      </div>
+
+      <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:mt-12 lg:gap-8">
+        <section aria-labelledby="mision-title">
+          <Card accent class="h-full sm:p-8">
+            <h2 id="mision-title" class="text-h3 font-bold text-text sm:text-2xl">
+              Misión
+            </h2>
+            <p class="mt-3 text-text-muted">
+              Impulsar la transformación digital de las organizaciones públicas y privadas mediante
+              consultoría informática, desarrollo de software a medida, inteligencia artificial y
+              gestión de instalaciones tecnológicas, con formalidad, cumplimiento y alta calidad.
+            </p>
+          </Card>
+        </section>
+        <section aria-labelledby="vision-title">
+          <Card accent class="h-full sm:p-8">
+            <h2 id="vision-title" class="text-h3 font-bold text-text sm:text-2xl">
+              Visión
+            </h2>
+            <p class="mt-3 text-text-muted">{vision}</p>
+          </Card>
+        </section>
+      </div>
+    </Container>
+  </section>
+
+  <!-- Nuestros valores -->
+  <section aria-labelledby="valores-title" class="bg-surface-2">
+    <Container class="py-16 lg:py-24">
+      <SectionHeading id="valores-title" title="Nuestros valores" />
+      <ul class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:mt-12 lg:grid-cols-3">
+        {values.map((value) => (
+          <li>
+            <Card class="flex h-full gap-4">
+              <HexIcon icon={value.icon} />
+              <div>
+                <h3 class="text-h3 font-semibold text-text">{value.title}</h3>
+                <p class="mt-1.5 text-text-muted">{value.text}</p>
+              </div>
+            </Card>
+          </li>
+        ))}
+      </ul>
+    </Container>
+  </section>
+
+  <!-- Datos de la empresa -->
+  <section aria-labelledby="datos-title" class="bg-bg">
+    <Container class="py-16 lg:py-24">
+      <SectionHeading id="datos-title" title="Datos de la empresa" />
+      <dl class="mt-8 grid grid-cols-1 divide-y divide-border rounded-card border border-border bg-surface shadow-card lg:mt-10">
+        {companyData.map((item) => (
+          <div class="grid gap-1 px-5 py-4 sm:grid-cols-[minmax(0,16rem)_minmax(0,1fr)] sm:gap-6 sm:px-6">
+            <dt class="font-semibold text-text">{item.term}</dt>
+            <dd class="text-text-muted">
+              {item.lang ? <span lang={item.lang}>{item.value}</span> : item.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </Container>
+  </section>
+
+  <!-- Gerencia -->
+  <section aria-labelledby="gerencia-title" class="bg-surface-2">
+    <Container class="py-16 lg:py-24">
+      <SectionHeading id="gerencia-title" title="Gerencia" />
+      <Card class="mt-8 p-6 sm:p-8 lg:mt-10 lg:p-10">
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-12">
+          <ManagerPortrait class="mx-auto lg:mx-0" />
+          <div>
+            <h3 class="text-h2 font-bold text-text">{site.manager.name}</h3>
+            <p class="mt-1 text-lead font-semibold text-accent-text">{site.manager.role}</p>
+            <ul class="mt-5 flex flex-wrap gap-3">
+              <li>
+                <Button
+                  href={site.manager.linkedin}
+                  variant="secondary"
+                  size="sm"
+                  brandIcon="linkedin"
+                  external
+                >
+                  LinkedIn
+                </Button>
+              </li>
+              <li>
+                <Button
+                  href={site.manager.github}
+                  variant="secondary"
+                  size="sm"
+                  brandIcon="github"
+                  external
+                >
+                  GitHub
+                </Button>
+              </li>
+            </ul>
+            <p class="mt-6 max-w-[65ch] text-text-muted">
+              Ingeniero de Sistemas e Informática por la Universidad Nacional Santiago Antúnez de
+              Mayolo (UNASAM), con más de 8 años de experiencia en análisis, arquitectura,
+              desarrollo e implementación de software backend y full-stack, en arquitecturas
+              monolíticas, de microservicios y orientadas a eventos. Cursa la Maestría en
+              Inteligencia Artificial en la Universidad Nacional de Ingeniería (UNI) y se
+              especializa en sistemas inteligentes: generación aumentada por recuperación (RAG),
+              modelos de lenguaje, procesamiento de lenguaje natural, aprendizaje automático y
+              visión por computadora.
+            </p>
+            <div class="mt-8 grid grid-cols-1 gap-8 xl:grid-cols-2">
+              <div>
+                <h4 class="text-h3 font-semibold text-text">Trayectoria</h4>
+                <HexList items={managerCareer} class="mt-4 text-text" />
+              </div>
+              <div>
+                <h4 class="text-h3 font-semibold text-text">Certificaciones y formación</h4>
+                <HexList items={managerTraining} class="mt-4 text-text" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+    </Container>
+  </section>
+
+  <!-- Nuestra organización -->
+  <section aria-labelledby="organizacion-title" class="bg-bg">
+    <Container class="py-16 lg:py-24">
+      <SectionHeading
+        id="organizacion-title"
+        title="Nuestra organización"
+        text="Contamos con un equipo organizado en áreas especializadas:"
+      />
+      <ul class="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:mt-12 lg:grid-cols-4 lg:gap-6">
+        {areas.map((area) => (
+          <li>
+            <Card class="h-full p-5">
+              <HexIcon icon={area.icon} size="sm" />
+              <h3 class="mt-4 font-display text-lg leading-snug font-semibold text-text">
+                {area.title}
+              </h3>
+              <p class="mt-1.5 text-sm text-text-muted">{area.text}</p>
+            </Card>
+          </li>
+        ))}
+      </ul>
+    </Container>
+  </section>
+
+  <!-- Trayectoria (línea de tiempo) -->
+  <section aria-labelledby="trayectoria-title" class="bg-surface-2">
+    <Container class="py-16 lg:py-24">
+      <SectionHeading id="trayectoria-title" title="Trayectoria" />
+      <ol class="mt-10 max-w-3xl lg:mt-12">
+        {milestones.map((milestone, i) => (
+          <li
+            class:list={[
+              "relative flex gap-5 pb-8 last:pb-0 sm:gap-6",
+              i < milestones.length - 1 &&
+                "after:absolute after:top-16 after:bottom-2 after:left-[1.9375rem] after:w-0.5 after:bg-brand-cyan/60",
+            ]}
+          >
+            <h3 class="clip-hex flex size-16 shrink-0 items-center justify-center bg-primary font-display text-base font-bold text-on-primary">
+              {milestone.year}
+            </h3>
+            <p class="pt-4 text-text">{milestone.text}</p>
+          </li>
+        ))}
+      </ol>
+    </Container>
+  </section>
+
+  <CtaBand />
+</BaseLayout>

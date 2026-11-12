@@ -1,0 +1,11 @@
+---
+// Correo de la empresa con un punto de corte opcional antes de la "@", para que en pantallas
+// estrechas se parta ahí y no en medio del dominio. Usar con `wrap-anywhere` en el contenedor.
+import { site } from "../../config/site";
+
+const [local = site.email, domain] = site.email.split("@");
+---
+
+{local}
+<wbr />
+{domain ? `@${domain}` : ""}

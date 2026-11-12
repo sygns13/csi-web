@@ -1,0 +1,45 @@
+---
+// Proyectos — índice (§6.5): todos los proyectos publicados, del más reciente al más antiguo, con
+// filtro por sector como mejora progresiva.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/ui/Container.astro";
+import PageHeader from "../../components/sections/PageHeader.astro";
+import ProjectCard from "../../components/sections/ProjectCard.astro";
+import ProjectFilter from "../../components/sections/ProjectFilter.astro";
+import CtaBand from "../../components/sections/CtaBand.astro";
+import { t } from "../../i18n";
+import { getProjects } from "../../lib/content";
+
+const projects = await getProjects();
+---
+
+<BaseLayout
+  title="Proyectos y casos de éxito | CSI"
+  description="Casos de éxito en inteligencia artificial, sistemas de gestión y portales web para la CSJ Áncash, INAIGEM, UNASAM y Yamaha Perú."
+  canonicalPath="/proyectos/"
+  breadcrumbs={[{ name: t("nav.projects"), href: "/proyectos/" }]}
+>
+  <PageHeader
+    eyebrow="Proyectos"
+    title="Proyectos y casos de éxito"
+    lead="A lo largo de nuestra trayectoria hemos entregado sistemas críticos, soluciones de inteligencia artificial y portales de alto impacto para instituciones públicas y empresas privadas."
+  />
+
+  <div class="bg-bg">
+    <Container class="py-12 lg:py-16">
+      <ProjectFilter listSelector="[data-project-list]" />
+      <ul
+        class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 lg:mt-8 lg:grid-cols-3 lg:gap-8"
+        data-project-list
+      >
+        {projects.map((project) => (
+          <li data-sector={project.data.sector}>
+            <ProjectCard project={project} headingLevel={2} detailed />
+          </li>
+        ))}
+      </ul>
+    </Container>
+  </div>
+
+  <CtaBand />
+</BaseLayout>

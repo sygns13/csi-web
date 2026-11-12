@@ -52,6 +52,17 @@ Astro 7 no admite dos `astro preview` a la vez: `npx astro preview stop` antes d
   tarjeta). `Card padded={false}` si el contenido maneja su relleno (no pasar `p-0`: choca con `p-6`).
 - Maquetas (`visuals/mockups/*`): SVG 400×250 con clases de tokens (`fill-brand/15`…), sin IDs ni degradados.
 - Cuadrículas de una columna en móvil: `grid-cols-1` explícito (evita desbordes por palabras largas a 320 px).
+- Foto del Gerente: `src/assets/team/gerente.{jpg,png}` se detecta sola (`src/lib/team.ts`): `<Picture>` en
+  /nosotros/ y `Organization.founder.image` en el JSON-LD. Sin foto, monograma "CC". El build falla si la foto no
+  es cuadrada ≥ 800×800. El archivo original del propietario tiene un número en el nombre: siempre renombrarlo.
+- Formulario de contacto: lógica pura en `src/lib/contact-message.ts` (sin `site` ni i18n, para que el script pese
+  < 4 KB; los destinos llegan por `data-wa-me`/`data-email`). Pruebas en `e2e/contact.spec.ts`.
+- Mostrar el correo con `<EmailText />` (corta en la "@") y `wrap-anywhere`, no `break-all`.
+- Fechas de las páginas legales en `src/config/legal.ts` (actualizar solo al cambiar los textos).
+- El fondo del encabezado va al 97 %: con menos opacidad el texto `--brand` del logo baja de 4.5:1 sobre
+  contenido oscuro (lo verifica `a11y.spec.ts`).
+- Playwright con `javaScriptEnabled: false` en Chromium no renderiza `<noscript>`: verificar su contenido, no su
+  visibilidad. `location.href = "mailto:…"` se intercepta con el evento `navigate` de la Navigation API.
 
 ## Estructura
 

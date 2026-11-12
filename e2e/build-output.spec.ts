@@ -192,9 +192,11 @@ test.describe("salida de build", () => {
 
   test("sin tecnologías asociadas a proyectos en /proyectos/", async () => {
     const dir = join(DIST, "proyectos");
-    test.skip(!existsSync(dir), "Aún no existe /proyectos/ (Tramo 3)");
+    const files = (await walk(dir)).filter((f) => f.endsWith(".html"));
+    // Índice + 14 detalles (§7.3).
+    expect(files.length).toBeGreaterThanOrEqual(15);
     const offenders: string[] = [];
-    for (const file of (await walk(dir)).filter((f) => f.endsWith(".html"))) {
+    for (const file of files) {
       const html = await readFile(file, "utf8");
       const text = html.replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<[^>]+>/g, " ");
       const hits = new Set(text.match(TECH_RE) ?? []);

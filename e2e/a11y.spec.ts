@@ -34,6 +34,33 @@ test.describe("accesibilidad (axe)", () => {
       });
     }
 
+    // El encabezado es translúcido: su texto debe cumplir el contraste con cualquier contenido
+    // debajo, incluido el pie (el fondo más oscuro del tema claro).
+    test(`encabezado sobre contenido desplazado — tema ${theme}`, async ({ page }) => {
+      await forceTheme(page, theme);
+      await page.goto("/contacto/");
+      for (const target of ["[data-form-fields] button[type=submit]", "footer"]) {
+        await page
+          .locator(target)
+          .first()
+          .evaluate((el) => {
+            const header = document.querySelector("[data-site-header]")?.getBoundingClientRect();
+            window.scrollTo(
+              0,
+              el.getBoundingClientRect().top + window.scrollY - (header?.top ?? 0) - 20,
+            );
+          });
+        const results = await new AxeBuilder({ page })
+          .include("[data-site-header]")
+          .withRules(["color-contrast"])
+          .analyze();
+        expect(
+          results.violations.map((v) => v.id),
+          target,
+        ).toEqual([]);
+      }
+    });
+
     test(`navegación abierta — tema ${theme}`, async ({ page }, testInfo) => {
       await forceTheme(page, theme);
       await page.goto("/");

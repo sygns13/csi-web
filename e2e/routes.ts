@@ -1,4 +1,4 @@
-// Rutas construidas que se prueban (se amplía en cada tramo, §18).
+// Rutas del sitio que se prueban (§5.1, §18).
 export const serviceSlugs = [
   "desarrollo-de-software",
   "inteligencia-artificial",
@@ -37,22 +37,19 @@ export const projectSlugs = [
   "consentimientos-datos-personales-yamaha",
 ];
 
+export const sectorSlugs = [
+  "justicia",
+  "investigacion-y-ambiente",
+  "educacion-superior",
+  "empresa-privada",
+];
+
+/** Todas las rutas del mapa del sitio (§5.1), salvo la 404. */
 export const routes: string[] = [
   "/",
   "/servicios/",
   ...serviceSlugs.map((slug) => `/servicios/${slug}/`),
   "/productos/",
-];
-
-// Ruta inexistente para probar la página 404 propia.
-export const notFoundPath = "/no-existe/";
-
-/**
- * Rutas del mapa del sitio (§5.1) que aún no se construyen. Los enlaces hacia ellas se permiten
- * (devuelven 404) hasta su tramo; al construir una ruta, muévela a `routes`.
- * TODO(Tramo 3): esta lista debe quedar vacía.
- */
-export const plannedRoutes: string[] = [
   "/proyectos/",
   ...projectSlugs.map((slug) => `/proyectos/${slug}/`),
   "/nosotros/",
@@ -61,5 +58,14 @@ export const plannedRoutes: string[] = [
   "/privacidad/",
   "/accesibilidad/",
 ];
+
+// Ruta inexistente para probar la página 404 propia.
+export const notFoundPath = "/no-existe/";
+
+/**
+ * Rutas del mapa del sitio que aún no se construyen (los enlaces hacia ellas se toleran hasta su
+ * tramo). Desde el Tramo 3 está vacía: todas las rutas de §5.1 existen.
+ */
+export const plannedRoutes: string[] = [];
 
 export const SITE_URL = "https://bcscode.com";

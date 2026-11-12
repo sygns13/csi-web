@@ -1,0 +1,125 @@
+---
+// Contacto (§6.8): canales visibles sin JS + formulario que prepara el mensaje (§8).
+// Sin CtaBand (la página ya es de contacto) y sin el botón flotante de WhatsApp.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/ui/Container.astro";
+import EmailText from "../../components/ui/EmailText.astro";
+import Button from "../../components/ui/Button.astro";
+import Card from "../../components/ui/Card.astro";
+import HexIcon from "../../components/ui/HexIcon.astro";
+import PageHeader from "../../components/sections/PageHeader.astro";
+import ContactForm from "../../components/sections/ContactForm.astro";
+import { site } from "../../config/site";
+import { t } from "../../i18n";
+import { mailtoUrl, whatsappUrl } from "../../lib/links";
+
+const value = "mt-3 font-display text-xl font-semibold text-text";
+---
+
+<BaseLayout
+  title="Contacto y cotizaciones | CSI"
+  description="Solicite una cotización por WhatsApp, llamada o correo. Atendemos a instituciones públicas y empresas privadas."
+  canonicalPath="/contacto/"
+  breadcrumbs={[{ name: t("nav.contact"), href: "/contacto/" }]}
+  hideCtaFab
+>
+  <PageHeader
+    eyebrow="Contacto"
+    title="Conversemos sobre su proyecto"
+    lead="Escríbanos por WhatsApp, llámenos o envíenos un correo. También puede completar el formulario y lo enviaremos por el canal que prefiera."
+  />
+
+  <!-- Canales (§6.8, punto 3): funcionan sin JS. -->
+  <div class="bg-bg">
+    <Container class="py-12 lg:py-16">
+      <ul class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <li>
+          <Card class="flex h-full flex-col">
+            <HexIcon brand="whatsapp" />
+            <h2 class="mt-5 text-h3 font-semibold text-text">{t("contact.whatsapp")}</h2>
+            <p class={value}>{site.whatsapp.display}</p>
+            <p class="mt-1 text-text-muted">Mensajes por WhatsApp</p>
+            <div class="mt-auto pt-6">
+              <Button href={whatsappUrl(t("wa.defaultMessage"))} external>
+                {t("contact.openWhatsapp")}
+              </Button>
+            </div>
+          </Card>
+        </li>
+        <li>
+          <Card class="flex h-full flex-col">
+            <HexIcon icon="phone" />
+            <h2 class="mt-5 text-h3 font-semibold text-text">{t("contact.calls")}</h2>
+            <p class={value}>{site.phone.display}</p>
+            <p class="mt-1 text-text-muted">Solo llamadas</p>
+            <div class="mt-auto pt-6">
+              <Button href={site.phone.tel} variant="secondary">
+                Llamar ahora
+              </Button>
+            </div>
+          </Card>
+        </li>
+        <li>
+          <Card class="flex h-full flex-col">
+            <HexIcon icon="mail" />
+            <h2 class="mt-5 text-h3 font-semibold text-text">{t("contact.email")}</h2>
+            <p class:list={[value, "text-lg wrap-anywhere"]}>
+              <EmailText />
+            </p>
+            <div class="mt-auto pt-6">
+              <Button href={mailtoUrl()} variant="secondary">
+                Enviar correo
+              </Button>
+            </div>
+          </Card>
+        </li>
+        <li>
+          <Card class="flex h-full flex-col">
+            <HexIcon icon="share-2" />
+            <h2 class="mt-5 text-h3 font-semibold text-text">Redes sociales</h2>
+            <ul class="mt-4 flex flex-col items-start gap-3">
+              <li>
+                <Button
+                  href={site.social.facebook}
+                  variant="secondary"
+                  size="sm"
+                  brandIcon="facebook"
+                  external
+                >
+                  Facebook
+                </Button>
+              </li>
+              <li>
+                <Button
+                  href={site.social.youtube}
+                  variant="secondary"
+                  size="sm"
+                  brandIcon="youtube"
+                  external
+                >
+                  YouTube
+                </Button>
+              </li>
+            </ul>
+          </Card>
+        </li>
+      </ul>
+    </Container>
+  </div>
+
+  <!-- Formulario (§6.8, punto 4; §8) -->
+  <section aria-labelledby="formulario-title" class="bg-surface-2">
+    <Container class="py-16 lg:py-24">
+      <Card class="max-w-3xl sm:p-8 lg:p-10">
+        <h2 id="formulario-title" class="text-h2 font-bold text-text">
+          {t("form.title")}
+        </h2>
+        <ContactForm />
+      </Card>
+      <!-- [VALIDAR] (§6.8, punto 5; sin horarios, P5) -->
+      <p class="mt-8 max-w-3xl text-text-muted">
+        Atendemos a instituciones públicas y empresas privadas.
+      </p>
+    </Container>
+  </section>
+</BaseLayout>

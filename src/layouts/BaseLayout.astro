@@ -9,6 +9,7 @@ import WhatsAppFab from "../components/layout/WhatsAppFab.astro";
 import { t } from "../i18n";
 import { buildSeo, type Alternate } from "../lib/seo";
 import { breadcrumbList, organization, serializeJsonLd, type BreadcrumbItem } from "../lib/jsonld";
+import { managerPhotoUrl } from "../lib/team";
 import { themeInitScript } from "../lib/theme-init";
 
 interface Props {
@@ -45,8 +46,11 @@ const crumbs: BreadcrumbItem[] | undefined =
     ? [{ name: t("nav.home"), href: "/" }, ...breadcrumbs]
     : undefined;
 
+// Foto del Gerente en `Organization.founder.image`, solo si existe (§9.3).
+const founderImage = await managerPhotoUrl();
+
 const structuredData: object[] = [
-  organization(),
+  organization({ founderImage }),
   ...jsonLd,
   ...(crumbs ? [breadcrumbList(crumbs)] : []),
 ];

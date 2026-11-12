@@ -1,14 +1,22 @@
 ---
 interface Props {
+  /**
+   * "accent": insignia de la spec (§4.7: fondo --surface-2, texto --accent-text).
+   * "outline": variante secundaria (borde --border, texto --text-muted), p. ej. servicios de un proyecto.
+   */
+  tone?: "accent" | "outline";
   class?: string;
 }
 
-const { class: className } = Astro.props;
+const { tone = "accent", class: className } = Astro.props;
 ---
 
 <span
   class:list={[
-    "inline-flex items-center rounded-full bg-surface-2 px-3 py-0.5 text-[0.8125rem] leading-6 font-semibold text-accent-text",
+    "inline-flex items-center rounded-full px-3 py-0.5 text-[0.8125rem] leading-6 font-semibold",
+    tone === "accent"
+      ? "bg-surface-2 text-accent-text"
+      : "border border-border bg-surface text-text-muted",
     className,
   ]}
 >

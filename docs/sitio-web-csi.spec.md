@@ -3,7 +3,7 @@
 | Campo | Valor |
 |---|---|
 | Documento | `sitio-web-csi.spec.md` |
-| Versión | 1.2 (1.1: respuestas a los pendientes P1–P8; 1.2: títulos SEO acortados, D21) |
+| Versión | 1.3 (1.1: respuestas a los pendientes P1–P8; 1.2: títulos SEO acortados, D21; 1.3: visión y valores aprobados, D19/P4; descripción de Inicio acortada, D21) |
 | Fecha | 12/11/2026 |
 | Repositorio | `E:\NewProyectos\2026\csi\workspace\csi-web` (git ya iniciado, rama `master`, remoto `https://github.com/sygns13/csi-web.git`) |
 | Propietario | Gerente General de Construyendo Soluciones Informáticas E.I.R.L. |
@@ -152,9 +152,9 @@ archivo:
 | D16 | Repositorio | `E:\NewProyectos\2026\csi\workspace\csi-web`, ya iniciado (rama `master`, remoto `github.com/sygns13/csi-web`) |
 | D17 | Proyecto de consentimientos (Yamaha) | **Se publica** (§7.3, P14) |
 | D18 | Gerente | **Se publica su foto** y los enlaces a LinkedIn (`https://www.linkedin.com/in/cristian-chavez-38272b120`) y GitHub (`https://github.com/sygns13`) |
-| D19 | Visión y valores | Aprobados de forma provisional. Se mantienen como **[VALIDAR]** para revisarlos durante la construcción |
+| D19 | Visión y valores | **Aprobados** sin cambios (12/11/2026, Tramo 3; P4 resuelto) |
 | D20 | Horario, textos legales, tratamiento y cifras | Sin horario. Los textos legales se mantienen como borradores [VALIDAR]. Se confirma el tratamiento de "usted". Se confirman las cifras de Inicio |
-| D21 | Títulos SEO de más de 60 caracteres | Se acortan quitando palabras del original (Tramo 2): servicio `inteligencia-artificial` (§7.1), proyectos P11 y P14 (§7.3) |
+| D21 | Títulos SEO de más de 60 caracteres y descripciones de más de 155 | Se acortan quitando palabras del original: servicio `inteligencia-artificial` (§7.1), proyectos P11 y P14 (§7.3) (Tramo 2) y descripción de Inicio (§9.2, sin "venta de"; Tramo 3) |
 
 ---
 
@@ -1022,9 +1022,9 @@ Plantilla común. El contenido está en §7.1:
    - h2 "Misión": "Impulsar la transformación digital de las organizaciones públicas y privadas mediante consultoría
      informática, desarrollo de software a medida, inteligencia artificial y gestión de instalaciones tecnológicas,
      con formalidad, cumplimiento y alta calidad."
-   - h2 "Visión" **[VALIDAR]**: "Ser una empresa referente en soluciones informáticas e inteligencia artificial
+   - h2 "Visión": "Ser una empresa referente en soluciones informáticas e inteligencia artificial
      aplicada en el Perú, reconocida por la calidad, la accesibilidad y el impacto de sus soluciones."
-5. h2 "Nuestros valores" **[VALIDAR]**: 6 elementos con ícono:
+5. h2 "Nuestros valores": 6 elementos con ícono:
 
    | Valor | Texto |
    |---|---|
@@ -1904,7 +1904,7 @@ Tipo de requerimiento: {etiqueta del tipo}
 
 | Ruta | `<title>` | Descripción |
 |---|---|---|
-| `/` | Construyendo Soluciones Informáticas \| Software, IA y TI | Empresa de Huaraz, Áncash, especializada en consultoría informática, desarrollo de software a medida, inteligencia artificial y venta de bienes tecnológicos. |
+| `/` | Construyendo Soluciones Informáticas \| Software, IA y TI | Empresa de Huaraz, Áncash, especializada en consultoría informática, desarrollo de software a medida, inteligencia artificial y bienes tecnológicos. |
 | `/servicios/` | Servicios de consultoría y desarrollo de software \| CSI | Consultoría informática, desarrollo de software a medida, IA, portales web, sistemas de gestión, cloud, redes y soporte para entidades y empresas. |
 | `/productos/` | Venta de equipos de cómputo y tecnología \| CSI | Venta de equipos de cómputo, servidores, redes, impresoras, software y licencias para entidades públicas y empresas. Proveedor inscrito en el RNP. |
 | `/proyectos/` | Proyectos y casos de éxito \| CSI | Casos de éxito en inteligencia artificial, sistemas de gestión y portales web para la CSJ Áncash, INAIGEM, UNASAM y Yamaha Perú. |
@@ -2413,7 +2413,7 @@ Lighthouse local en `preview`).
 | P1 | Ruta y repositorio | **Resuelto** (D16): `E:\NewProyectos\2026\csi\workspace\csi-web` |
 | P2 | Proyecto de consentimientos (Yamaha) | **Resuelto** (D17): se publica |
 | P3 | Foto y enlaces del Gerente | **Resuelto** (D18). **Acción del propietario**: dejar la foto en `E:\NewProyectos\2026\csi\workspace\imagenes\gerente\` antes del Tramo 3 |
-| P4 | Visión y valores (§6.7) | **Pendiente de revisión** (D19): van marcados [VALIDAR]. Al construir `/nosotros/`, preséntalos al propietario para su confirmación o ajuste |
+| P4 | Visión y valores (§6.7) | **Resuelto** (D19): aprobados sin cambios al construir `/nosotros/` (12/11/2026) |
 | P5 | Horario de atención | **Resuelto**: no se muestra |
 | P6 | Textos legales (Libro de Reclamaciones y Privacidad) | **Pendiente**: borradores [VALIDAR] hasta su revisión legal |
 | P7 | Tratamiento formal "usted" | **Resuelto**: confirmado |

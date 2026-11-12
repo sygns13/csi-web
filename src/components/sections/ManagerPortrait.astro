@@ -1,0 +1,43 @@
+---
+// Foto del Gerente General recortada en hexágono con borde del degradado de marca (§6.7). Sin foto,
+// monograma "CC" temporal dentro del mismo marco (decorativo: el nombre está en el h3 contiguo).
+import { Picture } from "astro:assets";
+import { site } from "../../config/site";
+import { MANAGER_PHOTO_WIDTHS, managerPhoto } from "../../lib/team";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+const alt = `${site.manager.name}, ${site.manager.role} de Construyendo Soluciones Informáticas`;
+/** Monograma temporal (§6.7): iniciales del nombre y del primer apellido. */
+const MONOGRAM = "CC";
+---
+
+<div
+  class:list={["clip-hex size-48 shrink-0 bg-brand-gradient p-1.5 sm:size-60", className]}
+  data-manager-portrait={managerPhoto ? "photo" : "monogram"}
+>
+  {managerPhoto ? (
+    <Picture
+      src={managerPhoto}
+      formats={["avif", "webp"]}
+      widths={[...MANAGER_PHOTO_WIDTHS]}
+      sizes="(min-width: 640px) 240px, 192px"
+      alt={alt}
+      loading="lazy"
+      decoding="async"
+      class="clip-hex size-full object-cover"
+    />
+  ) : (
+    <div
+      class="clip-hex flex size-full items-center justify-center bg-surface-2"
+      aria-hidden="true"
+    >
+      <span class="font-display text-6xl font-bold tracking-wide text-brand sm:text-7xl">
+        {MONOGRAM}
+      </span>
+    </div>
+  )}
+</div>

@@ -1,0 +1,82 @@
+---
+// Declaración de accesibilidad (§6.11).
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/ui/Container.astro";
+import EmailText from "../../components/ui/EmailText.astro";
+import HexList from "../../components/ui/HexList.astro";
+import Icon from "../../components/ui/Icon.astro";
+import PageHeader from "../../components/sections/PageHeader.astro";
+import CtaBand from "../../components/sections/CtaBand.astro";
+import { legalDates } from "../../config/legal";
+import { site } from "../../config/site";
+import { t } from "../../i18n";
+import { formatLongDate } from "../../lib/format";
+import { mailtoUrl, whatsappUrl } from "../../lib/links";
+
+const h2 = "mt-12 text-h2 font-bold text-text";
+const measures = [
+  "Navegación completa con teclado y foco visible.",
+  "Contraste de color conforme a AA en los modos claro y oscuro.",
+  "Estructura semántica de encabezados y regiones.",
+  "Textos alternativos.",
+  "Formularios con etiquetas e instrucciones.",
+  "Respeto de la preferencia de movimiento reducido.",
+  "Diseño adaptable hasta 320 px de ancho y con zoom de hasta 400 %.",
+];
+---
+
+<BaseLayout
+  title="Declaración de accesibilidad | CSI"
+  description="Nuestro compromiso con la accesibilidad web: este sitio se diseñó para cumplir WCAG 2.2 nivel AA."
+  canonicalPath="/accesibilidad/"
+  breadcrumbs={[{ name: t("footer.accessibility"), href: "/accesibilidad/" }]}
+>
+  <PageHeader title="Declaración de accesibilidad" />
+
+  <div class="bg-bg">
+    <Container class="py-12 lg:py-16">
+      <div class="max-w-[70ch]">
+        <p class="text-lead text-text">
+          Construyendo Soluciones Informáticas E.I.R.L. se compromete a que este sitio web sea
+          accesible para todas las personas. Lo diseñamos y desarrollamos con el objetivo de cumplir
+          las Pautas de Accesibilidad para el Contenido Web (WCAG) 2.2, nivel AA.
+        </p>
+
+        <h2 class={h2}>Medidas adoptadas</h2>
+        <HexList items={measures} class="mt-5 text-text" />
+
+        <h2 class={h2}>Evaluación</h2>
+        <p class="mt-4 text-text-muted">
+          Evaluado mediante pruebas automatizadas (axe) y revisión manual con teclado y lector de
+          pantalla. Fecha de la última evaluación:{" "}
+          <time datetime={legalDates.accessibilityEvaluated}>
+            {formatLongDate(legalDates.accessibilityEvaluated)}
+          </time>
+          .
+        </p>
+
+        <h2 class={h2}>¿Encontró una barrera?</h2>
+        <p class="mt-4 text-text-muted">
+          Si tiene dificultades para acceder a algún contenido, escríbanos a{" "}
+          <a href={mailtoUrl()} class="link wrap-anywhere">
+            <EmailText />
+          </a>{" "}
+          o por WhatsApp al{" "}
+          <a
+            href={whatsappUrl(t("wa.defaultMessage"))}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="link whitespace-nowrap"
+          >
+            {site.whatsapp.display}
+            <Icon name="external-link" size={16} class="ml-1 inline-block align-[-0.125em]" />
+            <span class="sr-only">{` ${t("a11y.newTab")}`}</span>
+          </a>
+          . Le responderemos y le brindaremos la información en un formato accesible.
+        </p>
+      </div>
+    </Container>
+  </div>
+
+  <CtaBand />
+</BaseLayout>

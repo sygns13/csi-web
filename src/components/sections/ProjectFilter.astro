@@ -1,0 +1,98 @@
+---
+// Filtro de proyectos por sector (§6.5, punto 3). Mejora progresiva: sin JS no se muestra (se
+// renderiza con `hidden`) y se ven todos los proyectos. Sus tarjetas son los elementos con
+// `data-sector` dentro de `listSelector`.
+import Icon from "../ui/Icon.astro";
+import { sectors } from "../../config/taxonomy";
+import { t } from "../../i18n";
+import { sectorLabel } from "../../lib/content";
+
+interface Props {
+  /** Selector de la lista de proyectos que se filtra. */
+  listSelector: string;
+}
+
+const { listSelector } = Astro.props;
+const options = [
+  { value: "", label: t("projects.all") },
+  ...sectors.map((sector) => ({ value: sector, label: sectorLabel(sector) })),
+];
+---
+
+<div
+  data-project-filter
+  data-list={listSelector}
+  data-showing={t("projects.showing")}
+  data-showing-one={t("projects.showingOne")}
+>
+  <!-- `hidden` sin JS. Mientras está oculto conserva su espacio (global.css) para que no haya
+       desplazamiento de diseño cuando el script lo muestra. -->
+  <div
+    role="group"
+    aria-label={t("projects.filterLabel")}
+    class="flex flex-wrap gap-2"
+    data-filter-group
+    hidden
+  >
+    {options.map((option) => (
+      <button
+        type="button"
+        aria-pressed={option.value === "" ? "true" : "false"}
+        data-sector={option.value}
+        class="inline-flex min-h-11 items-center gap-1.5 rounded-full border-[1.5px] border-border-strong bg-surface px-4 text-sm font-semibold text-text transition-colors duration-150 hover:bg-surface-2 aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-on-primary aria-pressed:hover:bg-primary-hover"
+      >
+        <Icon name="check" size={16} class="hidden in-aria-pressed:block" />
+        {option.label}
+      </button>
+    ))}
+  </div>
+  <p role="status" class="mt-4 min-h-[1.3125rem] text-sm text-text-muted" data-filter-status></p>
+</div>
+
+<script>
+  import { sectors } from "../../config/taxonomy";
+
+  const PARAM = "sector";
+  const root = document.querySelector<HTMLElement>("[data-project-filter]");
+  const group = root?.querySelector<HTMLElement>("[data-filter-group]");
+  const status = root?.querySelector<HTMLElement>("[data-filter-status]");
+  const list = root?.dataset.list ? document.querySelector(root.dataset.list) : null;
+
+  if (root && group && status && list) {
+    const buttons = Array.from(group.querySelectorAll<HTMLButtonElement>("button[data-sector]"));
+    const items = Array.from(list.querySelectorAll<HTMLElement>("[data-sector]"));
+    const isSector = (value: string | null): value is string =>
+      !!value && (sectors as readonly string[]).includes(value);
+
+    const apply = (sector: string, updateUrl: boolean): void => {
+      let shown = 0;
+      for (const item of items) {
+        const visible = sector === "" || item.dataset.sector === sector;
+        item.hidden = !visible;
+        if (visible) shown++;
+      }
+      for (const button of buttons) {
+        button.setAttribute("aria-pressed", String(button.dataset.sector === sector));
+      }
+      const one = root.dataset.showingOne ?? "";
+      const many = root.dataset.showing ?? "";
+      status.textContent = shown === 1 ? one : many.replace("{n}", String(shown));
+
+      if (updateUrl) {
+        const url = new URL(window.location.href);
+        if (sector) url.searchParams.set(PARAM, sector);
+        else url.searchParams.delete(PARAM);
+        history.replaceState(history.state, "", url);
+      }
+    };
+
+    for (const button of buttons) {
+      button.addEventListener("click", () => apply(button.dataset.sector ?? "", true));
+    }
+
+    // El filtro se lee de la URL al cargar (§6.5); los valores desconocidos se ignoran.
+    const initial = new URLSearchParams(window.location.search).get(PARAM);
+    apply(isSector(initial) ? initial : "", false);
+    group.hidden = false;
+  }
+</script>

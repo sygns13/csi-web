@@ -1,0 +1,420 @@
+---
+// Formulario de contacto sin backend (§8): arma el mensaje y lo abre en WhatsApp o en el correo.
+// Mejora progresiva: sin JS se muestra deshabilitado con un aviso <noscript>.
+import Button from "../ui/Button.astro";
+import Icon from "../ui/Icon.astro";
+import { site } from "../../config/site";
+import { t } from "../../i18n";
+import { getContactTypes, getProductCategories } from "../../lib/content";
+import { MESSAGE_MAX, NAME_MAX, ORGANIZATION_MAX } from "../../lib/contact-message";
+
+const [types, categories] = await Promise.all([getContactTypes(), getProductCategories()]);
+// Lista blanca de `?categoria=` (§8.2, punto 7): slug → nombre visible.
+const categoryNames = JSON.stringify(
+  Object.fromEntries(categories.map((category) => [category.id, category.data.name])),
+);
+
+const label = "block font-semibold text-text";
+const required = "font-normal text-text-muted";
+const control =
+  "mt-2 block w-full rounded-control border border-border-strong bg-surface px-3.5 text-text transition-colors duration-150 hover:border-text-muted aria-invalid:border-2 aria-invalid:border-error disabled:cursor-not-allowed disabled:opacity-60";
+const error = "mt-2 flex items-start gap-2 text-sm font-semibold text-error";
+const errorIcon = "mt-px";
+const radio =
+  "inline-flex min-h-11 cursor-pointer items-center gap-3 rounded-control border border-border-strong bg-surface px-4 font-medium text-text transition-colors duration-150 hover:bg-surface-2 has-checked:border-2 has-checked:border-primary has-checked:bg-surface-2";
+---
+
+<div data-contact-root>
+  <noscript>
+    <p class="mt-6 flex items-start gap-3 rounded-card border border-border-strong bg-surface p-4">
+      <Icon name="circle-exclamation-point" size={20} class="mt-0.5 text-brand" />
+      <span>{t("form.noscript")}</span>
+    </p>
+  </noscript>
+
+  <!-- Resumen de errores (§8.2, punto 2): recibe el foco al enviar con errores. -->
+  <div
+    role="alert"
+    tabindex="-1"
+    aria-labelledby="contact-errors-title"
+    class="mt-6 rounded-card border-2 border-error bg-surface p-5 sm:p-6"
+    data-error-summary
+    hidden
+  >
+    <h2 id="contact-errors-title" class="flex items-center gap-2 text-h3 font-semibold text-text">
+      <Icon name="circle-exclamation-point" size={24} class="text-error" />
+      {t("form.errorsTitle")}
+    </h2>
+    <ul class="mt-3 grid gap-2 pl-8" data-error-list></ul>
+  </div>
+
+  <form
+    novalidate
+    class="mt-6"
+    data-contact-form
+    data-categories={categoryNames}
+    data-wa-me={site.whatsapp.waMe}
+    data-email={site.email}
+    data-label-whatsapp={t("form.sendWhatsapp")}
+    data-label-email={t("form.sendEmail")}
+  >
+    <fieldset disabled role="presentation" class="grid min-w-0 gap-6" data-form-fields>
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div>
+          <label for="contact-name" class={label}>
+            {t("form.name")} <span class={required}>{t("form.required")}</span>
+          </label>
+          <input
+            id="contact-name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            required
+            maxlength={NAME_MAX}
+            class:list={[control, "min-h-11"]}
+          />
+          <p id="contact-name-error" class={error} hidden>
+            <Icon name="circle-exclamation-point" size={20} class={errorIcon} />
+            <span>{t("form.error.name")}</span>
+          </p>
+        </div>
+
+        <div>
+          <label for="contact-organization" class={label}>
+            {t("form.organization")}
+          </label>
+          <input
+            id="contact-organization"
+            name="organization"
+            type="text"
+            autocomplete="organization"
+            maxlength={ORGANIZATION_MAX}
+            class:list={[control, "min-h-11"]}
+          />
+        </div>
+      </div>
+
+      <div>
+        <label for="contact-type" class={label}>
+          {t("form.type")} <span class={required}>{t("form.required")}</span>
+        </label>
+        <div class="relative">
+          <select
+            id="contact-type"
+            name="type"
+            required
+            class:list={[control, "min-h-11 appearance-none pr-11"]}
+          >
+            <option value="">{t("form.typePlaceholder")}</option>
+            {types.map((type) => (
+              <option value={type.value}>{type.label}</option>
+            ))}
+          </select>
+          <Icon
+            name="chevron-down"
+            size={20}
+            class="pointer-events-none absolute top-1/2 right-3.5 mt-1 -translate-y-1/2 text-text-muted"
+          />
+        </div>
+        <p id="contact-type-error" class={error} hidden>
+          <Icon name="circle-exclamation-point" size={20} class={errorIcon} />
+          <span>{t("form.error.type")}</span>
+        </p>
+      </div>
+
+      <div>
+        <label for="contact-message" class={label}>
+          {t("form.message")} <span class={required}>{t("form.required")}</span>
+        </label>
+        <textarea
+          id="contact-message"
+          name="message"
+          rows="6"
+          required
+          aria-describedby="contact-message-counter"
+          data-describedby="contact-message-counter"
+          class:list={[control, "resize-y py-2.5 leading-normal"]}
+        ></textarea>
+        <div class="flex flex-wrap items-start justify-between gap-x-4">
+          <p id="contact-message-error" class={error} hidden>
+            <Icon name="circle-exclamation-point" size={20} class={errorIcon} />
+            <span>{t("form.error.message")}</span>
+          </p>
+          <p
+            id="contact-message-counter"
+            class="mt-2 ml-auto text-sm text-text-muted tabular-nums data-over:font-semibold data-over:text-error"
+            data-counter
+          >
+            {`0/${MESSAGE_MAX}`}
+          </p>
+        </div>
+        <!-- Anuncio del contador solo al acercarse al límite (§8.1). -->
+        <p class="sr-only" aria-live="polite" data-counter-live></p>
+      </div>
+
+      <fieldset class="min-w-0">
+        <legend class={label}>
+          {t("form.channel")} <span class={required}>{t("form.required")}</span>
+        </legend>
+        <div class="mt-3 flex flex-wrap gap-3">
+          <label class={radio}>
+            <input
+              type="radio"
+              name="channel"
+              value="whatsapp"
+              checked
+              class="size-5 accent-primary"
+            />
+            {t("form.channelWhatsapp")}
+          </label>
+          <label class={radio}>
+            <input type="radio" name="channel" value="email" class="size-5 accent-primary" />
+            {t("form.channelEmail")}
+          </label>
+        </div>
+      </fieldset>
+
+      <p class="max-w-[65ch] text-sm text-text-muted">
+        {`${t("form.noticeBefore")} `}
+        <a href="/privacidad/" class="link">
+          {t("form.noticeLink")}
+        </a>
+        .
+      </p>
+
+      <div>
+        <Button type="submit" icon="send">
+          <span data-submit-label>{t("form.sendWhatsapp")}</span>
+        </Button>
+      </div>
+    </fieldset>
+  </form>
+
+  <!-- Resultado (§8.2, punto 6). Siempre presente para que el anuncio funcione. -->
+  <div role="status" class="mt-6" data-form-status></div>
+
+  <template data-status-template="whatsapp">
+    <div class="flex items-start gap-3 rounded-card border-2 border-success bg-surface p-4 sm:p-5">
+      <Icon name="circle-check" size={24} class="text-success" />
+      <p class="text-text">
+        {`${t("form.opened", { canal: t("form.openedWhatsapp") })} `}
+        <a
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="link inline-flex items-center gap-1 font-semibold"
+          data-status-link
+        >
+          {t("contact.openWhatsapp")}
+          <Icon name="external-link" size={16} />
+          <span class="sr-only">{` ${t("a11y.newTab")}`}</span>
+        </a>
+      </p>
+    </div>
+  </template>
+  <template data-status-template="email">
+    <div class="flex items-start gap-3 rounded-card border-2 border-success bg-surface p-4 sm:p-5">
+      <Icon name="circle-check" size={24} class="text-success" />
+      <p class="text-text">
+        {`${t("form.opened", { canal: t("form.openedEmail") })} `}
+        <a href="#" class="link font-semibold" data-status-link>
+          {t("contact.openEmail")}
+        </a>
+      </p>
+    </div>
+  </template>
+</div>
+
+<script>
+  import {
+    MESSAGE_ANNOUNCE_FROM,
+    MESSAGE_MAX,
+    buildContactMessage,
+    contactUrl,
+    parsePrefill,
+    validateContact,
+    type ContactChannel,
+    type ContactField,
+    type ContactValues,
+  } from "../../lib/contact-message";
+
+  type Control = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
+  const root = document.querySelector<HTMLElement>("[data-contact-root]");
+  const form = root?.querySelector<HTMLFormElement>("[data-contact-form]");
+  const fields = form?.querySelector<HTMLFieldSetElement>("[data-form-fields]");
+  const summary = root?.querySelector<HTMLElement>("[data-error-summary]");
+  const errorList = summary?.querySelector<HTMLUListElement>("[data-error-list]");
+  const status = root?.querySelector<HTMLElement>("[data-form-status]");
+  const counter = form?.querySelector<HTMLElement>("[data-counter]");
+  const counterLive = form?.querySelector<HTMLElement>("[data-counter-live]");
+  const submitLabel = form?.querySelector<HTMLElement>("[data-submit-label]");
+  const name = document.getElementById("contact-name") as HTMLInputElement | null;
+  const organization = document.getElementById("contact-organization") as HTMLInputElement | null;
+  const type = document.getElementById("contact-type") as HTMLSelectElement | null;
+  const message = document.getElementById("contact-message") as HTMLTextAreaElement | null;
+
+  if (
+    root &&
+    form &&
+    fields &&
+    summary &&
+    errorList &&
+    status &&
+    counter &&
+    counterLive &&
+    submitLabel &&
+    name &&
+    organization &&
+    type &&
+    message
+  ) {
+    const controls: Record<ContactField, Control> = { name, type, message };
+    const allowedTypes = Array.from(type.options, (option) => option.value).filter(Boolean);
+    const categories = new Map<string, string>(
+      Object.entries(JSON.parse(form.dataset.categories ?? "{}") as Record<string, unknown>).filter(
+        (entry): entry is [string, string] => typeof entry[1] === "string",
+      ),
+    );
+    const invalid = new Set<ContactField>();
+
+    const channel = (): ContactChannel =>
+      form.querySelector<HTMLInputElement>('input[name="channel"]:checked')?.value === "email"
+        ? "email"
+        : "whatsapp";
+
+    const values = (): ContactValues => ({
+      name: name.value,
+      organization: organization.value,
+      type: type.value,
+      message: message.value,
+    });
+
+    const errorElement = (field: ContactField): HTMLElement | null =>
+      document.getElementById(`${controls[field].id}-error`);
+
+    // Error en línea (§8.2, punto 2): aria-invalid + mensaje referenciado en aria-describedby.
+    const setError = (field: ContactField, isInvalid: boolean): void => {
+      const control = controls[field];
+      const error = errorElement(field);
+      if (!error) return;
+      error.hidden = !isInvalid;
+      if (isInvalid) {
+        invalid.add(field);
+        control.setAttribute("aria-invalid", "true");
+      } else {
+        invalid.delete(field);
+        control.removeAttribute("aria-invalid");
+      }
+      const describedBy = [isInvalid ? error.id : "", control.dataset.describedby ?? ""]
+        .filter(Boolean)
+        .join(" ");
+      if (describedBy) control.setAttribute("aria-describedby", describedBy);
+      else control.removeAttribute("aria-describedby");
+    };
+
+    const renderSummary = (): void => {
+      const items = (["name", "type", "message"] as const)
+        .filter((field) => invalid.has(field))
+        .map((field) => {
+          const link = document.createElement("a");
+          link.href = `#${controls[field].id}`;
+          link.className = "link font-semibold";
+          link.textContent = errorElement(field)?.textContent?.trim() ?? "";
+          link.addEventListener("click", (event) => {
+            event.preventDefault();
+            form.querySelector(`label[for="${controls[field].id}"]`)?.scrollIntoView();
+            controls[field].focus({ preventScroll: true });
+          });
+          const item = document.createElement("li");
+          item.append(link);
+          return item;
+        });
+      errorList.replaceChildren(...items);
+      summary.hidden = items.length === 0;
+    };
+
+    // El contador visible se actualiza siempre; la región aria-live solo cerca del límite y tras
+    // una pausa al escribir, para no anunciar cada tecla.
+    let announceTimer: number | undefined;
+    const updateCounter = (): void => {
+      const length = message.value.length;
+      const text = `${length}/${MESSAGE_MAX}`;
+      counter.textContent = text;
+      counter.toggleAttribute("data-over", length > MESSAGE_MAX);
+      window.clearTimeout(announceTimer);
+      if (length < MESSAGE_ANNOUNCE_FROM) counterLive.textContent = "";
+      else announceTimer = window.setTimeout(() => (counterLive.textContent = text), 600);
+    };
+
+    const updateSubmitLabel = (): void => {
+      submitLabel.textContent =
+        (channel() === "email" ? form.dataset.labelEmail : form.dataset.labelWhatsapp) ?? "";
+    };
+
+    const showStatus = (selected: ContactChannel, url: string): void => {
+      const template = root.querySelector<HTMLTemplateElement>(
+        `template[data-status-template="${selected}"]`,
+      );
+      const content = template?.content.cloneNode(true) as DocumentFragment | undefined;
+      content?.querySelector("[data-status-link]")?.setAttribute("href", url);
+      if (content) status.replaceChildren(content);
+    };
+
+    // Tras un intento de envío, un campo corregido deja de marcarse como inválido.
+    const revalidate = (): void => {
+      if (invalid.size === 0) return;
+      const current = validateContact(values(), allowedTypes);
+      for (const field of [...invalid]) {
+        if (!current.includes(field)) setError(field, false);
+      }
+      renderSummary();
+    };
+
+    form.addEventListener("input", revalidate);
+    form.addEventListener("change", (event) => {
+      if (event.target instanceof HTMLInputElement && event.target.name === "channel") {
+        updateSubmitLabel();
+      }
+      revalidate();
+    });
+    message.addEventListener("input", updateCounter);
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      status.replaceChildren();
+
+      const current = values();
+      const errors = validateContact(current, allowedTypes);
+      for (const field of ["name", "type", "message"] as const) {
+        setError(field, errors.includes(field));
+      }
+      renderSummary();
+      if (errors.length > 0) {
+        summary.focus();
+        return;
+      }
+
+      const selected = channel();
+      const typeLabel = type.selectedOptions[0]?.textContent ?? "";
+      const text = buildContactMessage({ ...current, typeLabel });
+      const url = contactUrl(selected, typeLabel, text, {
+        waMe: form.dataset.waMe ?? "",
+        email: form.dataset.email ?? "",
+      });
+      if (selected === "whatsapp") window.open(url, "_blank", "noopener");
+      else window.location.href = url;
+      // El formulario no se limpia (§8.2, punto 6).
+      showStatus(selected, url);
+    });
+
+    // Prellenado por URL (§8.2, punto 7). Nunca se usa innerHTML con datos de la URL.
+    const prefill = parsePrefill(window.location.search, allowedTypes, categories);
+    if (prefill.type) type.value = prefill.type;
+    if (prefill.message && !message.value) message.value = prefill.message;
+
+    updateCounter();
+    updateSubmitLabel();
+    fields.disabled = false;
+  }
+</script>

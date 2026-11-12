@@ -245,6 +245,14 @@
     scroll-padding-bottom: 88px;
   }
 
+  /* Filtro de proyectos (§6.5): sin JS lleva `hidden` (no se muestra ni se anuncia), pero conserva
+     su espacio para que no haya desplazamiento de diseño (CLS) cuando el script lo muestra. Debe
+     estar en la misma capa que el `[hidden]` de preflight y ser más específico. */
+  [data-filter-group][hidden] {
+    display: flex !important;
+    visibility: hidden;
+  }
+
   /* Menú móvil abierto: el fondo no se desplaza (§5.2). */
   html[data-menu-open] {
     overflow: hidden;

@@ -25,10 +25,11 @@ identificar los enlaces a esos servicios.
 
 ## Imágenes
 
-| Recurso                                                                | Licencia                                                   | Notas                                                                              |
-| ---------------------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Isotipo CSI (`src/assets/brand/csi-mark.svg` y derivados en `public/`) | Propiedad de Construyendo Soluciones Informáticas E.I.R.L. | Derivado de `imagenes/Logo.svg` del propietario (recortado y sin estilos en línea) |
-| Fotografías                                                            | —                                                          | No se usan en v1                                                                   |
+| Recurso                                                                | Licencia                                                   | Notas                                                                               |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Isotipo CSI (`src/assets/brand/csi-mark.svg` y derivados en `public/`) | Propiedad de Construyendo Soluciones Informáticas E.I.R.L. | Derivado de `imagenes/Logo.svg` del propietario (recortado y sin estilos en línea)  |
+| Foto del Gerente General (`src/assets/team/`, §6.7)                    | Entregada por el propietario                               | Pendiente: hoy se muestra el monograma "CC" (la foto entregada no cumple el tamaño) |
+| Otras fotografías                                                      | —                                                          | No se usan en v1                                                                    |
 
 ## Herramientas de desarrollo (no se distribuyen en el sitio)
 

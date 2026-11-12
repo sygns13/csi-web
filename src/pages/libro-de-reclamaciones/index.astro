@@ -1,0 +1,96 @@
+---
+// Libro de Reclamaciones (§6.9, D13): página informativa con canal por correo.
+// [VALIDAR con asesoría legal] (P6): el texto va tal como está en la spec.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/ui/Container.astro";
+import EmailText from "../../components/ui/EmailText.astro";
+import Button from "../../components/ui/Button.astro";
+import HexList from "../../components/ui/HexList.astro";
+import PageHeader from "../../components/sections/PageHeader.astro";
+import CtaBand from "../../components/sections/CtaBand.astro";
+import { site } from "../../config/site";
+import { t } from "../../i18n";
+import { mailtoUrl } from "../../lib/links";
+
+const title = t("footer.complaints");
+
+const requirements = [
+  "Nombres y apellidos.",
+  "Tipo y número de documento de identidad.",
+  "Domicilio, teléfono y correo electrónico.",
+  "En caso de menores de edad, los datos de su padre, madre o apoderado.",
+  "Identificación del bien o servicio contratado y monto reclamado, si corresponde.",
+  "Detalle del reclamo o queja.",
+  "Pedido concreto.",
+];
+
+// Cuerpo del correo: la lista anterior como plantilla para completar ("Dato: ").
+const emailBody = `${requirements.map((item) => `${item.replace(/\.$/, "")}: `).join("\n\n")}\n`;
+const emailHref = mailtoUrl(title, emailBody);
+---
+
+<BaseLayout
+  title="Libro de Reclamaciones | CSI"
+  description="Registre su reclamo o queja ante Construyendo Soluciones Informáticas E.I.R.L."
+  canonicalPath="/libro-de-reclamaciones/"
+  breadcrumbs={[{ name: title, href: "/libro-de-reclamaciones/" }]}
+>
+  <PageHeader title={title} />
+
+  <div class="bg-bg">
+    <Container class="py-12 lg:py-16">
+      <div class="max-w-[70ch]">
+        <p class="text-lead text-text">
+          Conforme al Código de Protección y Defensa del Consumidor (Ley N.° 29571), Construyendo
+          Soluciones Informáticas E.I.R.L. (RUC {site.ruc}) pone a su disposición un Libro de
+          Reclamaciones. Para registrar un reclamo o una queja, envíenos un correo a{" "}
+          <a href={mailtoUrl()} class="link wrap-anywhere">
+            <EmailText />
+          </a>{" "}
+          con el asunto «Libro de Reclamaciones – Reclamo» o «Libro de Reclamaciones – Queja»,
+          incluyendo la siguiente información:
+        </p>
+        <HexList items={requirements} class="mt-6 text-text" />
+
+        <h2 class="mt-12 text-h2 font-bold text-text">Diferencia entre reclamo y queja</h2>
+        <ul class="mt-5 grid gap-3 text-text">
+          <li class="flex gap-3">
+            <span
+              class="clip-hex mt-[0.4375rem] size-3 shrink-0 bg-brand"
+              aria-hidden="true"
+            ></span>
+            <span>
+              <strong>Reclamo</strong>: disconformidad relacionada con los bienes adquiridos o los
+              servicios prestados.
+            </span>
+          </li>
+          <li class="flex gap-3">
+            <span
+              class="clip-hex mt-[0.4375rem] size-3 shrink-0 bg-brand"
+              aria-hidden="true"
+            ></span>
+            <span>
+              <strong>Queja</strong>: disconformidad no relacionada con los bienes o servicios, o
+              malestar respecto de la atención recibida.
+            </span>
+          </li>
+        </ul>
+
+        <p class="mt-8 text-text-muted">
+          Le enviaremos una constancia de recepción y atenderemos su reclamo o queja dentro del
+          plazo establecido por la normativa vigente. La formulación del reclamo no impide acudir a
+          otras vías de solución de controversias ni es requisito previo para interponer una
+          denuncia ante el INDECOPI.
+        </p>
+
+        <div class="mt-8">
+          <Button href={emailHref} icon="mail">
+            Enviar reclamo o queja por correo
+          </Button>
+        </div>
+      </div>
+    </Container>
+  </div>
+
+  <CtaBand />
+</BaseLayout>

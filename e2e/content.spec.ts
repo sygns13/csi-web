@@ -1,7 +1,8 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
-import { productCategorySlugs, serviceSlugs } from "./routes";
+import { productCategorySlugs, routes, serviceSlugs } from "./routes";
 
-// Contenido del Tramo 2 (§6.1–6.4): secciones, tarjetas clicables, enlaces de cotización y JSON-LD.
+// Contenido (§6): secciones, tarjetas clicables, enlaces de cotización, JSON-LD, páginas
+// institucionales y legales, robots.txt y sitemap.
 
 /** Tipos de JSON-LD presentes en la página. */
 async function jsonLdTypes(page: Page): Promise<string[]> {
@@ -137,9 +138,9 @@ test.describe("Servicios", () => {
 
     await page.goto("/servicios/inteligencia-artificial/");
     await expect(page.getByRole("heading", { name: "Capacidades tecnológicas" })).toBeVisible();
-    const related = page.locator('section[aria-labelledby="relacionados-title"] li');
+    const related = page.locator('section[aria-labelledby="relacionados-title"] h3');
     await expect(related).toHaveCount(2);
-    await expect(related.locator("h3").first()).toContainText("APUBOT 2.0");
+    await expect(related.first()).toContainText("APUBOT 2.0");
   });
 });
 
@@ -175,5 +176,167 @@ test.describe("Productos", () => {
     expect(catalog.itemListElement).toHaveLength(8);
     expect(catalog.itemListElement[0]?.itemOffered.name).toBe("Equipos de cómputo");
     expect(JSON.stringify(catalog)).not.toMatch(/price/i);
+  });
+});
+
+test.describe("Nosotros", () => {
+  test("secciones, datos de la empresa, gerencia y trayectoria", async ({ page }) => {
+    await page.goto("/nosotros/");
+    await expect(page.locator("h1")).toHaveText("Construyendo Soluciones Informáticas");
+    const main = page.locator("main");
+    for (const name of [
+      "Quiénes somos",
+      "Misión",
+      "Visión",
+      "Nuestros valores",
+      "Datos de la empresa",
+      "Gerencia",
+      "Nuestra organización",
+      "Trayectoria",
+    ]) {
+      await expect(main.getByRole("heading", { level: 2, name, exact: true })).toBeVisible();
+    }
+    await expect(
+      main.locator('[lang="en"]', { hasText: "Building Computer Solutions" }),
+    ).toHaveCount(2);
+
+    const values = main.locator('section[aria-labelledby="valores-title"] h3');
+    await expect(values).toHaveText([
+      "Compromiso",
+      "Calidad técnica",
+      "Innovación responsable",
+      "Accesibilidad e inclusión",
+      "Transparencia",
+      "Cercanía",
+    ]);
+
+    const data = main.locator('section[aria-labelledby="datos-title"] dl');
+    await expect(data.locator("dt")).toHaveCount(10);
+    await expect(
+      data.locator("dt", { hasText: "RUC" }).locator("xpath=following-sibling::dd[1]"),
+    ).toHaveText("20606674415");
+
+    await expect(main.locator('section[aria-labelledby="organizacion-title"] h3')).toHaveCount(7);
+    const years = main.locator('section[aria-labelledby="trayectoria-title"] ol > li h3');
+    await expect(years).toHaveText(["2020", "2021", "2022", "2023", "2024", "2025", "2026"]);
+
+    // Gerencia: nombre, cargo y enlaces externos (§5.6).
+    const manager = main.locator('section[aria-labelledby="gerencia-title"]');
+    await expect(manager.getByRole("heading", { level: 3 })).toHaveText(
+      "Cristian Fernando Chávez Torres",
+    );
+    await expect(manager.getByRole("heading", { level: 4 })).toHaveText([
+      "Trayectoria",
+      "Certificaciones y formación",
+    ]);
+    const linkedin = manager.getByRole("link", { name: /^LinkedIn/ });
+    await expect(linkedin).toHaveAttribute(
+      "href",
+      "https://www.linkedin.com/in/cristian-chavez-38272b120",
+    );
+    await expect(linkedin).toHaveAttribute("target", "_blank");
+    await expect(linkedin).toHaveAttribute("rel", "noopener noreferrer");
+    await expect(manager.getByRole("link", { name: /^GitHub/ })).toHaveAttribute(
+      "href",
+      "https://github.com/sygns13",
+    );
+  });
+
+  test("foto del Gerente o monograma, coherente con el JSON-LD", async ({ page }) => {
+    await page.goto("/nosotros/");
+    const portrait = page.locator("[data-manager-portrait]");
+    const mode = await portrait.getAttribute("data-manager-portrait");
+    const org = await jsonLd<{ founder: { image?: string; jobTitle: string } }>(
+      page,
+      "Organization",
+    );
+    expect(org.founder.jobTitle).toBe("Gerente General");
+
+    if (mode === "photo") {
+      const img = portrait.getByRole("img", {
+        name: "Cristian Fernando Chávez Torres, Gerente General de Construyendo Soluciones Informáticas",
+      });
+      await expect(img).toHaveAttribute("loading", "lazy");
+      await expect(portrait.locator('source[type="image/avif"]')).toHaveCount(1);
+      expect(org.founder.image).toMatch(/^https:\/\/bcscode\.com\/_astro\/.+\.webp$/);
+    } else {
+      // Monograma temporal (§6.7): decorativo y sin imagen en el JSON-LD.
+      expect(mode).toBe("monogram");
+      await expect(portrait.locator('[aria-hidden="true"]')).toHaveText("CC");
+      await expect(portrait.locator("img")).toHaveCount(0);
+      expect(org.founder.image).toBeUndefined();
+    }
+  });
+});
+
+test.describe("Páginas legales", () => {
+  test("Libro de Reclamaciones: requisitos y correo con plantilla", async ({ page }) => {
+    await page.goto("/libro-de-reclamaciones/");
+    await expect(page.locator("h1")).toHaveText("Libro de Reclamaciones");
+    await expect(page.locator("main")).toContainText("Ley N.° 29571");
+    const button = page.getByRole("link", { name: "Enviar reclamo o queja por correo" });
+    const href = (await button.getAttribute("href")) ?? "";
+    expect(href.startsWith("mailto:construyendosolucionesbcs@gmail.com?subject=")).toBe(true);
+    const params = new URLSearchParams(href.slice(href.indexOf("?") + 1));
+    expect(params.get("subject")).toBe("Libro de Reclamaciones");
+    const body = params.get("body") ?? "";
+    expect(body).toContain("Nombres y apellidos: ");
+    expect(body).toContain("Pedido concreto: ");
+    await expect(
+      page.getByRole("heading", { name: "Diferencia entre reclamo y queja" }),
+    ).toBeVisible();
+  });
+
+  test("Privacidad: fecha de actualización y 8 secciones", async ({ page }) => {
+    await page.goto("/privacidad/");
+    await expect(page.locator("main time").first()).toHaveAttribute(
+      "datetime",
+      /^\d{4}-\d{2}-\d{2}$/,
+    );
+    await expect(page.locator("main")).toContainText(
+      /Última actualización: \d{1,2} de \p{L}+ de \d{4}/u,
+    );
+    const sections = page.locator("main h2").filter({ hasText: /^\d\. / });
+    await expect(sections).toHaveCount(8);
+    await expect(sections.first()).toHaveText("1. Responsable");
+  });
+
+  test("Accesibilidad: medidas, evaluación y contacto", async ({ page }) => {
+    await page.goto("/accesibilidad/");
+    await expect(page.locator("main h2")).toHaveText([
+      "Medidas adoptadas",
+      "Evaluación",
+      "¿Encontró una barrera?",
+      "¿Tiene un proyecto o un requerimiento?",
+    ]);
+    await expect(page.locator("main")).toContainText("Fecha de la última evaluación:");
+    await expect(
+      page.locator("main").getByRole("link", { name: /^\+1 717 883 9161/ }),
+    ).toHaveAttribute("target", "_blank");
+  });
+});
+
+test.describe("robots.txt y sitemap", () => {
+  test("robots.txt según §9.5", async ({ request }) => {
+    const res = await request.get("/robots.txt");
+    expect(res.status()).toBe(200);
+    expect((await res.text()).trim()).toBe(
+      "User-agent: *\nAllow: /\nSitemap: https://bcscode.com/sitemap-index.xml",
+    );
+  });
+
+  test("el sitemap lista todas las rutas, sin la 404", async ({ request }) => {
+    const index = await (await request.get("/sitemap-index.xml")).text();
+    const sitemaps = [...index.matchAll(/<loc>https:\/\/bcscode\.com(\/[^<]+)<\/loc>/g)].map(
+      (m) => m[1] ?? "",
+    );
+    const locs: string[] = [];
+    for (const path of sitemaps) {
+      const xml = await (await request.get(path)).text();
+      locs.push(
+        ...[...xml.matchAll(/<loc>https:\/\/bcscode\.com([^<]*)<\/loc>/g)].map((m) => m[1] ?? ""),
+      );
+    }
+    expect(locs.sort()).toEqual([...routes].sort());
   });
 });

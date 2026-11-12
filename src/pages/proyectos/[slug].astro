@@ -1,0 +1,180 @@
+---
+// Proyecto — detalle (§6.6). Descripción funcional, sin stack ni datos internos (§1.4, §7.3).
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/ui/Container.astro";
+import Card from "../../components/ui/Card.astro";
+import HexList from "../../components/ui/HexList.astro";
+import Icon from "../../components/ui/Icon.astro";
+import PageHeader from "../../components/sections/PageHeader.astro";
+import CtaBand from "../../components/sections/CtaBand.astro";
+import ProjectVisual from "../../components/visuals/ProjectVisual.astro";
+import { t } from "../../i18n";
+import {
+  adjacentProjects,
+  getProjects,
+  getServices,
+  projectDatetime,
+  projectHref,
+  sectorLabel,
+  serviceHref,
+  type Project,
+} from "../../lib/content";
+import { creativeWork } from "../../lib/jsonld";
+
+export const getStaticPaths = (async () => {
+  const projects = await getProjects();
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project, ...adjacentProjects(projects, project.id) },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  project: Project;
+  prev?: Project;
+  next?: Project;
+}
+
+const { project, prev, next } = Astro.props;
+const { title, shortTitle, client, sector, date, dateLabel, visual, summary } = project.data;
+const { context, solution, contribution, seo } = project.data;
+const path = projectHref(project.id);
+
+const allServices = await getServices();
+const services = project.data.services.map((ref) => {
+  const service = allServices.find((item) => item.id === ref.id);
+  if (!service) throw new Error(`Servicio inexistente: "${ref.id}".`);
+  return service;
+});
+
+const facts = "text-sm font-semibold text-text-muted";
+const pager = [
+  prev && { project: prev, label: t("projects.prev"), icon: "arrow-left" as const, align: "start" },
+  next && { project: next, label: t("projects.next"), icon: "arrow-right" as const, align: "end" },
+].filter((item) => Boolean(item)) as {
+  project: Project;
+  label: string;
+  icon: "arrow-left" | "arrow-right";
+  align: "start" | "end";
+}[];
+---
+
+<BaseLayout
+  title={seo.title}
+  description={seo.description}
+  canonicalPath={path}
+  ogType="article"
+  breadcrumbs={[
+    { name: t("nav.projects"), href: "/proyectos/" },
+    { name: shortTitle, href: path },
+  ]}
+  jsonLd={[creativeWork({ name: title, about: summary, dateCreated: date, path })]}
+>
+  <PageHeader eyebrow={client} title={title} lead={summary}>
+    <dl class="grid grid-cols-1 gap-x-8 gap-y-4 rounded-card border border-border bg-surface p-5 shadow-card sm:grid-cols-2 sm:p-6">
+      <div class="sm:col-span-2">
+        <dt class={facts}>{t("projects.client")}</dt>
+        <dd class="mt-1 text-text">{client}</dd>
+      </div>
+      <div>
+        <dt class={facts}>{t("projects.sector")}</dt>
+        <dd class="mt-1 text-text">{sectorLabel(sector)}</dd>
+      </div>
+      <div>
+        <dt class={facts}>{t("projects.date")}</dt>
+        <dd class="mt-1 text-text">
+          <time datetime={projectDatetime(project)}>{dateLabel}</time>
+        </dd>
+      </div>
+      <div class="sm:col-span-2">
+        <dt class={facts}>{t("projects.services")}</dt>
+        <dd class="mt-1">
+          <ul class="flex flex-wrap gap-x-5 gap-y-1">
+            {services.map((service) => (
+              <li>
+                <a href={serviceHref(service.id)} class="link inline-flex min-h-6 items-center">
+                  {service.data.navLabel}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </dd>
+      </div>
+    </dl>
+  </PageHeader>
+
+  <section aria-labelledby="contexto-title" class="bg-bg">
+    <Container class="grid items-center gap-10 py-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-16 lg:py-24">
+      <ProjectVisual
+        variant={visual}
+        class="w-full rounded-card border border-border shadow-card-hover lg:order-last"
+      />
+      <div>
+        <h2 id="contexto-title" class="text-h2 font-bold text-text">
+          {t("projects.context")}
+        </h2>
+        <p class="mt-4 max-w-[65ch] text-lead text-text-muted">{context}</p>
+      </div>
+    </Container>
+  </section>
+
+  <div class="bg-surface-2">
+    <Container class="grid grid-cols-1 gap-6 py-16 lg:grid-cols-2 lg:gap-8 lg:py-24">
+      <section aria-labelledby="solucion-title">
+        <Card accent class="h-full sm:p-8">
+          <h2 id="solucion-title" class="text-h2 font-bold text-text">
+            {t("projects.solution")}
+          </h2>
+          <HexList items={solution} class="mt-6 text-text" />
+        </Card>
+      </section>
+      <section aria-labelledby="aporte-title">
+        <Card accent class="h-full sm:p-8">
+          <h2 id="aporte-title" class="text-h2 font-bold text-text">
+            {t("projects.contribution")}
+          </h2>
+          <ul class="mt-6 grid gap-y-3 text-text">
+            {contribution.map((item) => (
+              <li class="flex gap-3">
+                <Icon name="circle-check" size={20} class="mt-0.5 text-brand" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      </section>
+    </Container>
+  </div>
+
+  <nav aria-label={t("projects.pagination")} class="bg-bg">
+    <Container class="py-12 lg:py-16">
+      <ul class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+        {pager.map((item) => (
+          <li class:list={["h-full", item.align === "end" && "md:col-start-2"]}>
+            <a
+              href={projectHref(item.project.id)}
+              class:list={[
+                "group flex h-full flex-col gap-2 rounded-card border border-border bg-surface p-5 shadow-card transition duration-200 hover:shadow-card-hover motion-safe:hover:-translate-y-0.5 sm:p-6",
+                item.align === "end" && "md:items-end md:text-right",
+              ]}
+            >
+              <span class="inline-flex items-center gap-2 text-sm font-semibold text-link">
+                {item.align === "start" && <Icon name={item.icon} size={20} />}
+                {item.label}
+                {item.align === "end" && <Icon name={item.icon} size={20} />}
+              </span>
+              {/* Separa la etiqueta del título en el nombre accesible del enlace. */}
+              <span class="sr-only">: </span>
+              <span class="font-display font-semibold text-text decoration-2 underline-offset-4 group-hover:underline">
+                {item.project.data.title}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </Container>
+  </nav>
+
+  <CtaBand />
+</BaseLayout>
