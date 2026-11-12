@@ -104,8 +104,8 @@ El repositorio es público: se clona por HTTPS, sin deploy key ni credenciales.
 
 ```bash
 curl -sI https://bcscode.com/                      # 200, cabeceras de seguridad, cache-control: no-cache
-curl -sI https://www.bcscode.com/                  # 301 → https://bcscode.com/
-curl -sI http://bcscode.com/                       # redirección a https
+curl -sI https://www.bcscode.com/                  # 308 → https://bcscode.com/ (conserva ruta y query)
+curl -sI http://bcscode.com/                       # 308 → https://bcscode.com/
 curl -sI https://bcscode.com/servicios             # 301 → /servicios/
 curl -s -o /dev/null -w '%{http_code}\n' https://bcscode.com/no-existe/   # 404 (página propia)
 curl -s -o /dev/null -w '%{http_code}\n' https://bcscode.com/sitemap-index.xml   # 200
@@ -119,7 +119,15 @@ Cabeceras esperadas en todas las respuestas: `content-security-policy` (con el h
 `no-cache` en HTML, `public, max-age=31536000, immutable` en `/_astro/` y `public, max-age=604800` en
 imágenes, íconos y `site.webmanifest` (`application/manifest+json`).
 
-**Si `http://bcscode.com/` devuelve 404 de Traefik** (no hay redirección global de `web` a `websecure`), agregar
+Traefik v2.11 responde **308** (permanente, equivale a 301 para los buscadores) tanto en la redirección
+`www` → raíz (`redirectregex` con `permanent=true`) como en la de http → https. En este servidor la redirección de
+`web` a `websecure` ya es global (argumentos de Traefik), así que no hace falta un router propio para http.
+
+Con certificado válido, la consola del navegador debe quedar sin infracciones de CSP en todas las páginas. Para
+repetir en producción las suites de Playwright, basta una configuración temporal que extienda `baseConfig` de
+`playwright.config.ts` con `use.baseURL = "https://bcscode.com"` (y sin `webServer`).
+
+**Si algún día `http://bcscode.com/` devuelve 404 de Traefik** (sin redirección global de `web` a `websecure`), agregar
 a `docker-compose.yml` un router propio, sin tocar Traefik:
 
 ```yaml
@@ -133,8 +141,12 @@ a `docker-compose.yml` un router propio, sin tocar Traefik:
 ### 3.6. Después del despliegue
 
 - Lighthouse móvil en producción (objetivo §11: Rendimiento ≥ 95; Accesibilidad, Buenas prácticas y SEO 100).
-- Validador de Schema.org: <https://validator.schema.org/> con cada tipo de página (Inicio, un servicio,
-  Productos, un proyecto, Nosotros).
+- Validador de Schema.org (manual: bloquea las consultas automatizadas), con cada tipo de página:
+  <https://validator.schema.org/#url=https%3A%2F%2Fbcscode.com%2F>,
+  <https://validator.schema.org/#url=https%3A%2F%2Fbcscode.com%2Fservicios%2Finteligencia-artificial%2F>,
+  <https://validator.schema.org/#url=https%3A%2F%2Fbcscode.com%2Fproductos%2F>,
+  <https://validator.schema.org/#url=https%3A%2F%2Fbcscode.com%2Fproyectos%2Fapubot-2-csj-ancash%2F> y
+  <https://validator.schema.org/#url=https%3A%2F%2Fbcscode.com%2Fnosotros%2F>.
 - El propietario da de alta el sitio en Google Search Console y Bing Webmaster Tools y envía
   `https://bcscode.com/sitemap-index.xml` (ver §7).
 

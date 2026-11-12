@@ -4,12 +4,12 @@ Bitácora entre sesiones (§0, regla 8). La spec (`docs/sitio-web-csi.spec.md`) 
 
 ## Estado
 
-| Tramo                                           | Estado                        | Fecha      |
-| ----------------------------------------------- | ----------------------------- | ---------- |
-| 1. Fundaciones y sistema de diseño              | **Hecho** (commit)            | 12/11/2026 |
-| 2. Servicios, productos e Inicio                | **Hecho** (commit)            | 12/11/2026 |
-| 3. Proyectos, institucional, contacto y legales | **Hecho** (commit)            | 12/11/2026 |
-| 4. QA final y despliegue                        | QA hecho; despliegue en curso | 12/11/2026 |
+| Tramo                                           | Estado                         | Fecha      |
+| ----------------------------------------------- | ------------------------------ | ---------- |
+| 1. Fundaciones y sistema de diseño              | **Hecho** (commit)             | 12/11/2026 |
+| 2. Servicios, productos e Inicio                | **Hecho** (commit)             | 12/11/2026 |
+| 3. Proyectos, institucional, contacto y legales | **Hecho** (commit)             | 12/11/2026 |
+| 4. QA final y despliegue                        | **Hecho** (commit, desplegado) | 12/11/2026 |
 
 ---
 
@@ -543,6 +543,39 @@ Aún no publicados (se construyen en el Tramo 3), se listan para seguimiento:
   advertencias; luego empezó a responder 405, así que la revalidación final se hace por URL después del
   despliegue. Desde aquella validación, el único cambio en JSON-LD es el texto `about` de APUBOT 2.0 (D51).
 
+### Despliegue (§16.3; cada paso con autorización expresa del propietario)
+
+1. **Antes**: commit `d565d42` y push a `origin/master` (autorizado). P9: el propietario confirmó la IP del VPS
+   (solo en la spec original; no se escribe en el repositorio).
+2. **Paso 1** (comandos ejecutados por el propietario por SSH): Traefik v2.11 en la red `onedoy_app-network`, con
+   entrypoints `web`/`websecure`, certresolver `myresolver` (reto TLS-ALPN), `exposedbydefault=false` y
+   redirección global de `web` a `websecure`. Coincide con `docker-compose.yml`: sin cambios.
+3. **Paso 2**: ningún contenedor usa `Host(bcscode.com)` ni `Host(www.bcscode.com)`.
+4. **Paso 3 (DNS)**: ya estaba listo (`A @` al VPS, `CNAME www` a la raíz, sin AAAA). No se tocó nada. Antes del
+   despliegue, la raíz respondía 404 de Traefik con su certificado por defecto.
+5. **Paso 4**: clonado por HTTPS en `<RUTA_DEL_PROYECTO>` (disco y memoria holgados), `docker compose config`
+   correcto y `docker compose up -d --build`: 31 páginas, imagen `csi-web:latest`, contenedor `csi-web` sin puertos
+   publicados. Traefik lo enruta (solo enruta contenedores con healthcheck en estado `healthy`).
+6. **Paso 5 (verificaciones)**:
+   - Certificado de Let's Encrypt para `bcscode.com` y `www.bcscode.com` (vigente hasta el 10/02/2027); el log de
+     Traefik no muestra errores de ACME.
+   - `https://bcscode.com/`: 200 con todas las cabeceras de §16.2 (CSP con el hash, HSTS sin `includeSubDomains`)
+     y `cache-control: no-cache`. `www` → 308 a la raíz (conserva ruta y query); `http://` → 308 a `https://`;
+     `/servicios` → 301 a `/servicios/`; `/no-existe/` → 404 propia; sitemap, robots, manifest
+     (`application/manifest+json`) y OG con su tipo.
+   - Suites de Playwright contra `https://bcscode.com` (configuración temporal, borrada): **303 pasan, 89
+     omitidas**, las mismas que en local.
+   - Consola del navegador en las 31 rutas (móvil y escritorio, 62 cargas): sin infracciones de CSP ni errores de
+     JS; el script de tema se ejecuta (solo aparece el 404 esperado de `/no-existe/`).
+7. **Después**: **Lighthouse móvil en producción** en las 30 rutas: Rendimiento, Accesibilidad, Buenas prácticas y
+   SEO **100** en todas; LCP 1.28–1.52 s; CLS 0; TBT 0 ms; 110–122 KB. El validador de Schema.org ya no acepta
+   consultas automatizadas (redirige a la verificación anti-bots de Google): las URLs para validarlo a mano están en
+   `docs/DESPLIEGUE.md` §3.6. Alta en Search Console y Bing: acción del propietario (P10, `docs/DESPLIEGUE.md` §7).
+
+**D59. Redirecciones 308**: Traefik v2.11 responde 308 (permanente) en `www` → raíz (`redirectregex` con
+`permanent=true`) y en http → https. La spec (§16.3) esperaba 301 para `www`; 308 es la variante permanente que
+conserva el método y los buscadores la tratan igual. `docs/DESPLIEGUE.md` se actualizó.
+
 ### Limitaciones del arnés (no son defectos del sitio)
 
 - **WebKit** (Safari): Tab no recorre enlaces por defecto (Safari requiere "Resaltar cada ítem con Tab" u
@@ -576,8 +609,9 @@ Registrar aquí los hallazgos que surjan.
 
 ### Pendientes
 
-- Despliegue (§16.3) con autorización del propietario en cada paso; después: Lighthouse en producción, validación
-  de Schema.org por URL y alta en Search Console y Bing (P10).
+- **Acción del propietario**: alta en Google Search Console y Bing Webmaster Tools y envío del sitemap (P10).
+- **Acción del propietario**: validar el JSON-LD a mano con las URLs de `docs/DESPLIEGUE.md` §3.6 (la validación
+  automatizada previa no tuvo errores ni advertencias).
 - **Acción del propietario (en espera)**: foto del Gerente cuadrada ≥ 800×800 (sigue el monograma "CC").
 - Revisión manual con NVDA y dispositivos reales (lista de arriba).
 
