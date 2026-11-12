@@ -1,0 +1,42 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "../components/ui/Container.astro";
+import Button from "../components/ui/Button.astro";
+import CtaBand from "../components/sections/CtaBand.astro";
+import BrokenHexVisual from "../components/visuals/BrokenHexVisual.astro";
+import { t } from "../i18n";
+---
+
+<BaseLayout
+  title={`${t("404.title")} | CSI`}
+  description={t("404.text")}
+  canonicalPath="/404/"
+  noindex
+>
+  <section class="relative overflow-hidden bg-surface-tint">
+    <div class="absolute inset-0 bg-dot-grid" aria-hidden="true"></div>
+    <Container class="relative grid items-center gap-10 py-16 lg:grid-cols-2 lg:py-24">
+      <div>
+        <h1 class="text-h1 font-bold text-text">{t("404.title")}</h1>
+        <p class="mt-4 text-lead text-text-muted">{t("404.text")}</p>
+        <ul class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <li>
+            <Button href="/">{t("404.home")}</Button>
+          </li>
+          <li>
+            <Button href="/servicios/" variant="secondary">
+              {t("404.services")}
+            </Button>
+          </li>
+          <li>
+            <Button href="/contacto/" variant="secondary">
+              {t("404.contact")}
+            </Button>
+          </li>
+        </ul>
+      </div>
+      <BrokenHexVisual class="mx-auto w-full max-w-md" />
+    </Container>
+  </section>
+  <CtaBand />
+</BaseLayout>

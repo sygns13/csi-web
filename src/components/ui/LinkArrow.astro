@@ -1,0 +1,35 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Icon from "./Icon.astro";
+
+interface Props extends Omit<HTMLAttributes<"a">, "class"> {
+  href: string;
+  /** Texto oculto que da contexto al enlace (WCAG 2.4.4), p. ej. el título de la tarjeta. */
+  srContext?: string;
+  /** Hace clicable toda la tarjeta contenedora (patrón de enlace extendido, §4.7). */
+  stretched?: boolean;
+  class?: string;
+}
+
+const { href, srContext, stretched = false, class: className, ...rest } = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    "group inline-flex min-h-6 items-center gap-1.5 font-semibold text-link underline-offset-4 hover:underline",
+    stretched && "link-stretched",
+    className,
+  ]}
+  {...rest}
+>
+  <span>
+    <slot />
+    {srContext && <span class="sr-only">: {srContext}</span>}
+  </span>
+  <Icon
+    name="arrow-right"
+    size={20}
+    class="transition-transform duration-150 motion-safe:group-hover:translate-x-0.5"
+  />
+</a>

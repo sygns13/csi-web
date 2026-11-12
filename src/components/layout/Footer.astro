@@ -1,0 +1,124 @@
+---
+import Logo from "./Logo.astro";
+import Container from "../ui/Container.astro";
+import Icon from "../ui/Icon.astro";
+import BrandIcon from "../ui/BrandIcon.astro";
+import { companyNav, legalNav, servicesNav, serviceHref } from "../../config/navigation";
+import { site } from "../../config/site";
+import { t } from "../../i18n";
+import { buildYear } from "../../lib/format";
+import { mailtoUrl, whatsappUrl } from "../../lib/links";
+
+interface Props {
+  /** Reserva espacio inferior para el botón flotante de WhatsApp (§5.4). */
+  withFab?: boolean;
+}
+
+const { withFab = false } = Astro.props;
+const waHref = whatsappUrl(t("wa.defaultMessage"));
+
+const heading = "font-display text-base font-semibold text-footer-text";
+const link =
+  "inline-flex min-h-11 items-center text-footer-muted underline-offset-4 transition-colors duration-150 hover:text-footer-accent hover:underline";
+const social = [
+  { name: "facebook", href: site.social.facebook, label: t("footer.facebook") },
+  { name: "youtube", href: site.social.youtube, label: t("footer.youtube") },
+] as const;
+---
+
+<footer class:list={["relative bg-footer-bg text-footer-text", withFab && "pb-24"]}>
+  <div class="h-1 bg-brand-gradient" aria-hidden="true"></div>
+  <Container class="py-14 lg:py-16">
+    <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr] lg:gap-8">
+      <div>
+        <Logo variant="footer" />
+        <p class="mt-5 max-w-[34ch] text-footer-muted">{t("footer.tagline")}</p>
+        <p class="mt-4 text-sm text-footer-text">{t("footer.ruc", { ruc: site.ruc })}</p>
+        <p class="mt-1 text-sm text-footer-muted">{t("footer.rnp")}</p>
+      </div>
+
+      <nav aria-label={t("nav.footerServices")}>
+        <h2 class={heading}>{t("nav.services")}</h2>
+        <ul class="mt-3">
+          {servicesNav.map((service) => (
+            <li>
+              <a href={serviceHref(service.slug)} class={link}>
+                {service.navLabel}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <nav aria-label={t("nav.footer")}>
+        <h2 class={heading}>{t("nav.company")}</h2>
+        <ul class="mt-3">
+          {companyNav.map((item) => (
+            <li>
+              <a href={item.href} class={link}>
+                {t(item.key)}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div>
+        <h2 class={heading}>{t("nav.contact")}</h2>
+        <ul class="mt-3">
+          <li>
+            <a href={waHref} class:list={[link, "gap-2"]} target="_blank" rel="noopener noreferrer">
+              <BrandIcon name="whatsapp" size={20} />
+              <span>
+                {`${t("contact.whatsapp")} ${site.whatsapp.display}`}
+                <span class="sr-only">{` ${t("a11y.newTab")}`}</span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href={site.phone.tel} class:list={[link, "gap-2"]}>
+              <Icon name="phone" size={20} />
+              <span>{`${t("contact.calls")} ${site.phone.display}`}</span>
+            </a>
+          </li>
+          <li>
+            <a href={mailtoUrl()} class:list={[link, "gap-2 break-all"]}>
+              <Icon name="mail" size={20} />
+              <span>{site.email}</span>
+            </a>
+          </li>
+        </ul>
+        <ul class="mt-4 flex gap-2">
+          {social.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex size-11 items-center justify-center rounded-full border border-footer-muted text-footer-text transition-colors duration-150 hover:border-footer-accent hover:text-footer-accent"
+              >
+                <BrandIcon name={item.name} size={20} />
+                <span class="sr-only">{`${item.label} ${t("a11y.newTab")}`}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-col gap-4 border-t border-footer-muted/25 pt-6 text-sm text-footer-muted lg:flex-row lg:items-center lg:justify-between">
+      <p>{`© ${buildYear} ${site.legalName} ${t("footer.rights")}`}</p>
+      <nav aria-label={t("nav.footerLegal")}>
+        <ul class="flex flex-wrap gap-x-6">
+          {legalNav.map((item) => (
+            <li>
+              <a href={item.href} class={link}>
+                {t(item.key)}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </Container>
+</footer>

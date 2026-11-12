@@ -1,0 +1,35 @@
+---
+import type { HTMLTag } from "astro/types";
+
+interface Props {
+  as?: HTMLTag;
+  /** Tarjeta-enlace: hover con sombra y desplazamiento. Debe contener un enlace con `link-stretched`. */
+  interactive?: boolean;
+  /** Barra de acento superior con el degradado de marca (§4.4). */
+  accent?: boolean;
+  /** Fondo alternativo (p. ej. la tarjeta de cierre "¿Necesita otra solución?"). */
+  tone?: "surface" | "surface-2";
+  class?: string;
+}
+
+const {
+  as: Tag = "div",
+  interactive = false,
+  accent = false,
+  tone = "surface",
+  class: className,
+} = Astro.props;
+---
+
+<Tag
+  class:list={[
+    "relative overflow-hidden rounded-card border border-border p-6 shadow-card",
+    tone === "surface" ? "bg-surface" : "bg-surface-2",
+    interactive &&
+      "transition duration-200 hover:shadow-card-hover motion-safe:hover:-translate-y-0.5",
+    accent && "before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-brand-gradient",
+    className,
+  ]}
+>
+  <slot />
+</Tag>

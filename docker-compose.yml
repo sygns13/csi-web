@@ -1,0 +1,29 @@
+name: csi-web
+
+services:
+  web:
+    build: .
+    image: csi-web:latest
+    container_name: csi-web
+    restart: always
+    networks: [proxy]
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=onedoy_app-network"
+      - "traefik.http.routers.csi-web.rule=Host(`bcscode.com`) || Host(`www.bcscode.com`)"
+      - "traefik.http.routers.csi-web.entrypoints=websecure"
+      - "traefik.http.routers.csi-web.tls.certresolver=myresolver"
+      - "traefik.http.routers.csi-web.middlewares=csi-web-www-redirect"
+      - "traefik.http.middlewares.csi-web-www-redirect.redirectregex.regex=^https://www\\.bcscode\\.com/(.*)"
+      - "traefik.http.middlewares.csi-web-www-redirect.redirectregex.replacement=https://bcscode.com/$${1}"
+      - "traefik.http.middlewares.csi-web-www-redirect.redirectregex.permanent=true"
+      - "traefik.http.services.csi-web.loadbalancer.server.port=80"
+
+networks:
+  proxy:
+    external: true
+    name: onedoy_app-network

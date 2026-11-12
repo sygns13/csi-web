@@ -1,0 +1,75 @@
+---
+import Icon from "../ui/Icon.astro";
+import { t } from "../../i18n";
+
+interface Props {
+  /** Muestra el texto "Modo oscuro" visible (variante de fila para el menú móvil). */
+  showLabel?: boolean;
+  class?: string;
+}
+
+const { showLabel = false, class: className } = Astro.props;
+---
+
+<button
+  type="button"
+  aria-pressed="false"
+  data-theme-toggle
+  class:list={[
+    "items-center rounded-control transition-colors duration-150 hover:bg-surface-2",
+    showLabel
+      ? "flex min-h-12 w-full gap-3 px-2 text-lg font-semibold text-text"
+      : "inline-flex size-11 justify-center text-text-muted hover:text-text",
+    className,
+  ]}
+>
+  <Icon name="moon" size={showLabel ? 24 : 20} class="dark:hidden" />
+  <Icon name="sun" size={showLabel ? 24 : 20} class="hidden dark:block" />
+  <span class={showLabel ? undefined : "sr-only"}>{t("theme.toggle")}</span>
+</button>
+
+<script>
+  import {
+    applyTheme,
+    currentTheme,
+    readStoredTheme,
+    storeTheme,
+    systemTheme,
+    type Theme,
+  } from "../../lib/theme";
+
+  // Colores de la barra del navegador por tema (§4.8).
+  const THEME_COLOR: Record<Theme, string> = { light: "#F6F9FC", dark: "#0A1422" };
+  const buttons = document.querySelectorAll<HTMLButtonElement>("[data-theme-toggle]");
+
+  function sync(theme: Theme): void {
+    buttons.forEach((button) => {
+      button.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+    });
+    // Si el usuario eligió un tema, la barra del navegador lo sigue.
+    if (readStoredTheme()) {
+      document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((meta) => {
+        meta.content = THEME_COLOR[theme];
+      });
+    }
+  }
+
+  sync(currentTheme());
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const next: Theme = currentTheme() === "dark" ? "light" : "dark";
+      applyTheme(next);
+      storeTheme(next);
+      sync(next);
+    });
+  });
+
+  // Sin preferencia guardada, el sitio sigue al sistema (§4.8).
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+    if (readStoredTheme()) return;
+    const theme = systemTheme();
+    applyTheme(theme);
+    sync(theme);
+  });
+</script>

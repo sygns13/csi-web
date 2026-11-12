@@ -1,0 +1,39 @@
+---
+import Container from "../ui/Container.astro";
+import HexIcon from "../ui/HexIcon.astro";
+import type { IconName } from "../ui/icons";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  /** Ícono hexagonal grande a la derecha (≥ lg), p. ej. en el detalle de servicio. */
+  icon?: IconName;
+}
+
+const { eyebrow, title, lead, icon } = Astro.props;
+---
+
+<!-- Encabezado de página interior (fondo --surface-tint + retícula de puntos). -->
+<div class="relative overflow-hidden bg-surface-tint">
+  <div class="absolute inset-0 bg-dot-grid" aria-hidden="true"></div>
+  <Container class="relative py-10 lg:py-14">
+    <div class="flex items-start justify-between gap-8">
+      <div class="max-w-3xl">
+        {eyebrow && <p class="text-eyebrow font-semibold text-accent-text uppercase">{eyebrow}</p>}
+        <h1 class:list={["text-h1 font-bold text-text", eyebrow && "mt-2"]}>{title}</h1>
+        {lead && <p class="mt-4 max-w-[65ch] text-lead text-text-muted">{lead}</p>}
+        {Astro.slots.has("default") && (
+          <div class="mt-6">
+            <slot />
+          </div>
+        )}
+      </div>
+      {icon && (
+        <div class="hidden lg:block">
+          <HexIcon icon={icon} size="lg" />
+        </div>
+      )}
+    </div>
+  </Container>
+</div>

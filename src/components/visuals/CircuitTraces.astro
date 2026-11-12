@@ -1,0 +1,41 @@
+---
+// Trazas de circuito decorativas (§4.4): líneas horizontales que terminan en círculos.
+interface Props {
+  class?: string;
+  /** Lado hacia el que se extienden las trazas. */
+  side?: "left" | "right";
+  /** Variante con las trazas cortadas (página 404). */
+  broken?: boolean;
+}
+
+const { class: className, side = "right", broken = false } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 480 220"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+  preserveAspectRatio="xMaxYMid meet"
+  class:list={["pointer-events-none", side === "left" && "-scale-x-100", className]}
+>
+  <g class="stroke-brand-cyan" stroke-width="2" stroke-linecap="round" opacity="0.55">
+    <path d={broken ? "M480 40H330l-24 22h-40M240 62h-50" : "M480 40H330l-24 22H190"} />
+    <path d={broken ? "M480 110H360M330 110h-70" : "M480 110H260"} />
+    <path d="M480 180H360l-24-22H230" />
+  </g>
+  <g class="stroke-brand" stroke-width="2" stroke-linecap="round" opacity="0.35">
+    <path d="M480 75H390l-18 16h-92" />
+    <path d={broken ? "M480 145h-90M370 145h-70" : "M480 145H300"} />
+  </g>
+  <g class="fill-surface stroke-brand-cyan" stroke-width="2" opacity="0.7">
+    <circle cx="182" cy="62" r="8"></circle>
+    <circle cx="252" cy="110" r="8"></circle>
+    <circle cx="222" cy="158" r="8"></circle>
+  </g>
+  <g class="fill-surface stroke-brand" stroke-width="2" opacity="0.45">
+    <circle cx="272" cy="91" r="7"></circle>
+    <circle cx="292" cy="145" r="7"></circle>
+  </g>
+</svg>

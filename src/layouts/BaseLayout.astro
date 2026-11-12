@@ -1,0 +1,106 @@
+---
+import "../styles/global.css";
+import interLatin from "../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+import SkipLink from "../components/layout/SkipLink.astro";
+import Header from "../components/layout/Header.astro";
+import Breadcrumbs from "../components/layout/Breadcrumbs.astro";
+import Footer from "../components/layout/Footer.astro";
+import WhatsAppFab from "../components/layout/WhatsAppFab.astro";
+import { t } from "../i18n";
+import { buildSeo, type Alternate } from "../lib/seo";
+import { breadcrumbList, organization, serializeJsonLd, type BreadcrumbItem } from "../lib/jsonld";
+import { themeInitScript } from "../lib/theme-init";
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath: string;
+  ogType?: "website" | "article";
+  noindex?: boolean;
+  /** Migas sin "Inicio" (se agrega solo). El último elemento es la página actual. */
+  breadcrumbs?: BreadcrumbItem[];
+  jsonLd?: object[];
+  /** Oculta el botón flotante de WhatsApp (p. ej. en /contacto/). */
+  hideCtaFab?: boolean;
+  /** Versiones en otros idiomas (vacío en v1, §12). */
+  alternates?: Alternate[];
+}
+
+const {
+  title,
+  description,
+  canonicalPath,
+  ogType = "website",
+  noindex = false,
+  breadcrumbs,
+  jsonLd = [],
+  hideCtaFab = false,
+  alternates = [],
+} = Astro.props;
+
+const seo = buildSeo({ title, description, canonicalPath, ogType, noindex, alternates });
+
+const crumbs: BreadcrumbItem[] | undefined =
+  breadcrumbs && breadcrumbs.length > 0
+    ? [{ name: t("nav.home"), href: "/" }, ...breadcrumbs]
+    : undefined;
+
+const structuredData: object[] = [
+  organization(),
+  ...jsonLd,
+  ...(crumbs ? [breadcrumbList(crumbs)] : []),
+];
+---
+
+<!doctype html>
+<html lang={seo.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline set:html={themeInitScript} />
+    <title>{seo.title}</title>
+    <meta name="description" content={seo.description} />
+    <meta name="robots" content={seo.robots} />
+
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#F6F9FC" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0A1422" media="(prefers-color-scheme: dark)" />
+
+    {!noindex && <link rel="canonical" href={seo.canonical} />}
+    {seo.alternates.map((alt) => (
+      <link rel="alternate" hreflang={alt.lang} href={alt.href} />
+    ))}
+    <meta property="og:type" content={seo.og.type} />
+    <meta property="og:title" content={seo.og.title} />
+    <meta property="og:description" content={seo.og.description} />
+    <meta property="og:url" content={seo.og.url} />
+    <meta property="og:image" content={seo.og.image} />
+    <meta property="og:image:width" content={String(seo.og.imageWidth)} />
+    <meta property="og:image:height" content={String(seo.og.imageHeight)} />
+    <meta property="og:image:alt" content={seo.og.imageAlt} />
+    <meta property="og:locale" content={seo.og.locale} />
+    <meta property="og:site_name" content={seo.og.siteName} />
+    <meta name="twitter:card" content={seo.twitterCard} />
+
+    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    {structuredData.map((data) => (
+      <script type="application/ld+json" set:html={serializeJsonLd(data)} />
+    ))}
+  </head>
+  <body data-fab={hideCtaFab ? undefined : ""}>
+    <SkipLink />
+    <Header />
+    {crumbs && <Breadcrumbs items={crumbs} />}
+    <main id="contenido" tabindex="-1">
+      <slot />
+    </main>
+    <Footer withFab={!hideCtaFab} />
+    {!hideCtaFab && <WhatsAppFab />}
+  </body>
+</html>

@@ -1,0 +1,18 @@
+---
+import BrandIcon from "../ui/BrandIcon.astro";
+import { t } from "../../i18n";
+import { whatsappUrl } from "../../lib/links";
+
+const href = whatsappUrl(t("wa.defaultMessage"));
+---
+
+<a
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="fixed right-[max(1rem,env(safe-area-inset-right))] bottom-[max(1rem,env(safe-area-inset-bottom))] z-30 inline-flex size-14 items-center justify-center rounded-full bg-primary text-on-primary shadow-card-hover transition-colors duration-150 hover:bg-primary-hover"
+  data-whatsapp-fab
+>
+  <BrandIcon name="whatsapp" size={28} />
+  <span class="sr-only">{`${t("fab.whatsapp")} ${t("a11y.newTab")}`}</span>
+</a>

@@ -1,0 +1,24 @@
+---
+import { icons, type IconName } from "./icons";
+
+interface Props {
+  name: IconName;
+  /** Tamaños de la spec: 20, 24 o 28 px (§4.5). */
+  size?: number;
+  class?: string;
+  /** Nombre accesible. Sin él, el ícono es decorativo (aria-hidden). */
+  label?: string;
+}
+
+const { name, size = 24, class: className, label } = Astro.props;
+const Component = icons[name];
+const a11y = label ? { role: "img" as const, "aria-label": label } : {};
+---
+
+<Component
+  size={size}
+  stroke-width={1.75}
+  class:list={["shrink-0", className]}
+  focusable="false"
+  {...a11y}
+/>

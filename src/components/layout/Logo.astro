@@ -1,0 +1,28 @@
+---
+import mark from "../../assets/brand/csi-mark.svg";
+import { t } from "../../i18n";
+
+interface Props {
+  /** "header": sobre --surface. "footer": sobre --footer-bg (§4.1). */
+  variant?: "header" | "footer";
+  class?: string;
+}
+
+const { variant = "header", class: className } = Astro.props;
+const onDark = variant === "footer";
+---
+
+<a href="/" class:list={["inline-flex shrink-0 items-center gap-2.5 rounded-control", className]}>
+  <img
+    src={mark.src}
+    alt=""
+    width="38"
+    height="40"
+    class="h-9 w-auto shrink-0 sm:h-10"
+    decoding="async"
+  />
+  <span class="flex flex-col font-display text-[13px] whitespace-nowrap leading-[1.1] font-bold min-[360px]:text-[15px] xl:text-base">
+    <span class={onDark ? "text-footer-text" : "text-text-muted"}>{t("brand.line1")}</span>
+    <span class={onDark ? "text-footer-accent" : "text-brand"}>{t("brand.line2")}</span>
+  </span>
+</a>

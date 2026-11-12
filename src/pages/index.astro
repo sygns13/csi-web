@@ -1,0 +1,28 @@
+---
+// Página temporal del Tramo 1 para probar el layout. Se reemplaza por el Inicio completo (§6.1) en el Tramo 2.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Container from "../components/ui/Container.astro";
+import CtaBand from "../components/sections/CtaBand.astro";
+import CircuitTraces from "../components/visuals/CircuitTraces.astro";
+import { site } from "../config/site";
+import { website } from "../lib/jsonld";
+---
+
+<BaseLayout
+  title="Construyendo Soluciones Informáticas | Software, IA y TI"
+  description="Empresa de Huaraz, Áncash, especializada en consultoría informática, desarrollo de software a medida, inteligencia artificial y venta de bienes tecnológicos."
+  canonicalPath="/"
+  jsonLd={[website()]}
+>
+  <section class="relative overflow-hidden bg-surface-tint">
+    <div class="absolute inset-0 bg-dot-grid" aria-hidden="true"></div>
+    <CircuitTraces class="absolute top-1/2 right-0 hidden h-64 w-auto -translate-y-1/2 lg:block" />
+    <Container class="relative py-20 lg:py-28">
+      <p class="text-eyebrow font-semibold text-accent-text uppercase">
+        <span lang="en">{site.tradeName}</span>
+      </p>
+      <h1 class="mt-2 text-display font-bold text-text">Sitio en construcción</h1>
+    </Container>
+  </section>
+  <CtaBand />
+</BaseLayout>

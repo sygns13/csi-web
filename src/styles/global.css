@@ -1,0 +1,286 @@
+/* Solo se escanea src/ (sin docs/, e2e/ ni scripts/, que generarían clases basura). */
+@import "tailwindcss" source(none);
+@source "../";
+
+/* El modo oscuro se controla con data-theme en <html> (§4.8). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ------------------------------------------------------------------ */
+/* Fuentes (Fontsource, solo subconjunto latin, §4.3)                  */
+/* ------------------------------------------------------------------ */
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2")
+    format("woff2-variations");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Sora Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 800;
+  src: url("../../node_modules/@fontsource-variable/sora/files/sora-latin-wght-normal.woff2")
+    format("woff2-variations");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ------------------------------------------------------------------ */
+/* Tokens de color (§4.2). Un color nuevo se crea primero aquí.        */
+/* ------------------------------------------------------------------ */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f6f9fc;
+  --surface: #ffffff;
+  --surface-2: #edf4fb;
+  --surface-tint: #e3f1fb;
+  --border: #d3e0ec;
+  --border-strong: #6f8399;
+  --text: #0e1e33;
+  --text-muted: #475a6e;
+  --brand: #2274b9;
+  --brand-cyan: #1db3e8;
+  --primary: #1c64a6;
+  --primary-hover: #16518a;
+  --on-primary: #ffffff;
+  --link: #1c64a6;
+  --accent-text: #0b6e8f;
+  --focus: #1c64a6;
+  --error: #b42318;
+  --success: #067647;
+  --footer-bg: #0b2540;
+  --footer-text: #e7eef6;
+  --footer-muted: #a9b8c8;
+  --footer-accent: #38c4f2;
+  --shadow-sm: 0 1px 2px rgb(14 30 51 / 0.06);
+  --shadow-md: 0 1px 2px rgb(14 30 51 / 0.06), 0 8px 24px rgb(14 30 51 / 0.08);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0a1422;
+  --surface: #0f1c2e;
+  --surface-2: #14253a;
+  --surface-tint: #0f2338;
+  --border: #24384f;
+  --border-strong: #6a819a;
+  --text: #e7eef6;
+  --text-muted: #a9b8c8;
+  --brand: #4fa3e3;
+  --brand-cyan: #38c4f2;
+  --primary: #38c4f2;
+  --primary-hover: #6fd4f6;
+  --on-primary: #04131f;
+  --link: #6ccdf4;
+  --accent-text: #5fd0e8;
+  --focus: #6ccdf4;
+  --error: #ff8a80;
+  --success: #5dd39e;
+  --footer-bg: #07101c;
+  --footer-text: #e7eef6;
+  --footer-muted: #a9b8c8;
+  --footer-accent: #38c4f2;
+  /* Modo oscuro: sin sombras, con bordes visibles. */
+  --shadow-sm: none;
+  --shadow-md: none;
+}
+
+/* Sin paleta ni sombras por defecto de Tailwind: solo tokens propios. */
+@theme {
+  --color-*: initial;
+  --shadow-*: initial;
+
+  /* Escala tipográfica (§4.3) */
+  --text-display: clamp(2rem, 1.4rem + 3vw, 3.5rem);
+  --text-display--line-height: 1.1;
+  --text-h1: clamp(1.875rem, 1.5rem + 2vw, 2.75rem);
+  --text-h1--line-height: 1.15;
+  --text-h2: clamp(1.5rem, 1.2rem + 1.5vw, 2.25rem);
+  --text-h2--line-height: 1.2;
+  --text-h3: 1.25rem;
+  --text-h3--line-height: 1.3;
+  --text-eyebrow: 0.8125rem;
+  --text-eyebrow--line-height: 1.4;
+  --text-eyebrow--letter-spacing: 0.08em;
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.65;
+  --text-base: 1rem;
+  --text-base--line-height: 1.65;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.5;
+
+  /* Radios (§4.7) */
+  --radius-card: 16px;
+  --radius-control: 10px;
+
+  /* Contenedor (§4.7) */
+  --container-site: 1200px;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-tint: var(--surface-tint);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-brand: var(--brand);
+  --color-brand-cyan: var(--brand-cyan);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-on-primary: var(--on-primary);
+  --color-link: var(--link);
+  --color-accent-text: var(--accent-text);
+  --color-focus: var(--focus);
+  --color-error: var(--error);
+  --color-success: var(--success);
+  --color-footer-bg: var(--footer-bg);
+  --color-footer-text: var(--footer-text);
+  --color-footer-muted: var(--footer-muted);
+  --color-footer-accent: var(--footer-accent);
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Sora Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ------------------------------------------------------------------ */
+/* Utilidades propias (motivos gráficos §4.4 y elevación §4.2)         */
+/* ------------------------------------------------------------------ */
+@utility clip-hex {
+  clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0 50%);
+}
+
+@utility bg-brand-gradient {
+  background-image: linear-gradient(135deg, var(--brand) 0%, var(--brand-cyan) 100%);
+}
+
+/* Retícula de puntos: 1 px cada 24 px, opacidad 0.25 (decorativa). */
+@utility bg-dot-grid {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in srgb, var(--brand) 25%, transparent) 1px,
+    transparent 0
+  );
+  background-size: 24px 24px;
+}
+
+@utility shadow-card {
+  box-shadow: var(--shadow-sm);
+}
+
+@utility shadow-card-hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* Enlace en el cuerpo del texto. */
+@utility link {
+  color: var(--link);
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  &:hover {
+    text-decoration-thickness: 2px;
+  }
+}
+
+/* Enlace extendido: toda la tarjeta es clicable sin anidar interactivos (§4.7). */
+@utility link-stretched {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+@layer base {
+  html {
+    --header-h: 64px;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    /* El foco no queda tapado por el encabezado fijo (WCAG 2.4.11). */
+    scroll-padding-top: calc(var(--header-h) + 16px);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  @media (width >= 64rem) {
+    html {
+      --header-h: 72px;
+    }
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--bg);
+    color: var(--text);
+    font-size: 1rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* El botón flotante de WhatsApp no tapa el foco (§5.4, WCAG 2.4.11). El espacio inferior
+     de 88+ px va dentro del pie (Footer withFab) para que el fondo oscuro llegue hasta abajo. */
+  html:has(body[data-fab]) {
+    scroll-padding-bottom: 88px;
+  }
+
+  /* Menú móvil abierto: el fondo no se desplaza (§5.2). */
+  html[data-menu-open] {
+    overflow: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Foco visible en todos los elementos interactivos (§4.7). */
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  /* El <main> recibe foco programático desde el enlace de salto: sin anillo. */
+  main:focus {
+    outline: none;
+  }
+
+  ::selection {
+    background-color: var(--surface-tint);
+    color: var(--text);
+  }
+}
+
+/* Movimiento reducido: sin animaciones, transiciones ni desplazamientos (§4.9). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

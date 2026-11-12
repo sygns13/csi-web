@@ -1,0 +1,8 @@
+dist/
+.astro/
+node_modules/
+public/
+test-results/
+playwright-report/
+package-lock.json
+docs/sitio-web-csi.spec.md

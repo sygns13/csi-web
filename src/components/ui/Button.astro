@@ -1,0 +1,77 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Icon from "./Icon.astro";
+import BrandIcon, { type BrandName } from "./BrandIcon.astro";
+import type { IconName } from "./icons";
+import { t } from "../../i18n";
+
+type Variant = "primary" | "secondary" | "ghost";
+type Size = "md" | "sm";
+
+interface Props extends Omit<HTMLAttributes<"a">, "type" | "class"> {
+  href?: string;
+  variant?: Variant;
+  size?: Size;
+  type?: "button" | "submit";
+  /** Enlace externo: nueva pestaña con aviso (§5.6). No usar con tel: ni mailto:. */
+  external?: boolean;
+  icon?: IconName;
+  brandIcon?: BrandName;
+  class?: string;
+}
+
+const {
+  href,
+  variant = "primary",
+  size = "md",
+  type = "button",
+  external = false,
+  icon,
+  brandIcon,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const base =
+  "inline-flex items-center justify-center gap-2 rounded-control text-center font-semibold transition-colors duration-150";
+
+const sizes: Record<Size, string> = {
+  md: "min-h-11 px-5 text-base",
+  sm: "min-h-10 px-4 text-sm",
+};
+
+const variants: Record<Variant, string> = {
+  primary: "bg-primary text-on-primary hover:bg-primary-hover",
+  secondary: "border-[1.5px] border-primary bg-transparent text-primary hover:bg-surface-2",
+  ghost: "min-h-11 text-link underline-offset-4 hover:underline",
+};
+
+const classes = [base, variant === "ghost" ? "" : sizes[size], variants[variant], className];
+const iconSize = 20;
+const externalAttrs = external ? { target: "_blank", rel: "noopener noreferrer" } : {};
+---
+
+{href ? (
+  <a href={href} class:list={classes} {...externalAttrs} {...rest}>
+    {brandIcon && <BrandIcon name={brandIcon} size={iconSize} />}
+    {icon && <Icon name={icon} size={iconSize} />}
+    <span>
+      <slot />
+    </span>
+    {variant === "ghost" && !external && <Icon name="arrow-right" size={20} />}
+    {external && (
+      <>
+        <Icon name="external-link" size={16} />
+        <span class="sr-only">{` ${t("a11y.newTab")}`}</span>
+      </>
+    )}
+  </a>
+) : (
+  <button type={type} class:list={classes} {...(rest as HTMLAttributes<"button">)}>
+    {brandIcon && <BrandIcon name={brandIcon} size={iconSize} />}
+    {icon && <Icon name={icon} size={iconSize} />}
+    <span>
+      <slot />
+    </span>
+  </button>
+)}

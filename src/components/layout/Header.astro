@@ -1,0 +1,357 @@
+---
+import Logo from "./Logo.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+import Container from "../ui/Container.astro";
+import Button from "../ui/Button.astro";
+import Icon from "../ui/Icon.astro";
+import HexIcon from "../ui/HexIcon.astro";
+import { mainNav, servicesNav, serviceHref } from "../../config/navigation";
+import { site } from "../../config/site";
+import { t } from "../../i18n";
+import { whatsappUrl } from "../../lib/links";
+
+const pathname = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.url.pathname}/`;
+
+/** "page" si es la página actual; "true" si es la sección que la contiene (§5.2). */
+function current(href: string): "page" | "true" | undefined {
+  if (pathname === href) return "page";
+  if (href !== "/" && pathname.startsWith(href)) return "true";
+  return undefined;
+}
+
+const servicesCurrent = pathname.startsWith("/servicios/") ? "true" : undefined;
+const waHref = whatsappUrl(t("wa.defaultMessage"));
+
+const navLink =
+  "inline-flex min-h-11 items-center rounded-control px-1.5 text-[0.9375rem] font-medium text-text transition-colors duration-150 hover:bg-surface-2 xl:px-3 xl:text-base data-active:underline data-active:decoration-brand data-active:decoration-2 data-active:underline-offset-[10px]";
+const mobileLink =
+  "flex min-h-12 w-full items-center justify-between gap-3 py-2 text-lg font-semibold text-text data-active:underline data-active:decoration-brand data-active:decoration-2 data-active:underline-offset-8";
+---
+
+<header class="sticky top-0 z-40 isolate" data-site-header>
+  <!-- Capa de fondo: el blur va aquí para no crear un bloque contenedor del menú móvil (fixed). -->
+  <div
+    class="absolute inset-0 -z-10 border-b border-border bg-surface/92 backdrop-blur-sm"
+    aria-hidden="true"
+  ></div>
+
+  <Container class="relative flex h-16 items-center gap-3 lg:h-[72px] lg:gap-3 xl:gap-6">
+    <Logo />
+
+    <nav aria-label={t("nav.main")} class="ml-auto hidden lg:block">
+      <ul class="flex items-center gap-0.5 xl:gap-1">
+        <li data-disclosure="dropdown">
+          <button
+            type="button"
+            class:list={[navLink, "gap-1 xl:gap-1.5"]}
+            aria-expanded="false"
+            aria-controls="nav-servicios"
+            aria-current={servicesCurrent}
+            data-active={servicesCurrent ? "" : undefined}
+            data-disclosure-button
+          >
+            {t("nav.services")}
+            <Icon
+              name="chevron-down"
+              size={20}
+              class="size-4 transition-transform duration-150 in-aria-expanded:rotate-180 xl:size-5"
+            />
+          </button>
+          <div
+            id="nav-servicios"
+            hidden
+            class="absolute top-full right-4 mt-1 w-[44rem] max-w-[calc(100%-2rem)] rounded-card border border-border bg-surface p-4 shadow-card-hover sm:right-6 lg:right-8"
+          >
+            <ul class="grid grid-cols-2 gap-1">
+              {servicesNav.map((service) => {
+                const href = serviceHref(service.slug);
+                return (
+                  <li>
+                    <a
+                      href={href}
+                      aria-current={current(href)}
+                      class="flex items-start gap-3 rounded-control p-3 transition-colors duration-150 hover:bg-surface-2"
+                    >
+                      <HexIcon icon={service.icon} size="sm" />
+                      <span class="min-w-0">
+                        <span class="block font-semibold text-text">{service.navLabel}</span>
+                        <span class="line-clamp-1 text-sm text-text-muted">{service.summary}</span>
+                      </span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+            <div class="mt-2 border-t border-border px-3 pt-3">
+              <a
+                href="/servicios/"
+                aria-current={pathname === "/servicios/" ? "page" : undefined}
+                class="inline-flex min-h-11 items-center gap-1.5 font-semibold text-link underline-offset-4 hover:underline"
+              >
+                {t("nav.allServices")}
+                <Icon name="arrow-right" size={20} />
+              </a>
+            </div>
+          </div>
+        </li>
+        {mainNav.map((item) => {
+          const state = current(item.href);
+          return (
+            <li>
+              <a
+                href={item.href}
+                class={navLink}
+                aria-current={state}
+                data-active={state ? "" : undefined}
+              >
+                {t(item.key)}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+
+    <div class="ml-auto flex items-center gap-1 sm:gap-2 lg:ml-0 lg:gap-1 xl:gap-2">
+      <!-- En pantallas muy estrechas el botón de tema pasa al menú móvil (no cabe junto al logo). -->
+      <div class="hidden min-[400px]:block">
+        <ThemeToggle />
+      </div>
+      <!-- Envoltorio: "hidden" sobre el propio botón perdería frente a su "inline-flex". -->
+      <div class="hidden lg:block">
+        <Button href="/contacto/" class="lg:max-xl:px-4 lg:max-xl:text-[0.9375rem]">
+          {t("cta.quote")}
+        </Button>
+      </div>
+      <button
+        type="button"
+        class="inline-flex min-h-11 min-w-11 flex-col items-center justify-center rounded-control px-1.5 text-[0.8125rem] leading-tight font-semibold text-text transition-colors duration-150 hover:bg-surface-2 sm:flex-row sm:gap-2 sm:px-3 sm:text-base lg:hidden"
+        aria-expanded="false"
+        aria-controls="menu-movil"
+        data-menu-toggle
+      >
+        <Icon name="menu" size={24} class="in-aria-expanded:hidden" />
+        <Icon name="x" size={24} class="hidden in-aria-expanded:block" />
+        {t("nav.menu")}
+      </button>
+    </div>
+  </Container>
+
+  <div
+    id="menu-movil"
+    hidden
+    class="fixed inset-x-0 top-(--header-h) bottom-0 overflow-y-auto overscroll-contain border-t border-border bg-surface lg:hidden"
+    data-mobile-menu
+  >
+    <Container class="py-4">
+      <nav aria-label={t("nav.mobile")}>
+        <ul class="divide-y divide-border">
+          <li data-disclosure="inline">
+            <button
+              type="button"
+              class={mobileLink}
+              aria-expanded="false"
+              aria-controls="menu-movil-servicios"
+              aria-current={servicesCurrent}
+              data-active={servicesCurrent ? "" : undefined}
+              data-disclosure-button
+            >
+              {t("nav.services")}
+              <Icon
+                name="chevron-down"
+                size={24}
+                class="transition-transform duration-150 in-aria-expanded:rotate-180"
+              />
+            </button>
+            <ul id="menu-movil-servicios" hidden class="pb-3">
+              {servicesNav.map((service) => {
+                const href = serviceHref(service.slug);
+                return (
+                  <li>
+                    <a
+                      href={href}
+                      aria-current={current(href)}
+                      class="flex min-h-12 items-center gap-3 rounded-control px-2 font-medium text-text hover:bg-surface-2"
+                    >
+                      <HexIcon icon={service.icon} size="sm" />
+                      {service.navLabel}
+                    </a>
+                  </li>
+                );
+              })}
+              <li>
+                <a
+                  href="/servicios/"
+                  aria-current={pathname === "/servicios/" ? "page" : undefined}
+                  class="flex min-h-12 items-center gap-1.5 px-2 font-semibold text-link underline-offset-4 hover:underline"
+                >
+                  {t("nav.allServices")}
+                  <Icon name="arrow-right" size={20} />
+                </a>
+              </li>
+            </ul>
+          </li>
+          {mainNav.map((item) => {
+            const state = current(item.href);
+            return (
+              <li>
+                <a
+                  href={item.href}
+                  class={mobileLink}
+                  aria-current={state}
+                  data-active={state ? "" : undefined}
+                >
+                  {t(item.key)}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      <div class="border-t border-border py-2 min-[400px]:hidden">
+        <ThemeToggle showLabel />
+      </div>
+
+      <div class="mt-6 flex flex-col gap-3 pb-6">
+        <Button href="/contacto/">{t("cta.quote")}</Button>
+        <Button href={waHref} variant="secondary" brandIcon="whatsapp" external>
+          {`${t("contact.whatsapp")} ${site.whatsapp.display}`}
+        </Button>
+        <Button href={site.phone.tel} variant="secondary" icon="phone">
+          {`${t("contact.callShort")} ${site.phone.display}`}
+        </Button>
+      </div>
+    </Container>
+  </div>
+</header>
+
+<script>
+  const LG_QUERY = "(min-width: 64rem)";
+  const FOCUSABLE =
+    'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+  // ---------- Desplegables (patrón disclosure, §5.2) ----------
+  type Disclosure = { root: HTMLElement; button: HTMLButtonElement; panel: HTMLElement };
+
+  const disclosures: Disclosure[] = [];
+  document.querySelectorAll<HTMLElement>("[data-disclosure]").forEach((root) => {
+    const button = root.querySelector<HTMLButtonElement>("[data-disclosure-button]");
+    const panelId = button?.getAttribute("aria-controls");
+    const panel = panelId ? document.getElementById(panelId) : null;
+    if (button && panel) disclosures.push({ root, button, panel });
+  });
+
+  function setOpen(d: Disclosure, open: boolean): void {
+    d.button.setAttribute("aria-expanded", String(open));
+    d.panel.hidden = !open;
+  }
+
+  const isOpen = (d: Disclosure): boolean => d.button.getAttribute("aria-expanded") === "true";
+  const isDropdown = (d: Disclosure): boolean => d.root.dataset.disclosure === "dropdown";
+
+  disclosures.forEach((d) => {
+    d.button.addEventListener("click", () => setOpen(d, !isOpen(d)));
+
+    if (!isDropdown(d)) return;
+
+    // Se cierra al sacar el foco del bloque.
+    d.root.addEventListener("focusout", (event) => {
+      const next = event.relatedTarget;
+      if (isOpen(d) && next instanceof Node && !d.root.contains(next)) setOpen(d, false);
+    });
+
+    // Escape cierra y devuelve el foco al botón.
+    d.root.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && isOpen(d)) {
+        event.stopPropagation();
+        setOpen(d, false);
+        d.button.focus();
+      }
+    });
+  });
+
+  // Clic fuera: cierra los desplegables abiertos.
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    disclosures.forEach((d) => {
+      if (isDropdown(d) && isOpen(d) && target instanceof Node && !d.root.contains(target)) {
+        setOpen(d, false);
+      }
+    });
+  });
+
+  // ---------- Menú móvil (§5.2) ----------
+  const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+  const menu = document.querySelector<HTMLElement>("[data-mobile-menu]");
+  const header = document.querySelector<HTMLElement>("[data-site-header]");
+
+  function menuOpen(): boolean {
+    return toggle?.getAttribute("aria-expanded") === "true";
+  }
+
+  function setBackgroundInert(inert: boolean): void {
+    Array.from(document.body.children).forEach((el) => {
+      if (el === header || el.tagName === "SCRIPT") return;
+      if (el instanceof HTMLElement) el.inert = inert;
+    });
+  }
+
+  function openMenu(): void {
+    if (!toggle || !menu) return;
+    toggle.setAttribute("aria-expanded", "true");
+    menu.hidden = false;
+    document.documentElement.setAttribute("data-menu-open", "");
+    setBackgroundInert(true);
+  }
+
+  function closeMenu(returnFocus: boolean): void {
+    if (!toggle || !menu) return;
+    toggle.setAttribute("aria-expanded", "false");
+    menu.hidden = true;
+    document.documentElement.removeAttribute("data-menu-open");
+    setBackgroundInert(false);
+    if (returnFocus) toggle.focus();
+  }
+
+  toggle?.addEventListener("click", () => (menuOpen() ? closeMenu(true) : openMenu()));
+
+  // Foco circular: botón "Menú" + elementos del panel, mientras está abierto.
+  document.addEventListener("keydown", (event) => {
+    if (!menuOpen() || !toggle || !menu) return;
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeMenu(true);
+      return;
+    }
+
+    if (event.key !== "Tab") return;
+    const items = [
+      toggle,
+      ...Array.from(menu.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
+        (el) => el.getClientRects().length > 0,
+      ),
+    ];
+    const first = items[0];
+    const last = items[items.length - 1];
+    const active = document.activeElement;
+    if (!first || !last) return;
+
+    if (!items.includes(active as HTMLElement)) {
+      event.preventDefault();
+      first.focus();
+    } else if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+
+  // Al pasar a escritorio, el menú móvil se cierra.
+  window.matchMedia(LG_QUERY).addEventListener("change", (event) => {
+    if (event.matches && menuOpen()) closeMenu(false);
+  });
+</script>

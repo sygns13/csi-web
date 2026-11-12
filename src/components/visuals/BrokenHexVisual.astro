@@ -1,0 +1,48 @@
+---
+// Visual decorativo de la página 404 (§6.12): hexágono con trazas de circuito cortadas.
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 420 240"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+  class:list={["pointer-events-none", className]}
+>
+  <polygon
+    points="120,20 198,65 198,155 120,200 42,155 42,65"
+    class="fill-surface-2 stroke-brand"
+    stroke-width="4"
+    stroke-linejoin="round"
+  ></polygon>
+  <polygon
+    points="120,40 181,75 181,145 120,180 59,145 59,75"
+    class="stroke-brand-cyan"
+    stroke-width="2"
+    stroke-linejoin="round"
+    opacity="0.6"
+  ></polygon>
+  <g class="stroke-brand-cyan" stroke-width="3" stroke-linecap="round" opacity="0.8">
+    <path d="M198 80h48l16 -14h22"></path>
+    <path d="M318 66h40"></path>
+    <path d="M198 140h70"></path>
+    <path d="M300 140h22l16 14h40"></path>
+  </g>
+  <g class="stroke-brand" stroke-width="3" stroke-linecap="round" opacity="0.5">
+    <path d="M198 110h36"></path>
+    <path d="M262 110h30"></path>
+  </g>
+  <g class="fill-surface stroke-brand-cyan" stroke-width="3">
+    <circle cx="366" cy="66" r="8"></circle>
+    <circle cx="386" cy="154" r="8"></circle>
+  </g>
+  <g class="fill-surface stroke-brand" stroke-width="3" opacity="0.7">
+    <circle cx="300" cy="110" r="7"></circle>
+  </g>
+</svg>

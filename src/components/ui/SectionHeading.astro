@@ -1,0 +1,44 @@
+---
+interface Props {
+  title: string;
+  eyebrow?: string;
+  /** Idioma del antetítulo si difiere del español (p. ej. "en" para el nombre comercial). */
+  eyebrowLang?: string;
+  text?: string;
+  id?: string;
+  level?: 2 | 3;
+  align?: "start" | "center";
+  class?: string;
+}
+
+const {
+  title,
+  eyebrow,
+  eyebrowLang,
+  text,
+  id,
+  level = 2,
+  align = "start",
+  class: className,
+} = Astro.props;
+const Heading = level === 2 ? "h2" : "h3";
+---
+
+<div class:list={[align === "center" && "mx-auto text-center", "max-w-[65ch]", className]}>
+  {eyebrow && (
+    <p class="text-eyebrow font-semibold text-accent-text uppercase" lang={eyebrowLang}>
+      {eyebrow}
+    </p>
+  )}
+  <Heading
+    id={id}
+    class:list={[
+      "font-bold text-text",
+      level === 2 ? "text-h2" : "text-h3 font-semibold",
+      eyebrow && "mt-2",
+    ]}
+  >
+    {title}
+  </Heading>
+  {text && <p class="mt-4 text-lead text-text-muted">{text}</p>}
+</div>

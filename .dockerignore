@@ -1,0 +1,10 @@
+node_modules
+dist
+.astro
+test-results
+playwright-report
+.git
+.env
+.env.*
+docs
+e2e
