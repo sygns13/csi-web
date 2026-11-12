@@ -1,0 +1,26 @@
+---
+// Lista con viñetas hexagonales (§4.4).
+interface Props {
+  items: readonly string[];
+  /** Columnas: "md2" = 2 en ≥ md (§6.3); "auto" = 2 en ≥ sm y 3 en ≥ md, 2 en ≥ lg (tarjetas). */
+  columns?: "1" | "md2" | "auto";
+  class?: string;
+}
+
+const { items, columns = "1", class: className } = Astro.props;
+
+const grid: Record<NonNullable<Props["columns"]>, string> = {
+  "1": "",
+  md2: "md:grid-cols-2 md:gap-x-10",
+  auto: "sm:grid-cols-2 sm:gap-x-6 md:grid-cols-3 lg:grid-cols-2",
+};
+---
+
+<ul class:list={["grid gap-y-3", grid[columns], className]}>
+  {items.map((item) => (
+    <li class="flex gap-3">
+      <span class="clip-hex mt-[0.4375rem] size-3 shrink-0 bg-brand" aria-hidden="true"></span>
+      <span>{item}</span>
+    </li>
+  ))}
+</ul>

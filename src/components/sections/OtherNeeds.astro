@@ -1,0 +1,56 @@
+---
+// "¿Necesita otra solución?" (§6.1 S3, celda 8) y bloque "Otros requerimientos" de §6.2.
+import Card from "../ui/Card.astro";
+import Container from "../ui/Container.astro";
+import Button from "../ui/Button.astro";
+import HexIcon from "../ui/HexIcon.astro";
+import { t } from "../../i18n";
+import { quoteHref } from "../../lib/content";
+
+interface Props {
+  /** "card": celda de la cuadrícula de servicios (h3). "section": sección propia (h2). */
+  variant?: "card" | "section";
+}
+
+const { variant = "card" } = Astro.props;
+const headingId = "otros-requerimientos";
+---
+
+{variant === "card" ? (
+  <Card tone="surface-2" class="flex h-full flex-col">
+    <HexIcon icon="lightbulb" tone="surface" />
+    <h3 class="mt-5 text-h3 font-semibold text-text">{t("services.otherNeedsTitle")}</h3>
+    <p class="mt-3 text-text-muted">{t("services.otherNeedsText")}</p>
+    <div class="mt-auto pt-5">
+      <Button href={quoteHref()} variant="secondary">
+        {t("services.otherNeedsCta")}
+      </Button>
+    </div>
+  </Card>
+) : (
+  <section aria-labelledby={headingId} class="bg-bg">
+    <Container class="pb-16 lg:pb-24">
+      <Card
+        tone="surface-2"
+        class="flex flex-col gap-6 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between lg:p-10"
+      >
+        <div class="flex flex-col gap-5 sm:flex-row sm:items-start">
+          <HexIcon icon="lightbulb" tone="surface" />
+          <div>
+            <h2 id={headingId} class="text-h2 font-bold text-text">
+              {t("services.otherNeedsTitle")}
+            </h2>
+            <p class="mt-3 max-w-[60ch] text-lead text-text-muted">
+              {t("services.otherNeedsText")}
+            </p>
+          </div>
+        </div>
+        <div class="shrink-0">
+          <Button href={quoteHref()} variant="secondary">
+            {t("services.otherNeedsCta")}
+          </Button>
+        </div>
+      </Card>
+    </Container>
+  </section>
+)}

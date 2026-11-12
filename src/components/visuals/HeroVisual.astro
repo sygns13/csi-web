@@ -1,0 +1,61 @@
+---
+// Visual del hero (§4.6): hexágono grande con trazas de circuito, ventana de navegador con un panel
+// genérico y tarjeta flotante de chat de IA. SVG decorativo, sin animación.
+import DashboardMock from "./mockups/DashboardMock.astro";
+import ChatMock from "./mockups/ChatMock.astro";
+import { hexPoints } from "./geometry";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 520 440"
+  fill="none"
+  aria-hidden="true"
+  focusable="false"
+  class:list={["pointer-events-none block h-auto w-full", className]}
+>
+  <polygon
+    points={hexPoints(300, 205, 400)}
+    class="fill-brand/10 stroke-brand/30"
+    stroke-width="2"
+  ></polygon>
+  <polygon
+    points={hexPoints(300, 205, 330)}
+    class="stroke-brand-cyan/50"
+    stroke-width="2"
+    stroke-dasharray="2 8"
+    stroke-linecap="round"
+  ></polygon>
+
+  <g class="stroke-brand-cyan" stroke-width="2" stroke-linecap="round" opacity="0.6">
+    <path d="M0 40h96l18 18h40"></path>
+    <path d="M0 372h70l16-16h60"></path>
+    <path d="M520 36h-60l-16 16h-34"></path>
+    <path d="M520 400h-36"></path>
+  </g>
+  <g class="stroke-brand" stroke-width="2" stroke-linecap="round" opacity="0.35">
+    <path d="M0 404h120"></path>
+    <path d="M520 70h-44"></path>
+  </g>
+  <g class="fill-surface stroke-brand-cyan" stroke-width="2">
+    <circle cx="160" cy="58" r="6"></circle>
+    <circle cx="152" cy="356" r="6"></circle>
+    <circle cx="404" cy="52" r="6"></circle>
+    <circle cx="478" cy="400" r="6"></circle>
+  </g>
+
+  <!-- Ventana con el panel genérico (escala 1). -->
+  <svg x="0" y="62" width="400" height="250" viewBox="0 0 400 250">
+    <DashboardMock />
+  </svg>
+  <!-- Tarjeta flotante de chat de IA (escala 0.66). -->
+  <svg x="244" y="214" width="264" height="165" viewBox="0 0 400 250">
+    <ChatMock />
+  </svg>
+</svg>

@@ -1,0 +1,11 @@
+name: Redes y telecomunicaciones
+order: 3
+icon: router
+description: Equipamiento para redes de datos cableadas e inalámbricas, seguras y estables.
+items:
+  - Switches y routers
+  - Puntos de acceso inalámbrico
+  - Cortafuegos y equipos VPN
+  - Cable de red, coaxial y de cobre
+  - Gabinetes, patch panels y accesorios
+  - Repetidores de telecomunicaciones

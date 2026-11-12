@@ -1,0 +1,58 @@
+---
+// Maqueta "server" (§4.6): rack de servidores con indicadores y nube (hosting e infraestructura). 400×250.
+import Icon from "../../ui/Icon.astro";
+
+const units = [
+  { y: 50, a: 70, b: 48 },
+  { y: 94, a: 62, b: 40 },
+  { y: 138, a: 74, b: 52 },
+  { y: 182, a: 58, b: 44 },
+];
+---
+
+<g>
+  <g class="stroke-brand-cyan" stroke-width="2" stroke-linecap="round" opacity="0.6">
+    <path d="M0 80h52l14 14h38"></path>
+    <path d="M0 176h104"></path>
+  </g>
+  <g class="stroke-brand" stroke-width="2" stroke-linecap="round" opacity="0.35">
+    <path d="M0 128h70"></path>
+  </g>
+  <g class="fill-surface stroke-brand-cyan" stroke-width="2">
+    <circle cx="74" cy="128" r="5" class="stroke-brand/60"></circle>
+  </g>
+
+  <rect
+    x="104"
+    y="36"
+    width="150"
+    height="196"
+    rx="12"
+    class="fill-surface stroke-border"
+    stroke-width="2"
+  ></rect>
+  {units.map((u, i) => (
+    <g>
+      <rect x="116" y={u.y} width="126" height="36" rx="6" class="fill-surface-2" />
+      <circle cx="130" cy={u.y + 18} r="4" class="fill-success" />
+      <circle
+        cx="143"
+        cy={u.y + 18}
+        r="4"
+        class={i === 2 ? "fill-brand-cyan/40" : "fill-brand-cyan"}
+      />
+      <rect x="158" y={u.y + 12} width={u.a} height="5" rx="2.5" class="fill-text-muted/30" />
+      <rect x="158" y={u.y + 21} width={u.b} height="5" rx="2.5" class="fill-border" />
+    </g>
+  ))}
+
+  <path
+    d="M254 128h64v-24"
+    class="stroke-brand-cyan"
+    stroke-width="2"
+    stroke-dasharray="5 5"
+    fill="none"
+  ></path>
+  <circle cx="318" cy="102" r="5" class="fill-surface stroke-brand-cyan" stroke-width="2"></circle>
+  <Icon name="cloud" size={84} x={276} y={30} class="fill-brand/10 text-brand" />
+</g>

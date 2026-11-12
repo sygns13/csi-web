@@ -1,0 +1,153 @@
+---
+// Productos — venta de bienes tecnológicos (§6.4). Sin precios, marcas, stock ni fotos (D15).
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/ui/Container.astro";
+import Button from "../../components/ui/Button.astro";
+import Card from "../../components/ui/Card.astro";
+import HexIcon from "../../components/ui/HexIcon.astro";
+import Icon from "../../components/ui/Icon.astro";
+import HexList from "../../components/ui/HexList.astro";
+import LinkArrow from "../../components/ui/LinkArrow.astro";
+import SectionHeading from "../../components/ui/SectionHeading.astro";
+import PageHeader from "../../components/sections/PageHeader.astro";
+import CtaBand from "../../components/sections/CtaBand.astro";
+import { t } from "../../i18n";
+import {
+  getProductCategories,
+  getServices,
+  productCategoryHref,
+  quoteHref,
+  serviceHref,
+} from "../../lib/content";
+import { offerCatalog } from "../../lib/jsonld";
+
+const title = "Venta de equipos de cómputo y bienes tecnológicos";
+const [categories, services] = await Promise.all([getProductCategories(), getServices()]);
+
+// "Servicios complementarios" enlaza al servicio de redes y soporte (§6.4, punto 7).
+const supportService = services.find((service) => service.id === "redes-y-soporte");
+if (!supportService) throw new Error('Falta el servicio "redes-y-soporte".');
+
+const steps = [
+  "Envíenos su requerimiento o especificaciones técnicas por WhatsApp o correo.",
+  "Le enviamos una cotización formal con las alternativas disponibles.",
+  "Coordinamos la entrega y, si lo requiere, la instalación y configuración.",
+];
+---
+
+<BaseLayout
+  title="Venta de equipos de cómputo y tecnología | CSI"
+  description="Venta de equipos de cómputo, servidores, redes, impresoras, software y licencias para entidades públicas y empresas. Proveedor inscrito en el RNP."
+  canonicalPath="/productos/"
+  breadcrumbs={[{ name: t("nav.products"), href: "/productos/" }]}
+  jsonLd={[
+    offerCatalog(
+      title,
+      categories.map((category) => category.data.name),
+    ),
+  ]}
+>
+  <PageHeader
+    eyebrow="Venta de bienes"
+    title={title}
+    lead="Suministramos bienes de informática, redes, impresión, software y tecnología para entidades públicas y empresas privadas. Cotizamos según sus especificaciones técnicas, con comprobante electrónico y la formalidad de un proveedor inscrito en el RNP."
+  />
+
+  <div class="bg-bg">
+    <Container class="py-12 lg:py-16">
+      <nav aria-label={t("products.categories")}>
+        <ul class="flex flex-wrap gap-2">
+          {categories.map((category) => (
+            <li>
+              <a
+                href={productCategoryHref(category.id)}
+                class="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-surface px-4 text-sm font-semibold text-text transition-colors duration-150 hover:bg-surface-2 hover:underline hover:underline-offset-4"
+              >
+                <Icon name={category.data.icon} size={20} class="text-brand" />
+                {category.data.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="mt-10 grid grid-cols-1 gap-6 lg:mt-12 lg:grid-cols-2">
+        {categories.map((category) => {
+          const headingId = `${category.id}-titulo`;
+          return (
+            <section id={category.id} aria-labelledby={headingId}>
+              <Card class="flex h-full flex-col sm:p-8">
+                <div class="flex flex-col items-start gap-4 min-[400px]:flex-row min-[400px]:items-center">
+                  <HexIcon icon={category.data.icon} />
+                  <h2
+                    id={headingId}
+                    class="text-h3 font-bold wrap-break-word text-text sm:text-2xl"
+                  >
+                    {category.data.name}
+                  </h2>
+                </div>
+                <p class="mt-4 text-text-muted">{category.data.description}</p>
+                <HexList items={category.data.items} columns="auto" class="mt-5 text-text" />
+                <div class="mt-auto pt-6">
+                  <Button href={quoteHref({ tipo: "bienes", categoria: category.id })}>
+                    {t("cta.quote")}
+                    <span class="sr-only">
+                      {` ${t("products.quoteContext", { category: category.data.name })}`}
+                    </span>
+                  </Button>
+                </div>
+              </Card>
+            </section>
+          );
+        })}
+      </div>
+    </Container>
+  </div>
+
+  <section aria-labelledby="como-cotizar-title" class="bg-surface-2">
+    <Container class="py-16 lg:py-24">
+      <SectionHeading id="como-cotizar-title" title="¿Cómo cotizar?" />
+      <ol class="mt-8 grid gap-6 md:grid-cols-3">
+        {steps.map((step, i) => (
+          <li class="flex gap-4">
+            <span class="clip-hex flex size-12 shrink-0 items-center justify-center bg-primary font-display text-lg font-bold text-on-primary">
+              {i + 1}
+            </span>
+            <p class="pt-2.5 text-text">{step}</p>
+          </li>
+        ))}
+      </ol>
+
+      <p class="mt-10 max-w-[65ch] text-text-muted">
+        {
+          "¿No encuentra lo que busca? Atendemos todo requerimiento de bienes afines a informática, sistemas, hardware, inteligencia artificial y robótica. "
+        }
+        <a href={quoteHref({ tipo: "bienes" })} class="link font-semibold">
+          Cuéntenos qué necesita
+        </a>
+      </p>
+    </Container>
+  </section>
+
+  <section aria-labelledby="complementarios-title" class="bg-bg">
+    <Container class="py-16 lg:py-24">
+      <Card accent class="flex flex-col gap-5 sm:flex-row sm:items-start sm:p-8">
+        <HexIcon icon={supportService.data.icon} />
+        <div>
+          <h2 id="complementarios-title" class="text-h2 font-bold text-text">
+            Servicios complementarios
+          </h2>
+          <p class="mt-3 max-w-[65ch] text-lead text-text-muted">
+            Instalación, configuración, puesta en marcha y mantenimiento de los equipos
+            suministrados.
+          </p>
+          <LinkArrow href={serviceHref(supportService.id)} class="mt-5">
+            {supportService.data.title}
+          </LinkArrow>
+        </div>
+      </Card>
+    </Container>
+  </section>
+
+  <CtaBand />
+</BaseLayout>

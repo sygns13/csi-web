@@ -3,9 +3,10 @@ import Logo from "./Logo.astro";
 import Container from "../ui/Container.astro";
 import Icon from "../ui/Icon.astro";
 import BrandIcon from "../ui/BrandIcon.astro";
-import { companyNav, legalNav, servicesNav, serviceHref } from "../../config/navigation";
+import { companyNav, legalNav } from "../../config/navigation";
 import { site } from "../../config/site";
 import { t } from "../../i18n";
+import { getServices, serviceHref } from "../../lib/content";
 import { buildYear } from "../../lib/format";
 import { mailtoUrl, whatsappUrl } from "../../lib/links";
 
@@ -15,6 +16,11 @@ interface Props {
 }
 
 const { withFab = false } = Astro.props;
+// Columna "Servicios" (§5.3), derivada de la colección `services`.
+const servicesNav = (await getServices()).map((service) => ({
+  slug: service.id,
+  navLabel: service.data.navLabel,
+}));
 const waHref = whatsappUrl(t("wa.defaultMessage"));
 
 const heading = "font-display text-base font-semibold text-footer-text";

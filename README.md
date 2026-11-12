@@ -33,8 +33,10 @@ La fuente de verdad es [`docs/sitio-web-csi.spec.md`](docs/sitio-web-csi.spec.md
 
 ```
 src/config/site.ts      Datos de la empresa y de contacto (única fuente)
+src/content.config.ts   Colecciones: servicios, categorías de bienes y proyectos
+src/content/            Contenido de las colecciones (Markdown/YAML, solo frontmatter)
 src/i18n/               Textos de interfaz (es) y helpers t() / localizedPath()
-src/lib/                SEO, JSON-LD, tema, enlaces
+src/lib/                SEO, JSON-LD, acceso al contenido, tema, enlaces
 src/layouts/            BaseLayout
 src/components/         layout/, ui/, sections/, visuals/
 src/styles/global.css   Tokens de color, tipografía y estilos base

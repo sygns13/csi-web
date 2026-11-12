@@ -7,7 +7,7 @@ Bitácora entre sesiones (§0, regla 8). La spec (`docs/sitio-web-csi.spec.md`) 
 | Tramo                                           | Estado                 | Fecha      |
 | ----------------------------------------------- | ---------------------- | ---------- |
 | 1. Fundaciones y sistema de diseño              | **Hecho** (sin commit) | 12/11/2026 |
-| 2. Servicios, productos e Inicio                | Pendiente              | —          |
+| 2. Servicios, productos e Inicio                | **Hecho** (sin commit) | 12/11/2026 |
 | 3. Proyectos, institucional, contacto y legales | Pendiente              | —          |
 | 4. QA final y despliegue                        | Pendiente              | —          |
 
@@ -152,3 +152,135 @@ Aún no publicados (se construyen en el Tramo 3), se listan para seguimiento:
 ### TODO(CONTENIDO)
 
 - Ninguno en este tramo.
+
+---
+
+## Sesión 2 — Tramo 2 (12/11/2026)
+
+### Hecho
+
+1. `src/content.config.ts` con las colecciones `services`, `productCategories` y `projects` (esquemas de §7, `glob`
+   loader, Zod de `astro/zod`). Campo `lang` opcional (por defecto `"es"`, §12) y `draft` en proyectos. `icon`
+   validado contra los íconos registrados; `services` de proyectos con `reference("services")` y verificación
+   adicional en `getProjects()` (el build falla si un slug no existe).
+2. Contenido completo, **idéntico a la spec**: 7 servicios (`src/content/services/*.md`), 8 categorías
+   (`src/content/product-categories/*.yaml`) y los 14 proyectos (`src/content/projects/*.md`, todos
+   `draft: false`). Se generó con un script a partir del texto de §7 (sin transcripción manual; el script no se
+   versiona).
+3. `src/lib/content.ts`: `getServices`, `getProductCategories`, `getProjects` (sin borradores, por fecha
+   descendente), `getFeaturedProjects`, `getProjectsByService`, `serviceHref`, `projectHref`,
+   `productCategoryHref`, `quoteHref` (`/contacto/?tipo=…&categoria=…`), `sectorLabel`, `clientShortName`.
+   `src/config/taxonomy.ts` (sectores y variantes de maqueta). JSON-LD nuevo en `src/lib/jsonld.ts`: `Service` y
+   `OfferCatalog`.
+4. **D15 resuelto**: el desplegable y el pie derivan los servicios de la colección (`getServices()` en `Header` y
+   `Footer`); se borró la copia `servicesNav` de `src/config/navigation.ts`.
+5. Componentes de sección: `ServiceCard` (variantes `compact` y `large`), `ServicesGrid`, `OtherNeeds` (celda 8 y
+   bloque "Otros requerimientos"), `Stats`, `Process`, `WhyUs`, `ProductsGrid`, `ProjectCard`. Visuales:
+   `HeroVisual` y `ProjectVisual` con las 8 variantes (`visuals/mockups/*Mock.astro` + `MockWindow`). UI:
+   `HexList` (viñetas hexagonales). `Card` (prop `padded` y anillo de foco de tarjeta), `HexIcon` (prop `tone`),
+   `Icon` (props `x`/`y` para anidarlo en SVG). Textos reutilizables nuevos en `src/i18n/es.ts` (pasos de "Cómo
+   trabajamos", etiquetas de sector, "¿Necesita otra solución?", etc.).
+6. Páginas: Inicio completo (§6.1, S1–S10; reemplaza la página temporal), `/servicios/` (§6.2),
+   `/servicios/[slug]/` (§6.3, 7 páginas) y `/productos/` (§6.4), con su JSON-LD (`WebSite`, `Service`,
+   `OfferCatalog`, `BreadcrumbList` + `Organization`).
+7. `e2e/routes.ts`: las 10 rutas construidas pasan a `routes`; `plannedRoutes` conserva las del Tramo 3 más los 14
+   detalles de proyecto (las tarjetas ya enlazan a ellos). Nueva suite `e2e/content.spec.ts`.
+
+### Verificación
+
+- `npm run build`: `astro check` 0 errores, 0 advertencias, 0 sugerencias; build sin advertencias (11 páginas).
+- `npm run test:e2e`: **121 pasan, 9 omitidas** (omitidas por diseño, igual que en el Tramo 1). axe sin
+  infracciones en las 10 rutas + 404, en ambos temas y en `mobile` y `desktop`; reflujo a 320 px sin desplazamiento
+  horizontal en todas las rutas.
+- `npm run format:check`: OK.
+- Contenido: un script comparó los 665 bloques de texto visibles de `<main>` de las 10 páginas con la spec: todos
+  coinciden literalmente (salvo mayúsculas iniciales, ver D22).
+- Capturas a 320, 768, 1024 y 1440 px en ambos temas de `/`, `/servicios/`, `/servicios/inteligencia-artificial/`,
+  `/servicios/redes-y-soporte/` y `/productos/` (40 capturas, fuera del repositorio): sin desbordes; menú,
+  tarjetas, maquetas y tema oscuro correctos.
+- Presupuesto (§11), Inicio: JS 1.3 KB gzip (2 scripts: encabezado y tema), CSS 7.9 KB gzip, HTML 18 KB gzip,
+  2 woff2 (80 KB). Primera carga ≈ 115 KB (límite 450 KB).
+- Sitemap: 10 URLs (sin la 404).
+
+### Desviaciones (con motivo)
+
+- **D21. Tres títulos SEO de la spec acortados** (**aprobado** por el propietario, 12/11/2026): medían más de
+  los 60 caracteres que pide §7.1. Se acortaron solo quitando palabras del original (se conservan la keyword, el
+  cliente y "| CSI"); el esquema vuelve a exigir ≤ 60:
+  - `inteligencia-artificial`: "Inteligencia artificial, chatbots y asistentes virtuales | CSI" (62) →
+    "Inteligencia artificial y asistentes virtuales | CSI" (52).
+  - `portal-fec-unasam`: "Portal de la Facultad de Economía y Contabilidad – UNASAM | CSI" (63) → "Portal de
+    Economía y Contabilidad – UNASAM | CSI" (48).
+  - `consentimientos-datos-personales-yamaha`: "Gestión de consentimientos de datos personales – Yamaha | CSI"
+    (61) → "Gestión de consentimientos – Yamaha | CSI" (41).
+
+  La spec original (workspace) y la copia de `docs/` se actualizaron a la versión 1.2 con estos títulos y la
+  decisión D21 en su §2.
+
+- **D22. `benefits`**: la spec los escribe como "Título: texto"; se separaron en `{ title, text }` y el texto
+  empieza con mayúscula ("El software se adapta…") porque va solo en la tarjeta.
+- **D23. Cliente en tarjetas**: `client` guarda el nombre completo de la tabla "Nombres de cliente" (§7.3); las
+  tarjetas muestran la parte anterior a " – " ("INAIGEM", "UNASAM"). P11 ("UNASAM – Facultad de Economía y
+  Contabilidad") se muestra como "UNASAM" en tarjetas.
+- **D24. Maquetas en SVG escalable** (`viewBox` 400×250) con colores por clases de tokens (`fill-*`, `stroke-*`),
+  sin IDs ni degradados SVG, para que puedan repetirse en una página. `HeroVisual` anida las maquetas de panel y de
+  chat. El texto "IA" de la maqueta de chat usa `--on-primary` sobre `--primary` (≥ 6.14:1).
+- **D25. Íconos no fijados por la spec** (decorativos, Lucide; los de "¿Por qué elegirnos?" **aprobados** por el
+  propietario): "¿Por qué elegirnos?" → `shield-check`,
+  `landmark`, `sparkles`, `award`, `handshake`; "¿Necesita otra solución?" → `lightbulb`; maquetas → `bot`, `send`,
+  `file-text`, `pen-line`, `circle-check`, `search`, `image`, `lock`, `cloud`.
+- **D26. Foco en tarjetas clicables**: el anillo de foco del enlace extendido se dibuja alrededor de toda la
+  tarjeta (`Card interactive` con `:has(.link-stretched:focus-visible)`); el enlace pierde su propio `outline` solo
+  si el navegador soporta `:has()`.
+- **D27. "Conocer más" / "Ver detalle del servicio"**: contexto con texto `sr-only` (opción de §10, 2.4.4). Chrome
+  calcula el nombre como "Conocer más : {título}" (espacio antes de los dos puntos por el `sr-only` absoluto); no
+  afecta la comprensión. El título de la tarjeta también es enlace (enlace extendido, §4.7), así que cada tarjeta
+  tiene dos paradas de tabulación hacia la misma página.
+- **D28. Cifras (S5) sin encabezado**: la spec no da un h2; se usa `<div>` con el `<dl>` (no `<section>`).
+- **D29. Proyectos destacados en 2×2** (en lugar de 4 columnas en ≥ xl): a 4 columnas los títulos ocupaban
+  5 líneas.
+- **D30. Fondos alternos** en el detalle de servicio según las secciones presentes (capacidades y proyectos
+  relacionados son opcionales). "Redes y soporte" no muestra "Proyectos relacionados" (ningún proyecto lo
+  referencia) ni "Capacidades" (§7.1 no las define), como pide §6.3.
+- **D31. "Otros servicios"**: los 3 siguientes por `order`, de forma circular.
+- **D32. `/servicios/`**: "tarjetas grandes alternadas" = columnas invertidas en las tarjetas pares (≥ lg); la vista
+  previa de `includes` va en un panel `--surface-2`. `Process` usa fondo `--surface-2` aquí para alternar con
+  "Otros requerimientos".
+- **D33. `/productos/` "Servicios complementarios"**: la spec no da texto de enlace; se usa el título del servicio
+  enlazado ("Redes, soporte técnico y mantenimiento"), tomado de la colección. Lleva h2 "Servicios
+  complementarios".
+- **D34. Cuadrículas con `grid-cols-1` explícito** en móvil: sin él, la palabra más larga de un título
+  ("telecomunicaciones") fijaba el ancho mínimo de la pista y desbordaba a 320 px. En `/productos/`, el ícono va
+  sobre el título en < 400 px.
+- **D35. Suite extra `e2e/content.spec.ts`** (no listada en §17.2): verifica secciones de Inicio, tarjetas
+  clicables en toda su superficie, enlaces de cotización prellenados, "Otros servicios", `<details>` de preguntas
+  frecuentes, anclas de `/productos/` sin quedar bajo el encabezado y el JSON-LD `Service`/`OfferCatalog`.
+- **D36. Textos reutilizados** (pasos de `Process`, "¿Necesita otra solución?", sectores) en `src/i18n/es.ts`; el
+  copy exclusivo de una página (hero, cifras, "¿Por qué elegirnos?", productos) queda en la página, porque una
+  versión en inglés tendrá sus propias páginas en `src/pages/en/` (§12).
+- **D37. Node**: el Node global ya es 24.22.3 (también en Git Bash); no hace falta `nvm use` ni cambiar el `PATH`.
+
+### Pendientes para próximos tramos
+
+- Tramo 3: `/proyectos/` y `/proyectos/[slug]/` (las tarjetas de Inicio y de servicios ya enlazan a los 14
+  detalles, hoy en `plannedRoutes`). `ProjectCard` ya admite `headingLevel={2}`; falta agregar la insignia de año y
+  hasta 2 insignias de servicios (§6.5). El filtro debe usar `sectorLabel()` y `sectors` de
+  `src/config/taxonomy.ts`. Los botones "Solicitar cotización" ya generan `?tipo=` y `?categoria=` con los slugs
+  de la lista blanca de §8.2.
+- Tramo 3: lo ya listado en la sesión 1 (`robots.txt`, foto del Gerente, contacto, legales, suites `contact` y
+  `projects-filter`); al terminar, `plannedRoutes` debe quedar vacía.
+- Tramo 4: revisar si términos en inglés del contenido ("machine learning", "Prompt engineering") requieren
+  `<span lang="en">` (§10, 3.1.2); hoy se tratan como tecnicismos.
+
+### Decisiones del propietario (12/11/2026, cierre de la sesión 2)
+
+- Acortar los tres títulos SEO de más de 60 caracteres (aplicado, D21).
+- Íconos de "¿Por qué elegirnos?" aprobados (D25).
+
+### Textos [VALIDAR]
+
+- Ninguno nuevo publicado en este tramo (los de §6.7–6.10 siguen pendientes para el Tramo 3, ver sesión 1).
+
+### TODO(CONTENIDO)
+
+- Ninguno: todo el texto de las páginas del Tramo 2 está en la spec.

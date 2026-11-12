@@ -1,0 +1,26 @@
+---
+// Cuadrícula compacta de categorías de bienes (§6.1 S7): ícono + nombre, enlace a su ancla.
+import HexIcon from "../ui/HexIcon.astro";
+import { productCategoryHref, type ProductCategory } from "../../lib/content";
+
+interface Props {
+  categories: ProductCategory[];
+  class?: string;
+}
+
+const { categories, class: className } = Astro.props;
+---
+
+<ul class:list={["grid gap-3 min-[420px]:grid-cols-2 md:grid-cols-4 md:gap-4", className]}>
+  {categories.map((category) => (
+    <li class="h-full">
+      <a
+        href={productCategoryHref(category.id)}
+        class="flex h-full min-h-11 items-center gap-3 rounded-card border border-border bg-surface p-3 font-semibold text-text shadow-card transition duration-200 hover:shadow-card-hover hover:underline hover:decoration-2 hover:underline-offset-4 motion-safe:hover:-translate-y-0.5 sm:p-4"
+      >
+        <HexIcon icon={category.data.icon} size="sm" />
+        <span>{category.data.name}</span>
+      </a>
+    </li>
+  ))}
+</ul>

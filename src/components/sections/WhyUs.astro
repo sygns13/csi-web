@@ -1,0 +1,39 @@
+---
+// ¿Por qué elegirnos? (§6.1 S9): 5 tarjetas con ícono.
+import Card from "../ui/Card.astro";
+import Container from "../ui/Container.astro";
+import HexIcon from "../ui/HexIcon.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import type { IconName } from "../ui/icons";
+
+interface Props {
+  title: string;
+  items: { icon: IconName; title: string; text: string }[];
+}
+
+const { title, items } = Astro.props;
+const headingId = "por-que-elegirnos";
+// 6 columnas en ≥ lg: 3 tarjetas arriba (2 col. c/u) y 2 abajo (3 col. c/u). En md, la última ocupa 2.
+const span = (i: number): string =>
+  [
+    i < 3 ? "lg:col-span-2" : "lg:col-span-3",
+    i === items.length - 1 && items.length % 2 === 1 ? "md:col-span-2" : "",
+  ].join(" ");
+---
+
+<section aria-labelledby={headingId} class="bg-surface">
+  <Container class="py-16 lg:py-24">
+    <SectionHeading id={headingId} title={title} />
+    <ul class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:mt-12 lg:grid-cols-6">
+      {items.map((item, i) => (
+        <li class={span(i)}>
+          <Card class="h-full">
+            <HexIcon icon={item.icon} />
+            <h3 class="mt-5 text-h3 font-semibold text-text">{item.title}</h3>
+            <p class="mt-2 text-text-muted">{item.text}</p>
+          </Card>
+        </li>
+      ))}
+    </ul>
+  </Container>
+</section>

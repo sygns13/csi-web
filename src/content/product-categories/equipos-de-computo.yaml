@@ -1,0 +1,12 @@
+name: Equipos de cómputo
+order: 1
+icon: monitor
+description: Computadoras para oficinas, laboratorios y áreas técnicas, configuradas según sus especificaciones.
+items:
+  - Computadoras de escritorio
+  - Laptops
+  - Equipos todo en uno
+  - Estaciones de trabajo
+  - Clientes ligeros
+  - Tabletas
+  - Monitores

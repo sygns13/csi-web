@@ -1,0 +1,20 @@
+---
+// Cifras (§6.1 S5): lista <dl>, cifras grandes en Sora y --brand. Sin animación.
+interface Props {
+  items: { value: string; label: string }[];
+  class?: string;
+}
+
+const { items, class: className } = Astro.props;
+---
+
+<dl class:list={["grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4", className]}>
+  {items.map((item) => (
+    <div class="relative flex flex-col-reverse justify-end overflow-hidden rounded-card border border-border bg-surface p-5 shadow-card before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-brand-gradient sm:p-6">
+      <dt class="mt-2 text-text-muted">{item.label}</dt>
+      <dd class="font-display text-[clamp(2rem,1.6rem+1.8vw,3rem)] leading-none font-bold text-brand">
+        {item.value}
+      </dd>
+    </div>
+  ))}
+</dl>

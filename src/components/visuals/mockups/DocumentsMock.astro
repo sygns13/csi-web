@@ -1,0 +1,68 @@
+---
+// Maqueta "documents" (§4.6): lista de documentos con firma digital y estados. 400×250.
+import MockWindow from "./MockWindow.astro";
+import Icon from "../../ui/Icon.astro";
+import { hexPoints } from "../geometry";
+
+type Status = "signed" | "forwarded" | "pending";
+const rows: { y: number; title: number; sub: number; status: Status }[] = [
+  { y: 76, title: 130, sub: 80, status: "signed" },
+  { y: 114, title: 110, sub: 96, status: "forwarded" },
+  { y: 152, title: 140, sub: 70, status: "signed" },
+  { y: 190, title: 100, sub: 88, status: "pending" },
+];
+const pill: Record<Status, string> = {
+  signed: "fill-success/15",
+  forwarded: "fill-brand/15",
+  pending: "fill-surface-2",
+};
+const pillBar: Record<Status, string> = {
+  signed: "fill-success/50",
+  forwarded: "fill-brand/45",
+  pending: "fill-text-muted/30",
+};
+---
+
+<g>
+  <MockWindow x={36} y={16} width={328} height={218}>
+    <rect x="54" y="52" width="120" height="9" rx="4.5" class="fill-text-muted/40"></rect>
+    <rect x="276" y="47" width="70" height="20" rx="10" class="fill-primary"></rect>
+    <Icon name="pen-line" size={11} x={285} y={51.5} class="text-on-primary" />
+    <rect x="301" y="54.5" width="34" height="5" rx="2.5" class="fill-on-primary/80"></rect>
+
+    {rows.map((row, i) => (
+      <g>
+        {i > 0 && (
+          <line
+            x1="52"
+            x2="348"
+            y1={row.y - 3}
+            y2={row.y - 3}
+            class="stroke-border"
+            stroke-width="1"
+          />
+        )}
+        <Icon name="file-text" size={20} x={54} y={row.y + 6} class="text-brand" />
+        <rect x="84" y={row.y + 8} width={row.title} height="6" rx="3" class="fill-text-muted/40" />
+        <rect x="84" y={row.y + 20} width={row.sub} height="5" rx="2.5" class="fill-border" />
+        <rect x="270" y={row.y + 8} width="76" height="18" rx="9" class={pill[row.status]} />
+        {row.status === "signed" && (
+          <Icon name="circle-check" size={12} x={276} y={row.y + 11} class="text-success" />
+        )}
+        {row.status === "forwarded" && (
+          <Icon name="arrow-right" size={12} x={276} y={row.y + 11} class="text-brand" />
+        )}
+        <rect
+          x={row.status === "pending" ? 280 : 292}
+          y={row.y + 14.5}
+          width={row.status === "pending" ? 56 : 44}
+          height="5"
+          rx="2.5"
+          class={pillBar[row.status]}
+        />
+      </g>
+    ))}
+  </MockWindow>
+  <polygon points={hexPoints(354, 214, 44)} class="fill-primary"></polygon>
+  <Icon name="pen-line" size={18} x={345} y={205} class="text-on-primary" />
+</g>

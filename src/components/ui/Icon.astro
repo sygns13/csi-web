@@ -3,16 +3,20 @@ import { icons, type IconName } from "./icons";
 
 interface Props {
   name: IconName;
-  /** Tamaños de la spec: 20, 24 o 28 px (§4.5). */
+  /** Tamaños de la spec: 20, 24 o 28 px (§4.5). Dentro de un SVG, unidades del viewBox. */
   size?: number;
   class?: string;
   /** Nombre accesible. Sin él, el ícono es decorativo (aria-hidden). */
   label?: string;
+  /** Posición cuando el ícono se anida dentro de otro SVG (maquetas de `visuals/`). */
+  x?: number;
+  y?: number;
 }
 
-const { name, size = 24, class: className, label } = Astro.props;
+const { name, size = 24, class: className, label, x, y } = Astro.props;
 const Component = icons[name];
 const a11y = label ? { role: "img" as const, "aria-label": label } : {};
+const position = x !== undefined || y !== undefined ? { x, y } : {};
 ---
 
 <Component
@@ -20,5 +24,6 @@ const a11y = label ? { role: "img" as const, "aria-label": label } : {};
   stroke-width={1.75}
   class:list={["shrink-0", className]}
   focusable="false"
+  {...position}
   {...a11y}
 />

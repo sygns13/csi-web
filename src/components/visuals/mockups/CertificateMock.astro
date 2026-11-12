@@ -1,0 +1,51 @@
+---
+// Maqueta "certificate" (§4.6): candado y escudo con trazas de circuito (SSL y seguridad). 400×250.
+import Icon from "../../ui/Icon.astro";
+import { hexPoints } from "../geometry";
+---
+
+<g>
+  <g class="stroke-brand-cyan" stroke-width="2" stroke-linecap="round" opacity="0.6">
+    <path d="M0 90h70l14 14h36"></path>
+    <path d="M0 160h96"></path>
+    <path d="M400 70h-70l-14 14h-26"></path>
+    <path d="M400 150h-80l-12 12h-22"></path>
+  </g>
+  <g class="stroke-brand" stroke-width="2" stroke-linecap="round" opacity="0.35">
+    <path d="M0 126h66"></path>
+    <path d="M400 116h-54"></path>
+  </g>
+  <g class="fill-surface stroke-brand-cyan" stroke-width="2">
+    <circle cx="124" cy="104" r="5"></circle>
+    <circle cx="100" cy="160" r="5"></circle>
+    <circle cx="286" cy="84" r="5"></circle>
+    <circle cx="282" cy="162" r="5"></circle>
+  </g>
+
+  <polygon
+    points={hexPoints(200, 118, 170)}
+    class="fill-surface stroke-brand"
+    stroke-width="3"
+  ></polygon>
+  <polygon
+    points={hexPoints(200, 118, 140)}
+    class="fill-none stroke-brand-cyan/60"
+    stroke-width="2"
+  ></polygon>
+  <Icon name="shield-check" size={64} x={168} y={84} class="text-brand" />
+
+  <circle cx="250" cy="168" r="20" class="fill-primary stroke-surface" stroke-width="4"></circle>
+  <Icon name="lock" size={20} x={240} y={158} class="text-on-primary" />
+
+  <rect
+    x="118"
+    y="208"
+    width="164"
+    height="24"
+    rx="12"
+    class="fill-surface stroke-border"
+    stroke-width="1.5"
+  ></rect>
+  <Icon name="lock" size={12} x={130} y={214} class="text-success" />
+  <rect x="148" y="217" width="110" height="6" rx="3" class="fill-border"></rect>
+</g>

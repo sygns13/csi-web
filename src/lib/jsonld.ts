@@ -71,6 +71,41 @@ export function website(): JsonLd {
   };
 }
 
+export interface ServiceInput {
+  name: string;
+  description: string;
+  serviceType: string;
+  /** Ruta de la página del servicio. */
+  path: string;
+}
+
+/** Página de servicio (§9.3): `Service` con el proveedor enlazado a la organización. */
+export function service(input: ServiceInput): JsonLd {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: input.name,
+    description: input.description,
+    serviceType: input.serviceType,
+    url: absoluteUrl(input.path),
+    provider: { "@id": ORGANIZATION_ID },
+    areaServed: site.country,
+  };
+}
+
+/** Catálogo de bienes (§9.3): un `Offer` por categoría, sin precios. */
+export function offerCatalog(name: string, categories: string[]): JsonLd {
+  return {
+    "@context": "https://schema.org",
+    "@type": "OfferCatalog",
+    name,
+    itemListElement: categories.map((category) => ({
+      "@type": "Offer",
+      itemOffered: { "@type": "Product", name: category },
+    })),
+  };
+}
+
 export interface BreadcrumbItem {
   name: string;
   href: string;

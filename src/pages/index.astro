@@ -1,11 +1,86 @@
 ---
-// Página temporal del Tramo 1 para probar el layout. Se reemplaza por el Inicio completo (§6.1) en el Tramo 2.
+// Inicio (§6.1).
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Container from "../components/ui/Container.astro";
+import Button from "../components/ui/Button.astro";
+import Icon from "../components/ui/Icon.astro";
+import HexList from "../components/ui/HexList.astro";
+import SectionHeading from "../components/ui/SectionHeading.astro";
 import CtaBand from "../components/sections/CtaBand.astro";
-import CircuitTraces from "../components/visuals/CircuitTraces.astro";
+import ServicesGrid from "../components/sections/ServicesGrid.astro";
+import Stats from "../components/sections/Stats.astro";
+import ProjectCard from "../components/sections/ProjectCard.astro";
+import ProductsGrid from "../components/sections/ProductsGrid.astro";
+import Process from "../components/sections/Process.astro";
+import WhyUs from "../components/sections/WhyUs.astro";
+import HeroVisual from "../components/visuals/HeroVisual.astro";
+import ProjectVisual from "../components/visuals/ProjectVisual.astro";
 import { site } from "../config/site";
+import { t } from "../i18n";
+import {
+  getFeaturedProjects,
+  getProductCategories,
+  getServices,
+  projectHref,
+  serviceHref,
+} from "../lib/content";
 import { website } from "../lib/jsonld";
+
+const [services, featured, categories] = await Promise.all([
+  getServices(),
+  getFeaturedProjects(4),
+  getProductCategories(),
+]);
+
+const trust = [
+  `RUC ${site.ruc}`,
+  "Inscrita en el RNP como proveedor de bienes y servicios",
+  `Desde ${site.foundingYear} en ${site.city}, ${site.region}`,
+];
+
+const clients = ["Corte Superior de Justicia de Áncash", "INAIGEM", "UNASAM", "Yamaha Perú"];
+
+const aiList = [
+  "Modelos de lenguaje (LLM) y generación aumentada por recuperación (RAG)",
+  "Asistentes virtuales y chatbots para atención ciudadana y de clientes",
+  "Automatización de documentos y procesos",
+  "Visión por computadora y aprendizaje automático",
+];
+
+const stats = [
+  { value: String(site.foundingYear), label: `Año de fundación, en ${site.city}` },
+  { value: "+10", label: "Proyectos entregados" },
+  { value: "4", label: "Sectores atendidos" },
+  { value: "RNP", label: "Proveedor del Estado de bienes y servicios" },
+];
+
+const whyUs = [
+  {
+    icon: "shield-check",
+    title: "Formalidad y cumplimiento",
+    text: "Empresa con RUC activo, inscrita en el RNP para bienes y servicios y emisora de comprobantes electrónicos.",
+  },
+  {
+    icon: "landmark",
+    title: "Experiencia en el sector público",
+    text: "Conocemos los términos de referencia, los entregables, los informes técnicos y los procesos de conformidad.",
+  },
+  {
+    icon: "sparkles",
+    title: "Inteligencia artificial aplicada",
+    text: "Llevamos la IA generativa a producción, con resultados medibles para nuestros clientes.",
+  },
+  {
+    icon: "award",
+    title: "Calidad y estándares",
+    text: "Aplicamos buenas prácticas de ingeniería de software, seguridad y accesibilidad web (WCAG).",
+  },
+  {
+    icon: "handshake",
+    title: "Acompañamiento cercano",
+    text: "Comunicación directa, capacitación a usuarios y soporte después de la entrega.",
+  },
+] as const;
 ---
 
 <BaseLayout
@@ -14,15 +89,153 @@ import { website } from "../lib/jsonld";
   canonicalPath="/"
   jsonLd={[website()]}
 >
-  <section class="relative overflow-hidden bg-surface-tint">
+  <!-- S1. Hero -->
+  <section aria-labelledby="hero-title" class="relative overflow-hidden bg-surface-tint">
     <div class="absolute inset-0 bg-dot-grid" aria-hidden="true"></div>
-    <CircuitTraces class="absolute top-1/2 right-0 hidden h-64 w-auto -translate-y-1/2 lg:block" />
-    <Container class="relative py-20 lg:py-28">
-      <p class="text-eyebrow font-semibold text-accent-text uppercase">
-        <span lang="en">{site.tradeName}</span>
-      </p>
-      <h1 class="mt-2 text-display font-bold text-text">Sitio en construcción</h1>
+    <Container class="relative grid items-center gap-10 py-14 sm:py-16 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:gap-10 lg:py-24">
+      <div>
+        <p class="text-eyebrow font-semibold text-accent-text uppercase">
+          <span lang="en">{site.tradeName}</span>
+        </p>
+        <h1 id="hero-title" class="mt-3 text-display font-bold text-text">
+          Soluciones informáticas que impulsan la transformación digital de su organización
+        </h1>
+        <p class="mt-5 max-w-[60ch] text-lead text-text-muted">
+          Somos una empresa peruana especializada en consultoría informática, desarrollo de software
+          a medida e inteligencia artificial. Además, proveemos bienes tecnológicos para entidades
+          públicas y empresas privadas.
+        </p>
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Button href="/contacto/">{t("cta.quote")}</Button>
+          <Button href="/proyectos/" variant="secondary">
+            {t("cta.viewProjects")}
+          </Button>
+        </div>
+        <ul class="mt-8 flex flex-col gap-2 text-sm text-text-muted xl:flex-row xl:flex-wrap xl:gap-x-5">
+          {trust.map((item) => (
+            <li class="flex items-start gap-2">
+              <Icon name="badge-check" size={20} class="text-brand" />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <HeroVisual class="mx-auto max-w-md sm:max-w-lg lg:max-w-none" />
     </Container>
   </section>
+
+  <!-- S2. Confían en nosotros -->
+  <section aria-labelledby="clientes-title" class="border-b border-border bg-surface">
+    <Container class="py-8 lg:py-10">
+      <h2 id="clientes-title" class="font-sans text-base font-semibold text-text-muted">
+        Instituciones y empresas que confían en nosotros
+      </h2>
+      <ul class="mt-4 flex flex-wrap gap-x-8 gap-y-3">
+        {clients.map((client) => (
+          <li class="flex items-center gap-2.5 font-display text-lg font-semibold text-text">
+            <span class="clip-hex size-3 shrink-0 bg-brand-cyan" aria-hidden="true" />
+            {client}
+          </li>
+        ))}
+      </ul>
+      <p class="mt-4 text-sm text-text-muted">
+        Sectores: justicia · investigación científica y ambiente · educación superior · empresa
+        privada
+      </p>
+    </Container>
+  </section>
+
+  <!-- S3. Servicios -->
+  <section aria-labelledby="servicios-title" class="bg-bg">
+    <Container class="py-16 lg:py-24">
+      <SectionHeading
+        id="servicios-title"
+        eyebrow="Servicios"
+        title="Lo que hacemos"
+        text="Diseñamos e implementamos soluciones tecnológicas robustas, adaptadas a las necesidades de cada cliente, desde la consultoría inicial hasta el soporte en producción."
+      />
+      <ServicesGrid services={services} class="mt-10 lg:mt-12" />
+    </Container>
+  </section>
+
+  <!-- S4. Inteligencia artificial aplicada -->
+  <section aria-labelledby="ia-title" class="bg-surface-2">
+    <Container class="grid items-center gap-10 py-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16 lg:py-24">
+      <div>
+        <SectionHeading
+          id="ia-title"
+          eyebrow="Inteligencia artificial"
+          title="IA aplicada a problemas reales"
+          text="Desarrollamos asistentes virtuales y soluciones de IA generativa que ya operan en el sector justicia: generan borradores de documentos jurisdiccionales anclados a la normativa y al expediente, y atienden consultas de la ciudadanía por canales de mensajería."
+        />
+        <HexList items={aiList} class="mt-6 text-text" />
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Button href={projectHref("apubot-2-csj-ancash")}>Ver el caso APUBOT 2.0</Button>
+          <Button href={serviceHref("inteligencia-artificial")} variant="secondary">
+            Servicio de IA
+          </Button>
+        </div>
+      </div>
+      <ProjectVisual
+        variant="chat"
+        class="mx-auto w-full max-w-xl rounded-card border border-border shadow-card-hover lg:max-w-none"
+      />
+    </Container>
+  </section>
+
+  <!-- S5. Cifras -->
+  <div class="bg-bg">
+    <Container class="pt-16 lg:pt-24">
+      <Stats items={stats} />
+    </Container>
+  </div>
+
+  <!-- S6. Proyectos destacados -->
+  <section aria-labelledby="proyectos-title" class="bg-bg">
+    <Container class="py-16 lg:py-24">
+      <SectionHeading
+        id="proyectos-title"
+        eyebrow="Proyectos"
+        title="Casos de éxito"
+        text="Sistemas críticos y portales de alto impacto entregados a instituciones públicas y empresas privadas."
+      />
+      <ul class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:mt-12 lg:gap-8">
+        {featured.map((project) => (
+          <li>
+            <ProjectCard project={project} />
+          </li>
+        ))}
+      </ul>
+      <div class="mt-10">
+        <Button href="/proyectos/" variant="secondary">
+          {t("cta.viewAllProjects")}
+        </Button>
+      </div>
+    </Container>
+  </section>
+
+  <!-- S7. Bienes tecnológicos -->
+  <section aria-labelledby="productos-title" class="bg-surface-2">
+    <Container class="py-16 lg:py-24">
+      <SectionHeading
+        id="productos-title"
+        eyebrow="Productos"
+        title="También proveemos bienes tecnológicos"
+        text="Cotizamos y suministramos equipos de cómputo, servidores, redes, impresión, licencias de software y más, con la formalidad que su institución requiere."
+      />
+      <ProductsGrid categories={categories} class="mt-10" />
+      <div class="mt-10">
+        <Button href="/productos/">Ver catálogo y cotizar</Button>
+      </div>
+    </Container>
+  </section>
+
+  <!-- S8. Cómo trabajamos -->
+  <Process />
+
+  <!-- S9. Por qué elegirnos -->
+  <WhyUs title="¿Por qué elegirnos?" items={[...whyUs]} />
+
+  <!-- S10. Llamada a la acción -->
   <CtaBand />
 </BaseLayout>

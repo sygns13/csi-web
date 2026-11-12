@@ -7,10 +7,12 @@ type Size = "sm" | "md" | "lg";
 interface Props {
   icon: IconName;
   size?: Size;
+  /** Fondo del hexágono: --surface-2 (por defecto) o --surface (sobre fondos --surface-2). */
+  tone?: "surface-2" | "surface";
   class?: string;
 }
 
-const { icon, size = "md", class: className } = Astro.props;
+const { icon, size = "md", tone = "surface-2", class: className } = Astro.props;
 
 // Hexágono con clip-path (§4.4): 56 px por defecto, fondo --surface-2 e ícono en --brand.
 const box: Record<Size, string> = { sm: "size-10", md: "size-14", lg: "size-24" };
@@ -19,7 +21,8 @@ const iconSize: Record<Size, number> = { sm: 20, md: 28, lg: 40 };
 
 <span
   class:list={[
-    "clip-hex inline-flex shrink-0 items-center justify-center bg-surface-2 text-brand",
+    "clip-hex inline-flex shrink-0 items-center justify-center text-brand",
+    tone === "surface" ? "bg-surface" : "bg-surface-2",
     box[size],
     className,
   ]}

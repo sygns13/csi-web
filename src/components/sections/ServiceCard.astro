@@ -1,0 +1,62 @@
+---
+// Tarjeta de servicio (§6.1 S3 y §6.2). Toda la tarjeta es clicable con el enlace extendido del título.
+import Card from "../ui/Card.astro";
+import HexIcon from "../ui/HexIcon.astro";
+import HexList from "../ui/HexList.astro";
+import LinkArrow from "../ui/LinkArrow.astro";
+import { t } from "../../i18n";
+import { serviceHref, type Service } from "../../lib/content";
+
+interface Props {
+  service: Service;
+  /** "compact": cuadrícula de Inicio (h3). "large": índice de servicios (h2, con vista previa). */
+  variant?: "compact" | "large";
+  /** En la variante "large", invierte las columnas en ≥ lg (tarjetas alternadas). */
+  reverse?: boolean;
+}
+
+const { service, variant = "compact", reverse = false } = Astro.props;
+const { title, icon, summary, includes } = service.data;
+const href = serviceHref(service.id);
+const titleId = `servicio-${service.id}-${variant}`;
+const titleLink =
+  "link-stretched rounded-control text-text underline-offset-4 decoration-2 group-hover/card:underline";
+---
+
+{variant === "compact" ? (
+  <Card interactive class="group/card flex h-full flex-col">
+    <HexIcon icon={icon} />
+    <h3 class="mt-5 text-h3 font-semibold">
+      <a href={href} id={titleId} class={titleLink}>
+        {title}
+      </a>
+    </h3>
+    <p class="mt-3 text-text-muted">{summary}</p>
+    <div class="mt-auto pt-5">
+      <LinkArrow href={href} srContext={title} class="group-hover/card:underline">
+        {t("cta.learnMore")}
+      </LinkArrow>
+    </div>
+  </Card>
+) : (
+  <Card
+    interactive
+    class="group/card grid grid-cols-1 gap-8 p-6 sm:p-8 lg:grid-cols-2 lg:items-center lg:gap-12 lg:p-10"
+  >
+    <div class:list={[reverse && "lg:order-last"]}>
+      <HexIcon icon={icon} />
+      <h2 class="mt-5 text-h2 font-bold">
+        <a href={href} id={titleId} class={titleLink}>
+          {title}
+        </a>
+      </h2>
+      <p class="mt-4 text-lead text-text-muted">{summary}</p>
+      <LinkArrow href={href} srContext={title} class="mt-6 group-hover/card:underline">
+        {t("services.viewDetail")}
+      </LinkArrow>
+    </div>
+    <div class="rounded-card bg-surface-2 p-6 sm:p-8">
+      <HexList items={includes.slice(0, 3)} />
+    </div>
+  </Card>
+)}

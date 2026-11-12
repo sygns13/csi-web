@@ -5,10 +5,19 @@ import Container from "../ui/Container.astro";
 import Button from "../ui/Button.astro";
 import Icon from "../ui/Icon.astro";
 import HexIcon from "../ui/HexIcon.astro";
-import { mainNav, servicesNav, serviceHref } from "../../config/navigation";
+import { mainNav } from "../../config/navigation";
 import { site } from "../../config/site";
 import { t } from "../../i18n";
+import { getServices, serviceHref } from "../../lib/content";
 import { whatsappUrl } from "../../lib/links";
+
+// Servicios del desplegable (§5.2), derivados de la colección `services`.
+const servicesNav = (await getServices()).map((service) => ({
+  slug: service.id,
+  navLabel: service.data.navLabel,
+  icon: service.data.icon,
+  summary: service.data.summary,
+}));
 
 const pathname = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.url.pathname}/`;
 

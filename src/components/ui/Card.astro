@@ -9,6 +9,8 @@ interface Props {
   accent?: boolean;
   /** Fondo alternativo (p. ej. la tarjeta de cierre "¿Necesita otra solución?"). */
   tone?: "surface" | "surface-2";
+  /** Relleno interior de 24 px. Desactivar si el contenido gestiona su propio relleno. */
+  padded?: boolean;
   class?: string;
 }
 
@@ -17,16 +19,21 @@ const {
   interactive = false,
   accent = false,
   tone = "surface",
+  padded = true,
   class: className,
 } = Astro.props;
 ---
 
 <Tag
   class:list={[
-    "relative overflow-hidden rounded-card border border-border p-6 shadow-card",
+    "relative overflow-hidden rounded-card border border-border shadow-card",
+    padded && "p-6",
     tone === "surface" ? "bg-surface" : "bg-surface-2",
-    interactive &&
+    interactive && [
       "transition duration-200 hover:shadow-card-hover motion-safe:hover:-translate-y-0.5",
+      // El foco del enlace extendido se muestra alrededor de toda la tarjeta (§4.7).
+      "has-[.link-stretched:focus-visible]:outline-2 has-[.link-stretched:focus-visible]:outline-offset-2 has-[.link-stretched:focus-visible]:outline-focus",
+    ],
     accent && "before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-brand-gradient",
     className,
   ]}

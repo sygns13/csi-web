@@ -1,0 +1,49 @@
+---
+// Maqueta genérica de proyecto (§4.6): sin capturas, logos ni textos de clientes. Decorativa.
+// SVG con colores por tokens (funciona en claro y oscuro) y sin IDs (puede repetirse en la página).
+import type { ProjectVisualVariant } from "../../config/taxonomy";
+import ChatMock from "./mockups/ChatMock.astro";
+import FormMock from "./mockups/FormMock.astro";
+import DashboardMock from "./mockups/DashboardMock.astro";
+import DocumentsMock from "./mockups/DocumentsMock.astro";
+import TableMock from "./mockups/TableMock.astro";
+import PortalMock from "./mockups/PortalMock.astro";
+import CertificateMock from "./mockups/CertificateMock.astro";
+import ServerMock from "./mockups/ServerMock.astro";
+
+interface Props {
+  variant: ProjectVisualVariant;
+  class?: string;
+}
+
+const { variant, class: className } = Astro.props;
+
+const mocks = {
+  chat: ChatMock,
+  form: FormMock,
+  dashboard: DashboardMock,
+  documents: DocumentsMock,
+  table: TableMock,
+  portal: PortalMock,
+  certificate: CertificateMock,
+  server: ServerMock,
+} satisfies Record<ProjectVisualVariant, unknown>;
+const Mock = mocks[variant];
+---
+
+<div
+  class:list={["relative isolate overflow-hidden bg-surface-2", className]}
+  aria-hidden="true"
+  data-visual={variant}
+>
+  <div class="absolute inset-0 -z-10 bg-dot-grid"></div>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 400 250"
+    fill="none"
+    focusable="false"
+    class="block h-auto w-full"
+  >
+    <Mock />
+  </svg>
+</div>

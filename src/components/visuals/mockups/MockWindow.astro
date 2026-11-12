@@ -1,0 +1,49 @@
+---
+// Marco de ventana de navegador o aplicación para las maquetas SVG (coordenadas del viewBox padre).
+interface Props {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  /** Barra superior con los tres puntos y la barra de dirección. */
+  chrome?: boolean;
+}
+
+const { x, y, width, height, chrome = true } = Astro.props;
+---
+
+<g>
+  <rect
+    x={x}
+    y={y}
+    width={width}
+    height={height}
+    rx="12"
+    class="fill-surface stroke-border"
+    stroke-width="1.5"
+  ></rect>
+  {chrome && (
+    <g>
+      <circle cx={x + 14} cy={y + 12} r="3" class="fill-border" />
+      <circle cx={x + 24} cy={y + 12} r="3" class="fill-border" />
+      <circle cx={x + 34} cy={y + 12} r="3" class="fill-border" />
+      <rect
+        x={x + 50}
+        y={y + 8}
+        width={Math.round(width * 0.4)}
+        height="8"
+        rx="4"
+        class="fill-surface-2"
+      />
+      <line
+        x1={x}
+        x2={x + width}
+        y1={y + 24}
+        y2={y + 24}
+        class="stroke-border"
+        stroke-width="1.5"
+      />
+    </g>
+  )}
+  <slot />
+</g>

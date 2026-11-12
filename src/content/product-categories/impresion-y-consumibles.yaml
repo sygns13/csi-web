@@ -1,0 +1,11 @@
+name: Impresión y consumibles
+order: 4
+icon: printer
+description: Impresoras para cada necesidad y sus suministros.
+items:
+  - Impresoras láser y de inyección de tinta
+  - Impresoras matriciales
+  - Impresoras de tickets (POS) y de etiquetas
+  - Fotocopiadoras y multifuncionales
+  - Tintas, tóneres y cintas
+  - Papel y kits de mantenimiento

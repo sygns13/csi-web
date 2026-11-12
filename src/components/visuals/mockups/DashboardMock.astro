@@ -1,0 +1,66 @@
+---
+// Maqueta "dashboard" (§4.6): panel con barra lateral y tarjetas de módulos en colores fríos. 400×250.
+import MockWindow from "./MockWindow.astro";
+import { hexPoints } from "../geometry";
+
+const modules = [
+  { x: 106, y: 72, tile: "fill-brand/15", dot: "fill-brand/70" },
+  { x: 196, y: 72, tile: "fill-brand-cyan/20", dot: "fill-brand-cyan" },
+  { x: 286, y: 72, tile: "fill-accent-text/15", dot: "fill-accent-text/70" },
+  { x: 106, y: 126, tile: "fill-primary/12", dot: "fill-primary/70" },
+  { x: 196, y: 126, tile: "fill-accent-text/12", dot: "fill-accent-text/60" },
+  { x: 286, y: 126, tile: "fill-brand/10", dot: "fill-brand/60" },
+];
+const sidebar = [
+  { y: 110, w: 40 },
+  { y: 128, w: 46 },
+  { y: 146, w: 36 },
+  { y: 164, w: 42 },
+];
+const chart = [16, 24, 12, 28, 20, 30, 18, 26, 14, 22, 28, 20];
+---
+
+<g>
+  <MockWindow x={20} y={18} width={360} height={214}>
+    <rect x="30" y="50" width="64" height="172" rx="8" class="fill-surface-2"></rect>
+    <polygon points={hexPoints(46, 66, 18)} class="fill-brand"></polygon>
+    <rect x="36" y="83" width="52" height="18" rx="5" class="fill-brand/15"></rect>
+    <rect x="42" y="89" width="40" height="6" rx="3" class="fill-brand/50"></rect>
+    {sidebar.map((item) => (
+      <rect x="42" y={item.y} width={item.w} height="6" rx="3" class="fill-text-muted/30" />
+    ))}
+
+    <rect x="106" y="52" width="110" height="8" rx="4" class="fill-text-muted/40"></rect>
+    <rect x="290" y="53" width="56" height="6" rx="3" class="fill-border"></rect>
+    <circle cx="360" cy="56" r="7" class="fill-brand-cyan/40"></circle>
+
+    {modules.map((m) => (
+      <g>
+        <rect x={m.x} y={m.y} width="82" height="46" rx="8" class={m.tile} />
+        <polygon points={hexPoints(m.x + 16, m.y + 15, 16)} class={m.dot} />
+        <rect x={m.x + 10} y={m.y + 28} width="52" height="5" rx="2.5" class="fill-text-muted/35" />
+        <rect x={m.x + 10} y={m.y + 37} width="32" height="4" rx="2" class="fill-text-muted/25" />
+      </g>
+    ))}
+
+    <rect
+      x="106"
+      y="180"
+      width="262"
+      height="42"
+      rx="8"
+      class="fill-surface stroke-border"
+      stroke-width="1.5"
+    ></rect>
+    {chart.map((h, i) => (
+      <rect
+        x={118 + i * 20}
+        y={214 - h}
+        width="10"
+        height={h}
+        rx="2"
+        class={i % 2 === 0 ? "fill-brand/60" : "fill-brand-cyan/70"}
+      />
+    ))}
+  </MockWindow>
+</g>

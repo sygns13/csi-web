@@ -1,0 +1,11 @@
+name: Servidores y almacenamiento
+order: 2
+icon: server
+description: Infraestructura para sus aplicaciones y datos, con capacidad y respaldo adecuados.
+items:
+  - Servidores en torre y en rack
+  - Servidores de gama alta
+  - Servidores de acceso y de impresión
+  - Almacenamiento en red (NAS)
+  - Discos y unidades de respaldo
+  - Sistemas de energía ininterrumpida (UPS)

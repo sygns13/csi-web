@@ -1,0 +1,46 @@
+---
+// Tarjeta de proyecto (§6.1 S6, §6.3): maqueta genérica, sector, cliente, título, resumen y fecha.
+// Toda la tarjeta es clicable con el enlace extendido del título (§4.7).
+import Badge from "../ui/Badge.astro";
+import Card from "../ui/Card.astro";
+import ProjectVisual from "../visuals/ProjectVisual.astro";
+import {
+  clientShortName,
+  projectDatetime,
+  projectHref,
+  sectorLabel,
+  type Project,
+} from "../../lib/content";
+
+interface Props {
+  project: Project;
+  /** Nivel del título según la jerarquía de la página. */
+  headingLevel?: 2 | 3;
+}
+
+const { project, headingLevel = 3 } = Astro.props;
+const { title, client, sector, summary, dateLabel, visual } = project.data;
+const Heading = headingLevel === 2 ? "h2" : "h3";
+---
+
+<Card interactive padded={false} class="group/card flex h-full flex-col">
+  <ProjectVisual variant={visual} class="border-b border-border" />
+  <div class="flex flex-1 flex-col p-6">
+    <div>
+      <Badge>{sectorLabel(sector)}</Badge>
+    </div>
+    <Heading class="mt-4 text-h3 font-semibold">
+      <a
+        href={projectHref(project.id)}
+        class="link-stretched rounded-control text-text decoration-2 underline-offset-4 group-hover/card:underline"
+      >
+        {title}
+      </a>
+    </Heading>
+    <p class="mt-2 text-sm font-semibold text-text-muted">{clientShortName(client)}</p>
+    <p class="mt-3 text-text-muted">{summary}</p>
+    <p class="mt-auto pt-4 text-sm text-text-muted">
+      <time datetime={projectDatetime(project)}>{dateLabel}</time>
+    </p>
+  </div>
+</Card>

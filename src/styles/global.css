@@ -192,13 +192,19 @@
   }
 }
 
-/* Enlace extendido: toda la tarjeta es clicable sin anidar interactivos (§4.7). */
+/* Enlace extendido: toda la tarjeta es clicable sin anidar interactivos (§4.7). El anillo de foco
+   lo dibuja la tarjeta (Card interactive, con :has); sin soporte de :has se mantiene el del enlace. */
 @utility link-stretched {
   &::after {
     content: "";
     position: absolute;
     inset: 0;
     border-radius: inherit;
+  }
+  @supports selector(:has(*)) {
+    &:focus-visible {
+      outline: none;
+    }
   }
 }
 

@@ -1,0 +1,172 @@
+---
+// Servicio — detalle (§6.3). Plantilla común; el contenido está en la colección `services` (§7.1).
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/ui/Container.astro";
+import Button from "../../components/ui/Button.astro";
+import Badge from "../../components/ui/Badge.astro";
+import Card from "../../components/ui/Card.astro";
+import HexIcon from "../../components/ui/HexIcon.astro";
+import HexList from "../../components/ui/HexList.astro";
+import Icon from "../../components/ui/Icon.astro";
+import SectionHeading from "../../components/ui/SectionHeading.astro";
+import PageHeader from "../../components/sections/PageHeader.astro";
+import ProjectCard from "../../components/sections/ProjectCard.astro";
+import CtaBand from "../../components/sections/CtaBand.astro";
+import { t } from "../../i18n";
+import {
+  getProjectsByService,
+  getServices,
+  quoteHref,
+  serviceHref,
+  type Service,
+} from "../../lib/content";
+import { service as serviceJsonLd } from "../../lib/jsonld";
+
+export const getStaticPaths = (async () => {
+  const services = await getServices();
+  return services.map((service, index) => ({
+    params: { slug: service.id },
+    props: {
+      service,
+      // "Otros servicios": los 3 siguientes en orden, de forma circular (§6.3, punto 9).
+      others: [1, 2, 3].map((k) => services[(index + k) % services.length]!),
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  service: Service;
+  others: Service[];
+}
+
+const { service, others } = Astro.props;
+const { title, navLabel, icon, summary, intro, includes, benefits, capabilities, faq, seo } =
+  service.data;
+const path = serviceHref(service.id);
+const related = await getProjectsByService(service.id, 3);
+
+// Fondos alternos según las secciones presentes (capacidades y proyectos son opcionales).
+const sectionKeys = [
+  "includes",
+  "benefits",
+  ...(capabilities?.length ? ["capabilities"] : []),
+  ...(related.length ? ["related"] : []),
+  "faq",
+];
+const tone = (key: string): string =>
+  sectionKeys.indexOf(key) % 2 === 0 ? "bg-bg" : "bg-surface-2";
+const benefitCols = benefits.length === 4 ? "md:grid-cols-2 xl:grid-cols-4" : "md:grid-cols-3";
+---
+
+<BaseLayout
+  title={seo.title}
+  description={seo.description}
+  canonicalPath={path}
+  breadcrumbs={[
+    { name: t("nav.services"), href: "/servicios/" },
+    { name: title, href: path },
+  ]}
+  jsonLd={[serviceJsonLd({ name: title, description: summary, serviceType: navLabel, path })]}
+>
+  <PageHeader eyebrow={t("services.eyebrow")} title={title} lead={intro} icon={icon}>
+    <Button href={quoteHref({ tipo: service.id })}>{t("cta.quote")}</Button>
+  </PageHeader>
+
+  <section aria-labelledby="incluye-title" class={tone("includes")}>
+    <Container class="py-16 lg:py-24">
+      <SectionHeading id="incluye-title" title={t("services.includes")} />
+      <HexList items={includes} columns="md2" class="mt-8 max-w-5xl text-lead" />
+    </Container>
+  </section>
+
+  <section aria-labelledby="beneficios-title" class={tone("benefits")}>
+    <Container class="py-16 lg:py-24">
+      <SectionHeading id="beneficios-title" title={t("services.benefits")} />
+      <ul class:list={["mt-8 grid gap-6", benefitCols]}>
+        {benefits.map((benefit) => (
+          <li>
+            <Card accent class="h-full">
+              <h3 class="text-h3 font-semibold text-text">{benefit.title}</h3>
+              <p class="mt-2 text-text-muted">{benefit.text}</p>
+            </Card>
+          </li>
+        ))}
+      </ul>
+    </Container>
+  </section>
+
+  {capabilities?.length ? (
+    <section aria-labelledby="capacidades-title" class={tone("capabilities")}>
+      <Container class="py-16 lg:py-24">
+        <SectionHeading id="capacidades-title" title={t("services.capabilities")} />
+        <ul class="mt-8 flex flex-wrap gap-2.5">
+          {capabilities.map((capability) => (
+            <li>
+              <Badge>{capability}</Badge>
+            </li>
+          ))}
+        </ul>
+        <p class="mt-5 text-sm text-text-muted">{t("services.capabilitiesNote")}</p>
+      </Container>
+    </section>
+  ) : null}
+
+  {related.length ? (
+    <section aria-labelledby="relacionados-title" class={tone("related")}>
+      <Container class="py-16 lg:py-24">
+        <SectionHeading id="relacionados-title" title={t("services.related")} />
+        <ul class="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {related.map((project) => (
+            <li>
+              <ProjectCard project={project} />
+            </li>
+          ))}
+        </ul>
+      </Container>
+    </section>
+  ) : null}
+
+  <section aria-labelledby="faq-title" class={tone("faq")}>
+    <Container class="py-16 lg:py-24">
+      <SectionHeading id="faq-title" title={t("services.faq")} />
+      <div class="mt-8 max-w-3xl divide-y divide-border rounded-card border border-border bg-surface">
+        {faq.map((item) => (
+          <details class="group/faq">
+            <summary class="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-card px-5 py-4 font-semibold text-text hover:underline hover:underline-offset-4 [&::-webkit-details-marker]:hidden">
+              <span>{item.q}</span>
+              <Icon
+                name="chevron-down"
+                size={20}
+                class="text-brand transition-transform duration-150 group-open/faq:rotate-180"
+              />
+            </summary>
+            <p class="px-5 pb-5 text-text-muted">{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <CtaBand />
+
+  <nav aria-labelledby="otros-servicios-title" class="bg-bg">
+    <Container class="py-16 lg:py-20">
+      <SectionHeading id="otros-servicios-title" title={t("services.others")} />
+      <ul class="mt-8 grid gap-4 md:grid-cols-3">
+        {others.map((other) => (
+          <li class="h-full">
+            <a
+              href={serviceHref(other.id)}
+              class="flex h-full min-h-11 items-center gap-3 rounded-card border border-border bg-surface p-4 font-semibold text-text shadow-card transition duration-200 hover:shadow-card-hover hover:underline hover:decoration-2 hover:underline-offset-4 motion-safe:hover:-translate-y-0.5"
+            >
+              <HexIcon icon={other.data.icon} size="sm" />
+              <span class="flex-1">{other.data.navLabel}</span>
+              <Icon name="arrow-right" size={20} class="text-link" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </Container>
+  </nav>
+</BaseLayout>

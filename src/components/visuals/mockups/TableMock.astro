@@ -1,0 +1,83 @@
+---
+// Maqueta "table" (§4.6): tabla de datos con filtros y paginación. 400×250.
+import MockWindow from "./MockWindow.astro";
+import Icon from "../../ui/Icon.astro";
+
+const columns = [
+  { x: 50, header: 40, widths: [52, 44, 58, 40, 50] },
+  { x: 130, header: 56, widths: [70, 62, 76, 58, 66] },
+  { x: 222, header: 44, widths: [40, 48, 36, 44, 42] },
+];
+const rows = [100, 122, 144, 166, 188];
+const status = [
+  "fill-success",
+  "fill-brand-cyan",
+  "fill-success",
+  "fill-success",
+  "fill-brand-cyan",
+];
+const chips = [
+  { x: 174, w: 52, tile: "fill-brand/15", bar: "fill-brand/50" },
+  { x: 232, w: 44, tile: "fill-surface-2", bar: "fill-text-muted/30" },
+  { x: 282, w: 48, tile: "fill-surface-2", bar: "fill-text-muted/30" },
+];
+const pages = [284, 302, 320, 338];
+---
+
+<g>
+  <MockWindow x={24} y={16} width={352} height={218}>
+    <rect
+      x="40"
+      y="44"
+      width="124"
+      height="22"
+      rx="11"
+      class="fill-surface stroke-border"
+      stroke-width="1.5"
+    ></rect>
+    <Icon name="search" size={12} x={49} y={49} class="text-text-muted" />
+    <rect x="66" y="52" width="66" height="6" rx="3" class="fill-border"></rect>
+    {chips.map((c) => (
+      <g>
+        <rect x={c.x} y="47" width={c.w} height="16" rx="8" class={c.tile} />
+        <rect x={c.x + 10} y="52.5" width={c.w - 20} height="5" rx="2.5" class={c.bar} />
+      </g>
+    ))}
+
+    <rect x="40" y="76" width="320" height="20" rx="5" class="fill-surface-2"></rect>
+    {columns.map((col) => (
+      <rect x={col.x} y="83" width={col.header} height="6" rx="3" class="fill-text-muted/45" />
+    ))}
+    <rect x="300" y="83" width="36" height="6" rx="3" class="fill-text-muted/45"></rect>
+
+    {rows.map((y, i) => (
+      <g>
+        {columns.map((col) => (
+          <rect
+            x={col.x}
+            y={y + 8}
+            width={col.widths[i]}
+            height="6"
+            rx="3"
+            class={col.x === 50 ? "fill-text-muted/35" : "fill-border"}
+          />
+        ))}
+        <circle cx="304" cy={y + 11} r="4" class={status[i]} />
+        <rect x="313" y={y + 8} width="26" height="6" rx="3" class="fill-border" />
+        <line x1="40" x2="360" y1={y + 22} y2={y + 22} class="stroke-border" stroke-width="1" />
+      </g>
+    ))}
+
+    <rect x="40" y="216" width="70" height="6" rx="3" class="fill-border"></rect>
+    {pages.map((x, i) => (
+      <rect
+        x={x}
+        y="211"
+        width="14"
+        height="14"
+        rx="4"
+        class={i === 1 ? "fill-primary" : "fill-surface-2"}
+      />
+    ))}
+  </MockWindow>
+</g>

@@ -1,0 +1,43 @@
+---
+// Servicios — índice (§6.2).
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Container from "../../components/ui/Container.astro";
+import PageHeader from "../../components/sections/PageHeader.astro";
+import ServiceCard from "../../components/sections/ServiceCard.astro";
+import OtherNeeds from "../../components/sections/OtherNeeds.astro";
+import Process from "../../components/sections/Process.astro";
+import CtaBand from "../../components/sections/CtaBand.astro";
+import { t } from "../../i18n";
+import { getServices } from "../../lib/content";
+
+const services = await getServices();
+---
+
+<BaseLayout
+  title="Servicios de consultoría y desarrollo de software | CSI"
+  description="Consultoría informática, desarrollo de software a medida, IA, portales web, sistemas de gestión, cloud, redes y soporte para entidades y empresas."
+  canonicalPath="/servicios/"
+  breadcrumbs={[{ name: t("nav.services"), href: "/servicios/" }]}
+>
+  <PageHeader
+    eyebrow="Servicios"
+    title="Servicios de consultoría, desarrollo de software y tecnología"
+    lead="Acompañamos a instituciones públicas y empresas privadas en cada etapa de su transformación digital: consultoría, desarrollo, implementación, infraestructura y soporte."
+  />
+
+  <div class="bg-bg">
+    <Container class="py-16 lg:py-24">
+      <ul class="grid grid-cols-1 gap-6 lg:gap-8">
+        {services.map((service, i) => (
+          <li>
+            <ServiceCard service={service} variant="large" reverse={i % 2 === 1} />
+          </li>
+        ))}
+      </ul>
+    </Container>
+  </div>
+
+  <OtherNeeds variant="section" />
+  <Process tone="surface-2" />
+  <CtaBand />
+</BaseLayout>

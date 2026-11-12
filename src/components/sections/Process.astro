@@ -1,0 +1,51 @@
+---
+// Cómo trabajamos (§6.1 S8): lista ordenada de 5 pasos con número en hexágono. Horizontal en ≥ lg con
+// línea de circuito entre pasos; vertical en móvil.
+import Container from "../ui/Container.astro";
+import SectionHeading from "../ui/SectionHeading.astro";
+import { t } from "../../i18n";
+
+interface Props {
+  /** Fondo de la sección. */
+  tone?: "bg" | "surface-2";
+}
+
+const { tone = "bg" } = Astro.props;
+const headingId = "como-trabajamos";
+const steps = ([1, 2, 3, 4, 5] as const).map((n) => ({
+  n,
+  title: t(`process.${n}.title`),
+  text: t(`process.${n}.text`),
+}));
+
+// Conector: vertical en móvil (bajo el hexágono) y horizontal en ≥ lg (con un nodo al final).
+const connector = [
+  "after:absolute after:top-16 after:-bottom-6 after:left-[1.6875rem] after:w-0.5 after:bg-brand-cyan/60",
+  "lg:after:top-[1.6875rem] lg:after:right-[-0.5rem] lg:after:bottom-auto lg:after:left-[4.25rem] lg:after:h-0.5 lg:after:w-auto",
+  "lg:before:absolute lg:before:top-[1.4375rem] lg:before:right-[-1.25rem] lg:before:size-2.5 lg:before:rounded-full lg:before:border-2 lg:before:border-brand",
+];
+---
+
+<section aria-labelledby={headingId} class:list={[tone === "bg" ? "bg-bg" : "bg-surface-2"]}>
+  <Container class="py-16 lg:py-24">
+    <SectionHeading id={headingId} eyebrow={t("process.eyebrow")} title={t("process.title")} />
+    <ol class="mt-10 grid gap-8 lg:mt-12 lg:grid-cols-5 lg:gap-6">
+      {steps.map((step, i) => (
+        <li
+          class:list={[
+            "relative flex gap-5 lg:flex-col lg:gap-4",
+            i < steps.length - 1 && connector,
+          ]}
+        >
+          <span class="clip-hex flex size-14 shrink-0 items-center justify-center bg-primary font-display text-xl font-bold text-on-primary">
+            {step.n}
+          </span>
+          <div class="pt-2 lg:pt-0">
+            <h3 class="text-h3 font-semibold text-text">{step.title}</h3>
+            <p class="mt-2 text-text-muted">{step.text}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </Container>
+</section>

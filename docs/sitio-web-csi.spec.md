@@ -3,7 +3,7 @@
 | Campo | Valor |
 |---|---|
 | Documento | `sitio-web-csi.spec.md` |
-| Versión | 1.1 (se incorporan las respuestas a los pendientes P1–P8) |
+| Versión | 1.2 (1.1: respuestas a los pendientes P1–P8; 1.2: títulos SEO acortados, D21) |
 | Fecha | 12/11/2026 |
 | Repositorio | `E:\NewProyectos\2026\csi\workspace\csi-web` (git ya iniciado, rama `master`, remoto `https://github.com/sygns13/csi-web.git`) |
 | Propietario | Gerente General de Construyendo Soluciones Informáticas E.I.R.L. |
@@ -154,6 +154,7 @@ archivo:
 | D18 | Gerente | **Se publica su foto** y los enlaces a LinkedIn (`https://www.linkedin.com/in/cristian-chavez-38272b120`) y GitHub (`https://github.com/sygns13`) |
 | D19 | Visión y valores | Aprobados de forma provisional. Se mantienen como **[VALIDAR]** para revisarlos durante la construcción |
 | D20 | Horario, textos legales, tratamiento y cifras | Sin horario. Los textos legales se mantienen como borradores [VALIDAR]. Se confirma el tratamiento de "usted". Se confirman las cifras de Inicio |
+| D21 | Títulos SEO de más de 60 caracteres | Se acortan quitando palabras del original (Tramo 2): servicio `inteligencia-artificial` (§7.1), proyectos P11 y P14 (§7.3) |
 
 ---
 
@@ -1290,7 +1291,7 @@ Esquema:
 - **¿Por dónde empezamos?** Con un diagnóstico y una prueba de concepto acotada que demuestre el valor antes de escalar.
 
 **seo**:
-- Título: Inteligencia artificial, chatbots y asistentes virtuales | CSI
+- Título: Inteligencia artificial y asistentes virtuales | CSI
 - Descripción: Soluciones de inteligencia artificial para entidades públicas y empresas: asistentes virtuales, chatbots, RAG y visión por computadora en Perú.
 
 **keywords**: inteligencia artificial para empresas, inteligencia artificial sector público, chatbot con inteligencia artificial Perú, asistente virtual con IA, RAG, IA generativa, visión por computadora
@@ -1750,7 +1751,7 @@ Nombres de cliente:
 - Comunicación institucional centralizada y actualizable.
 
 **seo**:
-- Título: Portal de la Facultad de Economía y Contabilidad – UNASAM | CSI
+- Título: Portal de Economía y Contabilidad – UNASAM | CSI
 - Descripción: Caso de implementación del portal institucional de la Facultad de Economía y Contabilidad de la UNASAM.
 
 #### P12. `plataforma-web-institucional-unasam`
@@ -1814,7 +1815,7 @@ Nombres de cliente:
 - Integración directa con los procesos comerciales de la empresa.
 
 **seo**:
-- Título: Gestión de consentimientos de datos personales – Yamaha | CSI
+- Título: Gestión de consentimientos – Yamaha | CSI
 - Descripción: Caso de plataforma digital para gestionar y registrar con trazabilidad los consentimientos de tratamiento de datos personales de clientes finales.
 
 > No mencionar los nombres de las plataformas del cliente ni de los proveedores de mensajería o de nube (§1.4).

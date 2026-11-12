@@ -23,8 +23,9 @@ npm run brand:assets     # favicons / OG (manual)
 node scripts/csp-hash.mjs --write   # tras cambiar el script de tema
 ```
 
-Node 24.22.3 está instalado con nvm, pero el global sigue en 22.23.4 y Git Bash usa v16. Para Node 24 en PowerShell:
-`$env:Path = "$env:APPDATA\nvm\v24.22.3;" + $env:Path` (o `nvm use 24.22.3`, que cambia el global).
+Node 24.22.3 es el global (PowerShell y Git Bash). Verificar con `node --version` al empezar.
+En Git Bash, las rutas que empiezan con `/` como argumento se convierten a rutas de Windows: usar
+`MSYS_NO_PATHCONV=1`.
 **El repositorio es público**: nunca escribir datos confidenciales en ningún archivo (§1.4).
 Astro 7 no admite dos `astro preview` a la vez: `npx astro preview stop` antes de `test:e2e`.
 
@@ -43,8 +44,17 @@ Astro 7 no admite dos `astro preview` a la vez: `npx astro preview stop` antes d
 - Texto con varias expresiones (`{a} {b}`) en líneas separadas pierde el espacio al compilar: usar template literal.
 - Enlaces externos: `target="_blank" rel="noopener noreferrer"` + ícono + `sr-only` "(se abre en una pestaña nueva)".
 - Rutas nuevas: agregarlas a `e2e/routes.ts` (y quitarlas de `plannedRoutes`).
+- Contenido en colecciones (`src/content.config.ts`, solo frontmatter). Acceso siempre vía `src/lib/content.ts`
+  (filtra `lang` y `draft`, ordena, arma URLs: `serviceHref`, `projectHref`, `quoteHref`…). No editar el texto de
+  las colecciones sin que lo diga la spec.
+- Íconos: nombre en `src/components/ui/icon-names.ts` + componente en `icons.ts` (el `satisfies` exige ambos).
+- Tarjeta clicable: `Card interactive` + enlace del título con `link-stretched` (el anillo de foco es de la
+  tarjeta). `Card padded={false}` si el contenido maneja su relleno (no pasar `p-0`: choca con `p-6`).
+- Maquetas (`visuals/mockups/*`): SVG 400×250 con clases de tokens (`fill-brand/15`…), sin IDs ni degradados.
+- Cuadrículas de una columna en móvil: `grid-cols-1` explícito (evita desbordes por palabras largas a 320 px).
 
 ## Estructura
 
-`src/{config,i18n,lib,layouts,components/{layout,ui,sections,visuals},pages,styles,assets}`, `e2e/`, `scripts/`,
+`src/{config,i18n,lib,layouts,components/{layout,ui,sections,visuals},content,pages,styles,assets}`,
+`src/content.config.ts`, `e2e/`, `scripts/`,
 `nginx/`, `Dockerfile`, `docker-compose.yml`, `docs/`. Detalle en la spec §3.4.
